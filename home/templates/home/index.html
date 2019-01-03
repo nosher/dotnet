@@ -1,0 +1,6 @@
+<h1>Latest photos</h1>
+<ul>
+{% for album in latest_albums %}
+    <li><a href="/images/{{ album.path }}/">{{ album.title|safe }}</a></li>
+{% endfor %}
+</ul>

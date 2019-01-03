@@ -1,0 +1,11 @@
+<a href="{{ home }}">adverts home</a>
+| <a href="{{ home }}/index">a-z index</a>
+{% if page %}
+    {% if prev %} | <a href="{{ prev }}">previous {{ page }} {{ title }}</a> {% endif %}
+    {% if next %} | <a href="{{ next }}">next {{ page }} {{ title }}</a> {% endif %}
+{% else %}
+    {% if prev %} | <a href="{{ prev.adid }}">previous {{ item.company }} advert</a> {% endif %}
+    {% if next %} | <a href="{{ next.adid }}">next {{ item.company }} advert</a> {% endif %}
+{% endif %}
+{% if prevany %} | <a href="{{ prevany.adid }}">previous advert</a> {% endif %}
+{% if nextany %} | <a href="{{ nextany.adid }}">next advert</a> {% endif %}

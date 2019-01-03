@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ item.company }} Advert - {{ item.year|get_year }}</h1>
+<section class="advert">
+    <p class="nav">
+        {% include "computers/navbar.html" %}
+    </p>
+    <h2>From {%if item.source %}{{ item.source }}{% else %}
+        {%if item.type == "channel" %}sales brochure{% else %}Source unknown{% endif %}
+    {% endif %}
+    </h2>
+    <img src="{{ url }}/images/{{ adid }}-m.jpg" />
+    <br clear="left" />  
+    <h3>{{ title|safe }}</h3>
+    {{ body|safe }}
+    <br clear="left" />  
+    <p class="navbottom">
+        {% include "computers/navbar.html" %}
+    </p>
+</section>
+{% if sources %}
+<section class="sources">
+    <h3>Sources</h3>
+    {% for source in sources %}
+        <a name="{{ forloop.counter }}"></a><div class="source">
+            <div class="sourcepos">{{ forloop.counter }}</div><div class="sourcetext">{{ source|safe }}</div>
+        </div>
+    {% endfor %}    
+</section>
+{% endif %}
+<p class="copy">text and otherwise-uncredited photos &copy; nosher.net {{ ""|get_now }}</p>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{album.title}}</h1>
+<p class="intro">{{intro|safe}}</p>
+{% if next or prev %}
+  <p class="nextprev">
+    {% if next %}<a href="/images/{{ next.path }}">next album: {{ next.title }}</a><br />{% endif %}
+    {% if prev %}<a href="/images/{{ prev.path }}">previous album: {{ prev.title }}</a><br />{% endif %}
+  </p>
+{% endif %}
+<section class="thumbnails">
+{% for im in images %}
+    <article class="thumb">
+	    <img src="{{ url }}/{{ im.thumb }}-s.jpg" onclick="showViewer({{ forloop.counter|add:"-1" }})"/>
+        <p>{{ im.caption|safe }}</p>
+    </article>{% endfor %}
+</section>
+<script type="text/javascript">
+
+    var base = "{{ url }}";
+    var imgCount = {{ images|length }};
+    var pos = 0;
+    var images = [];
+    var captions = [];
+{% for im in images %}    
+    images[{{ forloop.counter|add:"-1" }}] = "{{ im.thumb }}";
+    captions[{{ forloop.counter|add:"-1" }}] = "{{ im.caption|safe }}";
+{% endfor %}
+</script>
+<div id="viewer">
+    <div id="wrapper">
+      <section id="strip">
+{% for im in images %}
+        <div>
+	      <img id="{{ forloop.counter }}-img" src="{{ url }}/{{ im.thumb }}-s.jpg" onclick="showImage({{forloop.counter|add:"-1"}});" />{% if im == images.0 %}
+          <div id="{{ forloop.counter }}-marker" class="hilite"></div> {% else %}
+          <div id="{{ forloop.counter }}-marker" class="lolite"></div> {% endif %}
+        </div> {% endfor %}
+      </section>
+    </div>
+    <div id="close" onclick='hideViewer();'>&#9447;</div>
+    <div id="main">
+        <img id="fullsize" src="" />
+        <p id="caption">{{images.0.caption|safe}}</p>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+<script type="text/javascript">
+    var main = $('#fullsize');
+    $(window).keydown(function(event) {
+        if (event.which == 37 && pos > 0) {
+            // cursor left
+            goto(--pos, event);
+        } else if (event.which == 39 && pos < imgCount - 1) {
+            // cursor right
+            goto(++pos, event);
+        } else if (event.which == 35) {
+            // end
+            goto(imgCount - 1, event);
+        } else if (event.which == 36) {
+            // home
+            goto(0, event);
+        } else if (event.which == 38) {
+            // cursor up
+            $("#main").animate({scrollTop: 0});
+        } else if (event.which == 40) {
+            // cursor down 
+            $("#main").animate({scrollTop: 9999});
+        } else if (event.which == 88) {
+            hideViewer();
+        } else {
+            console.log(event.which);
+        }
+    });
+
+    function hideViewer() {
+        $("#viewer").hide();
+        main.attr('src', '');
+    }
+
+    function showViewer(pos) {
+        $("#viewer").show(200);
+        showImage(pos);
+    }
+
+    function goto(pos, event) {
+            event.preventDefault();
+            showImage(pos);
+    }
+
+    function showImage(position) {
+        pos = position; 
+        console.log("showing " + pos);
+        main.prop("title", images[pos]);
+        $("#caption").text(captions[pos]);
+        for (var i = 0; i < imgCount; i++) {
+            elem = document.getElementById((i + 1) + "-marker");
+            elem.className = "lolite";
+        }
+        elem = document.getElementById((pos + 1) + "-marker");
+        elem.className = "hilite";
+        var thumb = 74;
+        var half = $(window).width() / 2 - thumb;
+        var newpos = pos * thumb;
+        if (newpos > half) {
+            $("#wrapper").scrollLeft(pos * thumb - half - thumb / 4);
+        } else if (newpos < half) {
+            $("#wrapper").scrollLeft(0);
+        }
+        main.attr("src", base + "/" + images[pos] + "-m.jpg").load(new function() {
+            var inMemory = new Image();
+            inMemory.onload = function() {
+                main.css('max-height', this.height + 'px')
+            };
+            inMemory.src = main.attr("src");
+        });
+    }
+    if ({{ index }} > 0) {
+        showViewer({{index}});
+    }
+</script>
+{% endblock %}
+
+

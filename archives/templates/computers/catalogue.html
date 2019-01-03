@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block script %}
+    <script type="text/javascript">
+    function popup(el) {
+    }
+    </script>
+{% endblock %}
+
+{% block content %}
+<div id="popup"></div>
+<h1>{{ title }}</h1>
+{% if intro %}
+    <p class="intro">{{ intro }}</p>
+{% endif %}
+<section class="archives">
+<p class="nav">
+    <a href="/archives/computers/">adverts home</a>
+</p>
+    <p>
+    {% for a in alphas %}<a href="/archives/computers/index/{{a}}">{{a}}</a> {%if not forloop.last%}· {%endif %}{% endfor %}
+    </p>
+    <p>Entries for {{current}}:</p>
+    <p><ul class="catalogue">
+    {% for iword, ref in catalogue.items %}
+      <li>
+      {% if ref|length > 1 %}
+        {{iword}} ({% for index in ref%}<a href="/archives/computers/{{index}}?idx={{iword|urlencode}}">{{forloop.counter}}{%if not forloop.last%}, {%endif%}</a>{% endfor %}){%if not forloop.last%}<br /> {%endif%}
+      {% else %}
+        <a onmouseover="popup('{{ref.0}}')" href="/archives/computers/{{ref.0}}?idx={{iword|urlencode}}">{{iword}}</a>{%if not forloop.last%}<br /> {%endif%}
+      {% endif %}
+      </li>
+    {% endfor %}
+    </ul></p>
+<p class="nav">
+    <a href="/archives/computers/">adverts home</a>
+</p>
+</section>
+{% endblock %}

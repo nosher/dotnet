@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<head>
+  <title>nosher.net</title>
+  <link rel="stylesheet" href="//devstatic.nosher.net/nosher2.css" type="text/css" title="default" />
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Arimo|Montserrat');
+  </style>
+  {% block script %}{% endblock %}
+</head>
+<body class="body">
+  <header>nosher.net</header>
+  <nav>
+    <ul>
+
+        <!-- home -->
+
+        <li><a href="/">Home</a></li>
+        <p class="navlink"></p>
+
+        <!-- photos -->
+
+        <li><a href="/images/">Photos</a></li>
+        <p class="navlink">
+        {% for year in years %}
+            <nobr><a href="/images/{{ year.year }}">{{ year.year }} <span>[{{ year.count }}]</span></a>{%if not forloop.last%}, &nbsp;{%endif%}</nobr>
+        {% endfor %}
+        </p>
+
+        <!-- computer adverts -->
+
+        <li><a href="/archives/computers/">Micro adverts</a></li>
+        <p class="navlink">
+        {% for company in companies %}
+          {% if company.company != "" %}
+            {% if company.total == 1 %} 
+              <nobr><a href="/archives/computers/{{ company.company|get_first_advert }}">{{ company.company }} <span>[{{ company.total }}]</span></a>{%if not forloop.last%}, &nbsp;{%endif%}</nobr>
+            {% else %}
+              {% if company.company != "" %}
+              <nobr><a href="/archives/computers/?type=source&value={{ company.company }}">{{ company.company }} <span>[{{ company.total }}]</span></a>{%if not forloop.last%}, &nbsp;{%endif%}</nobr>
+              {% endif %}
+            {%endif%}
+          {% endif %}
+        {% endfor %}
+        </p>
+    </ul>
+  </nav>
+  <main>{% block content %}{% endblock %}</main>
+  <footer>{%if mtime %}<p>Last updated: {{ mtime }}{% endif %}</footer>
+</body>
+
