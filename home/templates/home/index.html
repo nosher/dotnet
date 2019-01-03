@@ -1,6 +1,42 @@
-<h1>Latest photos</h1>
-<ul>
-{% for album in latest_albums %}
-    <li><a href="/images/{{ album.path }}/">{{ album.title|safe }}</a></li>
-{% endfor %}
-</ul>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>nosher.net</title>
+        <link rel="stylesheet" href="//devstatic.nosher.net/nosher2.css" type="text/css" title="default" />
+        <style>
+          @import url('https://fonts.googleapis.com/css?family=Arimo|Montserrat');
+        </style>
+        {% block script %}{% endblock %}
+    </head>
+    <body>
+        <section id="home">
+            <header>hello</header>
+            <content>
+                <section id="sidebyside">
+                    <photo>
+                        <img src="https://static.nosher.net/graphics/v3/splash5.jpg" class="splash"/>
+                    </photo>
+                    <list>
+                            <h1>Recently added photo albums</h1>
+                            <ul>
+                            {% for album in latest_albums %}
+                                <li><a href="/images/{{ album.path }}/">{{ album.title|safe }}</a></li>
+                            {% endfor %}
+                            <li><a href="/images/">more...</a></li>
+                            </ul>
+                    </list>    
+                        
+                </section>
+                <h2>More stuff</h2>
+                <ul>
+                    <li><a href="/images">Photo albums</a></li>
+                    <li><a href="/archives/computers">A history of the microcomputer industry in 300 adverts</a></li>
+                    <li><a href="/archives/computers/adve_002#fear">Fear of technology: Visions of a computer future at the end of the 1970s</a></li>
+                    <li><a href="/content/saxonhorse">The Saxon Horse burial, Eriswell, Lakenheath</a></li>
+                </ul>
+            </content>
+            <footer>&copy; nosher.net 1999-{{ ""|get_now }}</footer>
+            <space></space>
+        </section>
+    </body>
+</html>

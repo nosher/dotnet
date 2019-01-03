@@ -2,6 +2,13 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from ..images.models import PhotoAlbum
 
+from datetime import datetime
+from datetime import date
+from django.template.defaulttags import register
+
+@register.filter
+def get_now(null):
+    return date.today().year
 
 def index(request):
 
