@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <head>
-  <title>nosher.net</title>
+  <meta property="og:site_name" content="nosher.net" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="{{ page_title }}" />
+  <meta property="og:url" content="{{ url }}" />
+  <meta property="og:image" content="{{ page_image }}" />
+  <meta property="og:description" content="{{ page_description }}" />
+  <title>nosher.net {% if page_title %} - {{ page_title }}{% endif %}</title>
+  <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//devstatic.nosher.net/nosher2.css" type="text/css" title="default" />
   <style>
     @import url('https://fonts.googleapis.com/css?family=Arimo|Montserrat');
@@ -8,27 +15,29 @@
   {% block script %}{% endblock %}
 </head>
 <body class="body">
-  <header>nosher.net</header>
+  <header><p>nosher.net</p></header>
   <nav>
     <ul>
 
         <!-- home -->
 
-        <li><a href="/">Home</a></li>
+        <li><a href="/">Home</a>
         <p class="navlink"></p>
+        </li>
 
         <!-- photos -->
 
-        <li><a href="/images/">Photos</a></li>
+        <li><a href="/images/">A life in photos</a>
         <p class="navlink">
         {% for year in years %}
             <nobr><a href="/images/{{ year.year }}">{{ year.year }} <span>[{{ year.count }}]</span></a>{%if not forloop.last%}, &nbsp;{%endif%}</nobr>
         {% endfor %}
         </p>
+        </li>
 
         <!-- computer adverts -->
 
-        <li><a href="/archives/computers/">Micro adverts</a></li>
+        <li><a href="/archives/computers/">A history of the microcomputer industry</a>
         <p class="navlink">
         {% for company in companies %}
           {% if company.company != "" %}
@@ -42,9 +51,15 @@
           {% endif %}
         {% endfor %}
         </p>
+        </li>
+
+        <!-- Saxon horse -->
+
+        <li><a href="/content/saxonhorse/">The Saxon Horse burial at Eriswell</a>
+        <p class="navlink">
     </ul>
   </nav>
   <main>{% block content %}{% endblock %}</main>
-  <footer>{%if mtime %}<p>Last updated: {{ mtime }}{% endif %}</footer>
+  <footer><p>&copy; nosher.net 1999-{{ ""|get_now }}{%if mtime %}. Last updated: {{ mtime }}{% endif %}</p></footer>
 </body>
 

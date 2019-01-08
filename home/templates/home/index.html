@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta name="google-site-verification" content="ogTinvCVb2govnY2IgopNfX1pYDqJLoRQTjGO3SkqvU" />
         <title>nosher.net</title>
+        <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="//devstatic.nosher.net/nosher2.css" type="text/css" title="default" />
         <style>
           @import url('https://fonts.googleapis.com/css?family=Arimo|Montserrat');
@@ -10,11 +12,11 @@
     </head>
     <body>
         <section id="home">
-            <header>hello</header>
+            <header><p>nosher.net</p></header>
             <content>
                 <section id="sidebyside">
                     <photo>
-                        <img src="https://static.nosher.net/graphics/v3/splash5.jpg" class="splash"/>
+                        <img src="{{ random_photo }}" />
                     </photo>
                     <list>
                             <h1>Recently added photo albums</h1>
@@ -22,20 +24,20 @@
                             {% for album in latest_albums %}
                                 <li><a href="/images/{{ album.path }}/">{{ album.title|safe }}</a></li>
                             {% endfor %}
-                            <li><a href="/images/">more...</a></li>
+                            <li><a href="/images/">more photo albums...</a></li>
+                            </ul>
+                            <hr />
+                            <h3>More things</h3>
+                            <ul>
+                                <li><a href="/archives/computers">A history of the microcomputer industry in 300 adverts</a></li>
+                                <li><a href="/archives/computers/adve_002#fear">Fear of technology: Visions of a computer future at the end of the 1970s</a></li>
+                                <li><a href="/content/saxonhorse">The Saxon Horse burial, Eriswell, Lakenheath</a></li>
                             </ul>
                     </list>    
                         
                 </section>
-                <h2>More stuff</h2>
-                <ul>
-                    <li><a href="/images">Photo albums</a></li>
-                    <li><a href="/archives/computers">A history of the microcomputer industry in 300 adverts</a></li>
-                    <li><a href="/archives/computers/adve_002#fear">Fear of technology: Visions of a computer future at the end of the 1970s</a></li>
-                    <li><a href="/content/saxonhorse">The Saxon Horse burial, Eriswell, Lakenheath</a></li>
-                </ul>
             </content>
-            <footer>&copy; nosher.net 1999-{{ ""|get_now }}</footer>
+            <footer><p>&copy; nosher.net 1999-{{ ""|get_now }}</p></footer>
             <space></space>
         </section>
     </body>

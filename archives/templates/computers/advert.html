@@ -10,11 +10,10 @@
         {%if item.type == "channel" %}sales brochure{% else %}Source unknown{% endif %}
     {% endif %}
     </h2>
-    <img src="{{ url }}/images/{{ adid }}-m.jpg" />
+    <img src="{{ page_image }}" />
     <br clear="left" />  
     <h3>{{ title|safe }}</h3>
     {{ body|safe }}
-    <br clear="left" />  
     <p class="navbottom">
         {% include "computers/navbar.html" %}
     </p>

@@ -188,6 +188,7 @@ def computer_index(request):
     offset = 0
     page = 15
     urlparams = []
+    intro = ""
     companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
 
     # check for an offset
@@ -207,10 +208,14 @@ def computer_index(request):
             elif ptype == "year":
                 items = ArchiveItems.objects.filter(year__startswith=value).order_by('year')
                 title = "{} adverts".format(value)
+            section = page_title = title
     else:
         # otherwise, default to most-recently-created adverts
         items = ArchiveItems.objects.order_by('-date_created')
-        title = "latest adverts"
+        title = page_title = "A history of the microcomputer industry in 300 adverts"
+        section = "adverts"
+        with open("/home/httpd/django/nosher/archives/computers-intro.txt") as fh:
+            intro = fh.read()
 
     for i in items:
         adid = i.adid
@@ -239,8 +244,13 @@ def computer_index(request):
     context = {
         'url': "{}/{}".format(WEBROOT, DOCROOT),
         'title': title,
+        'section': section,
+        'page_image': _get_page_image("{}-m.jpg".format(items[0].adid)),
+        'page_title': page_title,
+        'page_description': re.sub("<.*?>","", intro),
         'titles': titles,
         'home': ARCHIVES,
+        'intro': intro,
         'summaries': summaries,
         'items': items[offset:offset + page],
         'next': "?" + "&".join(nextparams) if len(nextparams) > 0 else None,
@@ -272,6 +282,15 @@ def computer_advert(request, advert):
             body = lines[1:]
         else: 
             body = lines
+    # stash the mostly-raw body for use as an OG description
+    raw_body = "".join(convert_acronyms(body))
+    # remove wiki-like tags
+    raw_body = re.sub("\[.*?\]", "", raw_body)
+    # remove HTML
+    raw_body = re.sub("<.*?>", "", raw_body)
+    # limit to 300 chars
+    ellipsis = "..." if len(raw_body) > 300 else ""
+    raw_body = raw_body[:300] + ellipsis
     body = convert_values(body)
     body = convert_acronyms(body)
     body = convert_extras(body)
@@ -295,6 +314,8 @@ def computer_advert(request, advert):
             if i < len(items):
                 nxtany = items[i + 1] 
 
+    page_title = "{} advert: {}".format(item.company, re.sub("<.*?>", "", title))
+    
     if not idx == "":
         title = title.replace(idx, "<span class='hilite'>{}</span>".format(idx))
         body = body.replace(idx, "<span class='hilite'>{}</span>".format(idx))
@@ -304,7 +325,10 @@ def computer_advert(request, advert):
     context = {
         'url': "{}/{}".format(WEBROOT, DOCROOT),
         'adid': adid,
+        'page_image': _get_page_image("{}-m.jpg".format(adid)),
         'item': item,
+        'page_title': page_title,
+        'page_description': raw_body,
         'next': nxt,
         'prev': prv,
         'nextany': nxtany,
@@ -329,4 +353,5 @@ def computer_filter_model(request, model):
 def computer_filter_year(request, year):
     return HttpResponse("Hello, world. You're at the computer archives filtered by year.")
 
-
+def _get_page_image(img):
+    return "{}/{}/images/{}".format(WEBROOT, DOCROOT, img)
