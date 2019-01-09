@@ -21,5 +21,6 @@ urlpatterns = [
     path('archives/', include('nosher.archives.urls')),
     path('images/', include('nosher.images.urls')),
     path('content/', include('nosher.content.urls')),
+    path('search/', include('nosher.search.urls')),
     path('admin/', admin.site.urls),
 ]

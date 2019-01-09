@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% autoescape off %}
+{{ body }}
+{% endautoescape %}
+<section class="thumbnails">
+{% for result in results %}
+    <article class="thumb">
+        <a href="/{{ result.path }}"><img src="{{ result.image }}" /></a>
+    </article>{% endfor %}
+</section>
+{{ results.pagenum}}
+{% endblock %}
