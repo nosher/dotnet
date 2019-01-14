@@ -57,6 +57,15 @@
 
         <li><a href="/content/saxonhorse/">The Saxon Horse burial at Eriswell</a>
         <p class="navlink">
+
+        <!-- search -->
+        <p class="navlink">
+        <form action="/search" method="get">
+            <input id="query" type="text" value="{{ query }}" name="q" maxlength="100" required>
+            <input type="submit" value="Search">
+        </form>
+        </p>
+
     </ul>
   </nav>
   <main>{% block content %}{% endblock %}</main>

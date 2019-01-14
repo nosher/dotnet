@@ -4,6 +4,7 @@
 {% autoescape off %}
 {{ body }}
 {% endautoescape %}
+<h1>Searching for: {{ query }}</h1>
 <section class="thumbnails">
 {% for result in results %}
     <article class="thumb">
