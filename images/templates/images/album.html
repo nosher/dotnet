@@ -39,7 +39,7 @@
         </div> {% endfor %}
       </section>
     </div>
-    <div id="close" onclick='hideViewer();'>&#9447;</div>
+    <div id="close" onclick='hideViewer();'>×</div>
     <div id="main">
         <img id="fullsize" src="" />
         <p id="caption">{{images.0.caption|safe}}</p>
@@ -118,7 +118,7 @@
             inMemory.src = main.attr("src");
         });
     }
-    if ({{ index }} > 0) {
+    if ({{ index }} > -1) {
         showViewer({{index}});
     }
 </script>

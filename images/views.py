@@ -32,7 +32,7 @@ def year(request, album_year):
     return render(request, 'images/year.html', context)
 
 
-def album(request, album_year, album_path, index=0):
+def album(request, album_year, album_path, index=-1):
     try:
         album = PhotoAlbum.objects.get(path="{}/{}".format(album_year, album_path))
     except PhotoAlbum.DoesNotExist:
