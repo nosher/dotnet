@@ -25,11 +25,15 @@ from whoosh.qparser import QueryParser
 
 CONTENT = "/content/"
 
+@register.filter(name='split')
+def split(value, arg):
+    return value.split(',')
 
 def search(request):
 
     ix = open_dir("/home/httpd/django/nosher/index")
     query = request.GET["q"]
+    off = int(request.GET.get("o", "0"))
     qp = QueryParser("content", schema = ix.schema)
     q = qp.parse(query)
     results =[] 
@@ -39,18 +43,28 @@ def search(request):
         results = s.search(q, limit = 500, sortedby="date", reverse=True)
         existing = []
         filtered = []
+        pparams = []
+        nparams = []
         for res in results:
             if not res["path"] in existing:
                 filtered.append(res)
                 existing.append(res["path"])
-        if len(filtered) < start + page:
+        if start + page < len(filtered):
             end = len(filtered) - start
+            nparams.extend(["q={}".format(query), "o={}".format(start + page)])
         else:
             end = start + page
-
+            nxt  = end
+        if off > 0:
+            pparams.extend(["q={}".format(query), "o={}".format(off - page)])
+        else:
+            prev = 0
         context = {
             'query': query,
             'results': filtered[start:end],
+            'next': None if len(nparams) == 0 else "/search?" + "&".join(nparams),
+            'prev': None if len(pparams) == 0 else "/search?" + "&".join(pparams),
+            'page': page,
             'server': WEBROOT,
         }
         return render(request, 'search/search.html', context)

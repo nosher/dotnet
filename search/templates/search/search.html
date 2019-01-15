@@ -5,11 +5,21 @@
 {{ body }}
 {% endautoescape %}
 <h1>Searching for: {{ query }}</h1>
+{% include "search/navbar.html" %}
 <section class="thumbnails">
 {% for result in results %}
     <article class="thumb">
+        {% if result.imgs %}
+            <a href="/{{ result.path }}">
+            {% for img in result.imgs|split:"," %}
+                <img class="tiny" src="{{ server }}/{{ result.path }}/{{ img }}-s.jpg" />
+            {% endfor %}
+            </a>
+        {% else %}
         <a href="/{{ result.path }}"><img src="{{ result.image }}" /></a>
+        {% endif %}
     </article>{% endfor %}
 </section>
+{% include "search/navbar.html" %}
 {{ results.pagenum}}
 {% endblock %}

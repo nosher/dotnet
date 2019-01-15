@@ -1,7 +1,7 @@
 import os
 import re
 from whoosh.index import create_in
-from whoosh.fields import Schema, TEXT, ID, DATETIME
+from whoosh.fields import Schema, TEXT, ID, DATETIME, IDLIST
 from archives.constants import *
 from datetime import *
 import sys
@@ -12,7 +12,7 @@ def createIndex(root):
     Schema definition: title(name of file), path(as ID), content(indexed
     but not stored),textdata (stored text content)
     '''
-    schema = Schema(path = ID(stored = True), image = TEXT(stored = True), content = TEXT, date = DATETIME(sortable = True))
+    schema = Schema(path = ID(stored = True), imgs = IDLIST(stored = True), image = TEXT(stored = True), content = TEXT, date = DATETIME(sortable = True))
     if not os.path.exists("index"):
         os.mkdir("index")
     ix = create_in("index", schema)
@@ -55,12 +55,20 @@ def createIndex(root):
                                     try:
                                         parts  = text[i].split("\t")
                                         if len(parts) > 1:
+                                            # convert to URL path
                                             webpath = path.replace("/home/httpd/nosher.net/docs/", "")
+                                            # this is an album description match
                                             if parts[0] == "title" or parts[0] == "intro":
+                                                images = []
+                                                if len(text) > 7:
+                                                    for j in range(3, 7):
+                                                        bits = text[j].split("\t")
+                                                        images.append(bits[0])
                                                 img = "{}/{}/{}-s.jpg".format(WEBROOT, webpath, text[3].split("\t")[0])
-                                                writer.add_document(path = webpath, content = parts[1], image = img, date = timestamp)
+                                                writer.add_document(path = webpath, imgs = ",".join(images), content = parts[1], image = img, date = timestamp)
                                             elif parts[0] == "locn":
-                                                pass
+                                                pass    
+                                            # this is a match to an individual photo
                                             else:
                                                 if first == 0: first = i
                                                 img = "{}/{}/{}-s.jpg".format(WEBROOT, webpath, parts[0])
