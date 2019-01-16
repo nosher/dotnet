@@ -214,8 +214,11 @@ def computer_index(request):
         items = ArchiveItems.objects.order_by('-date_created')
         title = page_title = "A history of the microcomputer industry in 300 adverts"
         section = "adverts"
-        with open("/home/httpd/django/nosher/archives/computers-intro.txt") as fh:
-            intro = fh.read()
+        if offset == 0:
+            with open("/home/httpd/django/nosher/archives/computers-intro.txt") as fh:
+                intro = fh.read()
+        else:
+            intro = ""
 
     for i in items:
         adid = i.adid

@@ -59,11 +59,12 @@
         <p class="navlink">
 
         <!-- search -->
+
         <p class="navlink">
-        <form action="/search" method="get">
-            <input id="query" type="text" value="{{ query }}" name="q" maxlength="100" required>
-            <input type="submit" value="Search">
-        </form>
+            <form action="/search" method="get">
+            <input id="query" type="text" value="{{ query }}" name="q" maxlength="100" class="stext" required>
+            <input type="submit" value="Search" class="sbutton">
+            </form>
         </p>
 
     </ul>
