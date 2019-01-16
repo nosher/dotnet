@@ -33,11 +33,10 @@ def search(request):
 
     ix = open_dir("/home/httpd/django/nosher/index")
     query = request.GET["q"]
-    off = int(request.GET.get("o", "0"))
+    start = int(request.GET.get("o", "0"))
     qp = QueryParser("content", schema = ix.schema)
     q = qp.parse(query)
     results =[] 
-    start = 0
     page = 50
     with ix.searcher() as s:
         results = s.search(q, limit = 500, sortedby="date", reverse=True)
@@ -49,24 +48,28 @@ def search(request):
             if not res["path"] in existing:
                 filtered.append(res)
                 existing.append(res["path"])
-        if start + page < len(filtered):
-            end = len(filtered) - start
-            nparams.extend(["q={}".format(query), "o={}".format(start + page)])
+        if start + page > len(filtered) or len(filtered) - start - page < 10:
+            end = len(filtered)
         else:
             end = start + page
-            nxt  = end
-        if off > 0:
-            pparams.extend(["q={}".format(query), "o={}".format(off - page)])
+            nxt = end
+            nparams.extend(["q={}".format(query), "o={}".format(end)])
+        if start > 0:
+            pparams.extend(["q={}".format(query), "o={}".format(start - page)])
         else:
             prev = 0
         context = {
             'query': query,
+            'start': start,
+            'end': end,
+            'total': len(filtered),
             'results': filtered[start:end],
-            'next': None if len(nparams) == 0 else "/search?" + "&".join(nparams),
-            'prev': None if len(pparams) == 0 else "/search?" + "&".join(pparams),
+            'next': _get_url(nparams),
+            'prev': _get_url(pparams),
             'page': page,
             'server': WEBROOT,
         }
         return render(request, 'search/search.html', context)
 
-
+def _get_url(params):
+    return None if len(params) == 0 else "/search?" + "&".join(params)

@@ -12,7 +12,7 @@ def createIndex(root):
     Schema definition: title(name of file), path(as ID), content(indexed
     but not stored),textdata (stored text content)
     '''
-    schema = Schema(path = ID(stored = True), imgs = IDLIST(stored = True), image = TEXT(stored = True), content = TEXT, date = DATETIME(sortable = True))
+    schema = Schema(path = ID(stored = True), imgs = IDLIST(stored = True), image = TEXT(stored = True), content = TEXT(stored = True), date = DATETIME(sortable = True))
     if not os.path.exists("index"):
         os.mkdir("index")
     ix = create_in("index", schema)

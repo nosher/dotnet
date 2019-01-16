@@ -4,22 +4,28 @@
 {% autoescape off %}
 {{ body }}
 {% endautoescape %}
-<h1>Searching for: {{ query }}</h1>
+<h1>Search results</h1>
+<p>Results for "{{ query }}". Showing {{ start|add:"1" }} to {{ end }} of {{ total }}</p>
 {% include "search/navbar.html" %}
 <section class="thumbnails">
 {% for result in results %}
-    <article class="thumb">
+    <article class="search">
         {% if result.imgs %}
-            <a href="/{{ result.path }}">
+        <a href="/{{ result.path }}">
+            <div id="fourbox">
             {% for img in result.imgs|split:"," %}
                 <img class="tiny" src="{{ server }}/{{ result.path }}/{{ img }}-s.jpg" />
             {% endfor %}
-            </a>
+            </div>
+        </a>
+        <p>{{ result.content|slice:":34" }}{% if result.content|length > 34 %}...{% endif %}</p>
         {% else %}
         <a href="/{{ result.path }}"><img src="{{ result.image }}" /></a>
+        <p>{{ result.content|slice:":34" }}{% if result.content|length > 34 %}...{% endif %}</p>
         {% endif %}
     </article>{% endfor %}
 </section>
+<br />
 {% include "search/navbar.html" %}
 {{ results.pagenum}}
 {% endblock %}
