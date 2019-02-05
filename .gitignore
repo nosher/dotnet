@@ -5,4 +5,5 @@ __pycache__
 my.cnf
 settings.py
 index/*
+start.sh
 

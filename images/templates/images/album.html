@@ -4,9 +4,7 @@
 <h1>{{album.title}}</h1>
 <p class="intro">{{intro|safe}}</p>
 {% if next or prev %}
-  <p class="nextprev">
-    {% if next %}<a href="/images/{{ next.path }}">next album: {{ next.title }}</a><br />{% endif %}
-    {% if prev %}<a href="/images/{{ prev.path }}">previous album: {{ prev.title }}</a><br />{% endif %}
+<p class="nextprev">{% if next %}<a href="/images/{{ next.path }}">next album: {{ next.title }}</a><br />{% endif %}{% if prev %}<a href="/images/{{ prev.path }}">previous album: {{ prev.title }}</a>{% endif %}
   </p>
 {% endif %}
 <section class="thumbnails">
@@ -95,7 +93,7 @@
         pos = position; 
         console.log("showing " + pos);
         main.prop("title", images[pos]);
-        $("#caption").text(captions[pos]);
+        $("#caption").html(captions[pos]);
         for (var i = 0; i < imgCount; i++) {
             elem = document.getElementById((i + 1) + "-marker");
             elem.className = "lolite";

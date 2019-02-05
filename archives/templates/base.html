@@ -6,9 +6,11 @@
   <meta property="og:url" content="{{ url }}" />
   <meta property="og:image" content="{{ page_image }}" />
   <meta property="og:description" content="{{ page_description }}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>nosher.net {% if page_title %} - {{ page_title }}{% endif %}</title>
   <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="//devstatic.nosher.net/nosher2.css" type="text/css" title="default" />
+  <link rel="shortcut icon" href="https://static.nosher.net/images/nn.png">
+  <link rel="stylesheet" type="text/css" href="//devstatic.nosher.net/nosher2.css" title="default" />
   <style>
     @import url('https://fonts.googleapis.com/css?family=Arimo|Montserrat');
   </style>
@@ -37,15 +39,15 @@
 
         <!-- computer adverts -->
 
-        <li><a href="/archives/computers/">A history of the microcomputer industry</a>
+        <li><a href="/archives/computers/">A history of the microcomputer industry in 300 adverts</a>
         <p class="navlink">
         {% for company in companies %}
           {% if company.company != "" %}
             {% if company.total == 1 %} 
-              <nobr><a href="/archives/computers/{{ company.company|get_first_advert }}">{{ company.company }} <span>[{{ company.total }}]</span></a>{%if not forloop.last%}, &nbsp;{%endif%}</nobr>
+              {% if company.company|length < 30 %}<nobr>{% endif %}<a href="/archives/computers/{{ company.company|get_first_advert }}">{{ company.company }} <span>[{{ company.total }}]</span></a>{%if not forloop.last%}, &nbsp;{%endif%}{% if company.company|length < 30 %}</nobr>{% endif %}
             {% else %}
               {% if company.company != "" %}
-              <nobr><a href="/archives/computers/?type=source&value={{ company.company }}">{{ company.company }} <span>[{{ company.total }}]</span></a>{%if not forloop.last%}, &nbsp;{%endif%}</nobr>
+              {% if company.company|length < 30 %}<nobr>{% endif %}<a href="/archives/computers/?type=source&value={{ company.company }}">{{ company.company }} <span>[{{ company.total }}]</span></a>{%if not forloop.last%}, &nbsp;{%endif%}{% if company.company|length < 30 %}</nobr>{% endif %}
               {% endif %}
             {%endif%}
           {% endif %}
@@ -70,6 +72,6 @@
     </ul>
   </nav>
   <main>{% block content %}{% endblock %}</main>
-  <footer><p>&copy; nosher.net 1999-{{ ""|get_now }}{%if mtime %}. Last updated: {{ mtime }}{% endif %}</p></footer>
+  <footer><p>&copy; nosher.net 1999-{{ ""|get_now }}{%if mtime %}. Last updated: <nobr>{{ mtime }}</nobr>{% endif %}</p></footer>
 </body>
 

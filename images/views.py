@@ -80,6 +80,8 @@ def _getAlbumDetails(album_path):
                 title = parts[1]
             elif parts[0] == "intro":
                 intro = parts[1]
+            elif parts[0] == "locn":
+                pass
             else:
                 items.append({"thumb": parts[0], "caption": parts[1].replace("\"","\'")})
                 
