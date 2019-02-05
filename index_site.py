@@ -21,19 +21,15 @@ def createIndex(root):
     root = "/home/httpd/nosher.net/docs/archives/computers"
     files = [os.path.join(root, i) for i in os.listdir(root)]
     for f in files:
-        continue
         if f[-4:] == ".txt":
             with open(f, "r") as fh:
                 print (f)
-                text = fh.readlines()
-                if len(text) > 1:
-                    title = _strip(text[0])
-                    body = _strip("".join(text[1:]))
-                else:
-                    title = ""
-                    body = _strip(text[0])
+                lines = fh.readlines()
+                text = " ".join(lines).replace("\n", "")
+                text = re.sub("<.*?>|\[.*?\]", "", text)
                 img = "{}/archives/computers/images/{}-s.jpg".format(WEBROOT, f.split("/")[-1].replace(".txt", ""))
-                writer.add_document(path = f, content = body, image = img)
+                url = "archives/computers/{}".format(f.split("/")[-1].replace(".txt", ""))
+                writer.add_document(path = url, content = text, image = img)
                 fh.close()
 
     root = "/home/httpd/nosher.net/docs/images/"
@@ -68,8 +64,8 @@ def createIndex(root):
                                                 writer.add_document(path = webpath, imgs = ",".join(images), content = parts[1], image = img, date = timestamp)
                                             elif parts[0] == "locn":
                                                 pass    
-                                            # this is a match to an individual photo
                                             else:
+                                                # this is a match to an individual photo
                                                 if first == 0: first = i
                                                 img = "{}/{}/{}-s.jpg".format(WEBROOT, webpath, parts[0])
                                                 writer.add_document(path = "{}/{}".format(webpath, i - first), content = parts[1], image = img, date = timestamp)

@@ -29,6 +29,22 @@ CONTENT = "/content/"
 def split(value, arg):
     return value.split(',')
 
+
+@register.filter(name='ellipsize')
+def _format_content(content):
+    return _get_ellipsis(content, 36, 30)
+
+
+@register.filter(name='details')
+def _create_tooltip(result):
+    path = result["path"]
+    parts = path.split("/")
+    year = ""
+    if parts[0] == "images":
+        year = "{}: ".format(parts[1])
+    return "{}{}".format(year, _get_ellipsis(result["content"], 1206, 110))
+
+
 def search(request):
 
     ix = open_dir("/home/httpd/django/nosher/index")
@@ -63,13 +79,27 @@ def search(request):
             'start': start,
             'end': end,
             'total': len(filtered),
-            'results': filtered[start:end],
+            'results': map(_format_content, filtered[start:end]),
             'next': _get_url(nparams),
             'prev': _get_url(pparams),
             'page': page,
             'server': WEBROOT,
         }
         return render(request, 'search/search.html', context)
+
+
+def _get_ellipsis(content, longlen, shortlen):
+    if len(content) < longlen:
+        return content
+    else:
+        words = content.replace("-", " ").split(" ")
+        length = 0
+        w = 0
+        while length < shortlen and w < len(words) - 1:
+            length += len(words[w])
+            w += 1
+        return " ".join(words[0:w]) + " " + re.sub(r'[ ,.:-]', '', words[w]) + "..."
+
 
 def _get_url(params):
     return None if len(params) == 0 else "/search?" + "&".join(params)

@@ -14,14 +14,14 @@
         <a href="/{{ result.path }}">
             <div id="fourbox">
             {% for img in result.imgs|split:"," %}
-                <img class="tiny" src="{{ server }}/{{ result.path }}/{{ img }}-s.jpg" />
+                <img title="{{ result|details }}" class="tiny" src="{{ server }}/{{ result.path }}/{{ img }}-s.jpg" />
             {% endfor %}
             </div>
         </a>
-        <p>{{ result.content|slice:":34" }}{% if result.content|length > 34 %}...{% endif %}</p>
+        <p>{{ result.content|ellipsize }}</p>
         {% else %}
-        <a href="/{{ result.path }}"><img src="{{ result.image }}" /></a>
-        <p>{{ result.content|slice:":34" }}{% if result.content|length > 34 %}...{% endif %}</p>
+        <a href="/{{ result.path }}"><img src="{{ result.image }}" title="{{ result|details }}"/></a>
+        <p>{{ result.content|ellipsize }}</p>
         {% endif %}
     </article>{% endfor %}
 </section>
