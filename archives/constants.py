@@ -4,7 +4,7 @@ DOCROOT = "archives/computers"
 ROOT = "/home/httpd/nosher.net/docs/" + DOCROOT
 WEBROOT = "http://devstatic.nosher.net"
 CLEANER = re.compile("<.*?>|\[.*?\]", flags=re.MULTILINE|re.IGNORECASE)
-CHARS = 340
+CHARS = 200
 TLAS = {
     "PCN": "Personal Computer News",
     "PCW": "Personal Computer World",

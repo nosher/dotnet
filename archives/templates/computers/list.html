@@ -5,10 +5,8 @@
 {% if intro %}
     <p class="intro">{{ intro|safe }}</p>
 {% endif %}
+<p class="nav">{% include "computers/navbar.html" %}</p>
 <section class="archives">
-<p class="nav">
-    {% include "computers/navbar.html" %}
-</p>
 {% for item in items %}
     <article class="archiveitem">
         <a href="{{ item.adid }}"><img src="{{ url }}/images/{{ item.adid }}-s.jpg" class="archivethumb" /></a>
@@ -20,8 +18,6 @@
         </div>
     </article>
 {% endfor %}
-<p class="nav">
-    {% include "computers/navbar.html" %}
-</p>
 </section>
+<p class="nav">{% include "computers/navbar.html" %}</p>
 {% endblock %}
