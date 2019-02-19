@@ -3,6 +3,8 @@ import re
 import locale
 import sys
 
+from django.db.models import Count
+from django.db.models.functions import Substr
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import Http404
@@ -352,6 +354,26 @@ def computer_filter_company(request, company):
 
 def computer_filter_model(request, model):
     return HttpResponse("Hello, world. You're at the computer archives filtered by model.")
+
+def computer_filter_years(request):
+    records = ArchiveItems.objects.all().order_by('year')
+    allads = OrderedDict() 
+    for ad in records:
+        year = int(ad.year[0:4])
+        if not year in allads.keys():
+            allads[year] = [ad]
+        else:
+            a = allads[year]
+            a.append(ad)
+            allads[year] = a
+    
+    companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
+    context = {
+        'companies': companies,
+        'ads': allads,
+        'url': "{}/{}".format(WEBROOT, DOCROOT),
+    }
+    return render(request, 'computers/years.html', context)
 
 def computer_filter_year(request, year):
     return HttpResponse("Hello, world. You're at the computer archives filtered by year.")

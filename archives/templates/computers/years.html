@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Adverts by year</h1>
+<p class="nav">{% include "computers/navbar.html" %}</p>
+<section class="archives">
+    {% for year, ads in ads.items %}
+      {% if year < 2000 %}
+        <h3>{{ year }}</h3>
+        <div id="yearindex">
+        {% for ad in ads %}
+            <div>
+            <a href="/archives/computers/{{ad.getPrimary}}"><img src="{{url}}/images/{{ad.adid}}-s.jpg" /></a><br />
+            {{ad.getTitle}}
+            </div>
+        {% endfor %}
+        </div>
+      {% endif %}
+    {% endfor %}
+</section>
+<p class="nav">{% include "computers/navbar.html" %}</p>
+{% endblock %}

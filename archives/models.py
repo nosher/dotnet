@@ -31,6 +31,12 @@ class ArchiveItems(models.Model):
     def setHasNew(self, hasNew):
         self.__hasNew = hasNew
 
+    def getPrimary(self):
+        return self.adid.split(",")[0]
+
+    def getTitle(self):
+        return self.company.replace("/", " / ")
+
     def isRecentArchive(self):
         return ((datetime.datetime.now() - self.date_created) < datetime.timedelta(days = 35))
 
