@@ -4,6 +4,7 @@ __pycache__
 *.JPG
 my.cnf
 settings.py
+settings_prod.py
 index/*
 start.sh
 

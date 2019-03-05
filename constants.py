@@ -1,8 +1,14 @@
 import re
+import os
+
+DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
+if DEBUG:
+    WEBROOT = "https://devstatic.nosher.net"
+else:
+    WEBROOT = "https://static.nosher.net"
 
 DOCROOT = "archives/computers"
 ROOT = "/home/httpd/nosher.net/docs/" + DOCROOT
-WEBROOT = "http://devstatic.nosher.net"
 CLEANER = re.compile("<.*?>|\[.*?\]", flags=re.MULTILINE|re.IGNORECASE)
 CHARS = 200
 TLAS = {

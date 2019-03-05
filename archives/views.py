@@ -15,7 +15,7 @@ from stat import *
 from datetime import datetime
 from datetime import date
 from .models import ArchiveItems
-from .constants import *
+from ..constants import *
 from collections import OrderedDict
 
 ARCHIVES = "/archives/computers"
@@ -42,7 +42,7 @@ def get_year(raw_year):
     parts = list(map(lambda x: int(x), raw_year.split("-")))
     if parts[1] == 0:
         return "{}".format(parts[0])
-    if parts[2] == 0:
+    if len(parts) < 3 or parts[2] == 0:
         dt = datetime(parts[0], parts[1], 1, 0, 0)
         return dt.strftime('%B %Y')
     else:
@@ -157,7 +157,7 @@ def catalogue(request, alpha = ""):
     catalogue = OrderedDict()
     if alpha is None or alpha == "":
         alpha = "A"
-    with open("/home/httpd/nosher.net/docs/archives/computers/catalogue.dat") as fh:
+    with open("/home/httpd/nosher.net/docs/archives/computers/catalogue.dat", encoding="utf-8") as fh:
         key = ""
         blob = fh.readlines()
         for data in blob:
@@ -217,7 +217,7 @@ def computer_index(request):
         title = page_title = "A history of the microcomputer industry in 300 adverts"
         section = "adverts"
         if offset == 0:
-            with open("/home/httpd/django/nosher/archives/computers-intro.txt") as fh:
+            with open("/home/httpd/django/nosher/archives/computers-intro.txt", encoding="utf-8") as fh:
                 intro = fh.read()
         else:
             intro = ""
@@ -226,7 +226,7 @@ def computer_index(request):
         adid = i.adid
         adid = adid.split(",")[0]
         i.adid = adid
-        with (open(os.path.join(ROOT, "{}.txt".format(adid)))) as fh:
+        with open(os.path.join(ROOT, "{}.txt".format(adid)), encoding="utf-8") as fh:
             lines = fh.readlines()
             titles[adid] = lines[0]
             summaries[adid] = "".join(lines[1:])
@@ -280,7 +280,7 @@ def computer_advert(request, advert):
     idx = request.GET.get("idx", "")
 
     # get advert contents
-    with (open(path)) as fh:
+    with open(path, encoding="utf-8") as fh:
         lines = fh.readlines()
         if len(lines) > 1:
             title = lines[0]
@@ -371,6 +371,7 @@ def computer_filter_years(request):
     context = {
         'companies': companies,
         'ads': allads,
+        'home': ARCHIVES,
         'url': "{}/{}".format(WEBROOT, DOCROOT),
     }
     return render(request, 'computers/years.html', context)

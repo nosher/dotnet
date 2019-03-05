@@ -15,7 +15,7 @@ from django.template.defaulttags import register
 from django.contrib.humanize.templatetags.humanize import ordinal
 from django.db.models import Count
 from stat import *
-from .constants import *
+from ..constants import *
 from collections import OrderedDict
 
 from whoosh.index import open_dir

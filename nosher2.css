@@ -69,7 +69,17 @@ html, body {
 }
 #sidebyside > photo img {
     width: 220px;
-    margin: 8px;
+    margin: 6px 8px 8px 0;
+}
+
+#yearindex {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 80px);
+  grid-gap: 20px;
+  font-size: 80%;
+}
+#yearindex img {
+    width: 80px;
 }
 
 #home > header, header {
@@ -155,10 +165,11 @@ ul.index li {
   background-color: #eeeeee;
 }
 .navbottom {
-  margin-top: 20px;
+  clear: left;
+  margin-top: 20px !important;
 }
 main {
-  background-image: url('http://devstatic.nosher.net/images/cam.png');
+  background-image: url('https://static.nosher.net/images/cam.png');
   padding: 16px 16px 0 20px;
   grid-area: content;
 }
@@ -444,14 +455,22 @@ ul.albums {
     text-align: justify;
     color: #333;
     text-justify: inter-word;
+    padding: 0;
+    margin: 0;
 }
 .advert img { 
     border: 1px solid #505050; 
     margin-bottom: 22px;
     box-shadow: 3px 3px 6px #888888;
 }
-.advert p, .advert h3 {
-    margin: 0;
+.advert h3 {
+    margin: 8px 0 8px 0;
+}
+.liner {
+    padding-right: 16px;
+}
+.liner p {
+    margin: 0 0 16px 0;
 }
 @media screen and (max-width: 640px) {
     .advert img {
@@ -459,10 +478,17 @@ ul.albums {
         margin: 0 0 0 4px;
     }
     .advert p {
-        margin: 0 8px 0 4px;
+        margin: 0;
     }
-    .advert h3 {
+    .advert p.nav {
+        margin: 0;
+    }
+    .advert h3, .advert h2 {
         margin: 8px 4px;
+    }
+    .liner {
+        padding: 0 12px 0 4px;
+        margin: 8px 0 12px 0;
     }
 }
 p.navlink {
@@ -490,6 +516,11 @@ p.navlink a span {
     color: #606060; 
     font-size: 80%; 
 }
+@media screen and (max-width: 640px) {
+    .copy {
+        margin: 12px 4px 12px 4px;
+    }
+}
 .sources {
   font-size: 85%;
   display: grid;
@@ -500,6 +531,11 @@ p.navlink a span {
   display: grid;
   grid-template-columns: 24px auto;
   grid-template-areas: "sourcepos sourcetext"
+}
+@media screen and (max-width: 640px) {
+    .sources {
+        margin: 0 4px;
+    }
 }
 sup.src {
    font-family: georgia, arial, helvetica;
@@ -539,4 +575,37 @@ sup.src a {
 .extra_left {
     margin: 0 30px 10px 0; 
 }
+@media screen and (max-width: 640px) {
+    .extra, .extra_left {
+        display: block;
+        float: none !important;
+        width: 95% !important;
+        margin: 8px 0 !important;
+        padding: 8px !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        
+        clear: all !important;
+    }
+    .extra img, .extra_left img {
+        border-radius: 0;
+    }
+}
 .sourcetext a {color: #808080; }
+
+.saxon {
+    margin-right: 8px;
+}
+.saxon tr td {
+    padding: 0 4px 20px 0;
+    vertical-align: top;
+}
+.content {}
+@media screen and (max-width: 640px) {
+    .content p {
+        padding: 4px 8px 4px 4px;
+    }
+}
+.shlinx li {
+    margin-bottom: 8px;
+}

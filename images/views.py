@@ -9,9 +9,10 @@ from .models import PhotoAlbums
 from stat import *
 from datetime import datetime
 
+from ..constants import * 
+
 DOCROOT = "images"
 ROOT = "/home/httpd/nosher.net/docs/" + DOCROOT
-WEBROOT = "http://devstatic.nosher.net"
 
 def index(request):
     latest_albums = PhotoAlbum.objects.order_by('-date_created')[:30]

@@ -15,7 +15,7 @@ from django.template.defaulttags import register
 from django.contrib.humanize.templatetags.humanize import ordinal
 from django.db.models import Count
 from stat import *
-from .constants import *
+from ..constants import *
 from collections import OrderedDict
 
 CONTENT = "/content/"
@@ -53,7 +53,7 @@ def content_page(request, section, page):
 def _get_page(section, page):
     path = "/home/httpd/nosher.net/docs/content/{}/{}".format(section, page)
     mtime = datetime.date.fromtimestamp(os.stat(path)[7])
-    with open(path) as fh:
+    with open(path, encoding="utf-8") as fh:
         body = fh.read()
         t = Template(body)
         return (t.render(Context({'staticServer': WEBROOT})), mtime)
