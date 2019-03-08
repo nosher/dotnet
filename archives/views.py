@@ -50,6 +50,10 @@ def get_year(raw_year):
         return "{} {}".format(ordinal(parts[2]), dt.strftime('%B %Y'))
 
 
+@register.filter
+def get_first_image(adid):
+    return adid.split(",")[0]
+
 def convert_values(item):
     """ 
     Convert occurances of [[123|1983]] to current value based

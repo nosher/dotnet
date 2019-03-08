@@ -3,7 +3,7 @@ import os
 
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 if DEBUG:
-    WEBROOT = "https://devstatic.nosher.net"
+    WEBROOT = "http://devstatic.nosher.net"
 else:
     WEBROOT = "https://static.nosher.net"
 

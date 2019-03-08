@@ -10,7 +10,7 @@
         <div id="yearindex">
         {% for ad in ads %}
             <div>
-            <a href="/archives/computers/{{ad.getPrimary}}"><img src="{{url}}/images/{{ad.adid}}-s.jpg" /></a><br />
+            <a href="/archives/computers/{{ad.getPrimary}}"><img src="{{url}}/images/{{ad.adid|get_first_image}}-s.jpg" /></a><br />
             {{ad.getTitle}}
             </div>
         {% endfor %}
