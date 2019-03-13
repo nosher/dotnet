@@ -99,7 +99,7 @@ def convert_extras(item):
                 if not flot == "right":
                     cls = "extra_left"
                 target = """<img src="https://static.nosher.net/archives/computers/images/extras/%s" style="width: %dpx"/>""" % (thing, wid - 5)
-                item[i] = item[i].replace(repl, """<div class="%s" style="width: %spx; float: %s">%s<br />%s</div>""" % (cls, wid, flot, target, desc))
+                item[i] = item[i].replace(repl, """<span class="%s" style="width: %spx; float: %s">%s<br />%s</span>""" % (cls, wid, flot, target, desc))
     return item
 
 
@@ -370,7 +370,9 @@ def computer_filter_years(request):
             a = allads[year]
             a.append(ad)
             allads[year] = a
-    
+   
+    for k, v in allads.items():
+        allads[k] = sorted(v, key = lambda advert: advert.company) 
     companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
     context = {
         'companies': companies,
