@@ -3,6 +3,7 @@ import random
 from django.shortcuts import render
 from django.http import HttpResponse
 from ..images.models import PhotoAlbum
+from ..constants import *
 
 from datetime import datetime
 from datetime import date
@@ -22,6 +23,7 @@ def index(request):
     splash = [1,2,4,5,6,7,8,9]
     pic_url = "https://static.nosher.net/graphics/v3/splash{}.jpg".format(splash[random.randint(0, len(splash) - 1)])
     context = {
+        'WEBROOT': WEBROOT,
         'latest_albums': latest_albums,
         'random_photo': pic_url,
     }

@@ -1,11 +1,7 @@
 import re
 import os
 
-DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
-if DEBUG:
-    WEBROOT = "http://devstatic.nosher.net"
-else:
-    WEBROOT = "https://static.nosher.net"
+WEBROOT = "http://devstatic.nosher.net"
 
 DOCROOT = "archives/computers"
 ROOT = "/home/httpd/nosher.net/docs/" + DOCROOT

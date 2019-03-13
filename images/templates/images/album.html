@@ -108,10 +108,31 @@
         } else if (newpos < half) {
             $("#wrapper").scrollLeft(0);
         }
+        /* var isDragging = false;
+        main.mousedown(function() {
+                    isDragging = false;
+        }).mousemove(function() {
+                    isDragging = true;
+        }).mouseup(function() {
+                    var wasDragging = isDragging;
+                    isDragging = false;
+                    if (wasDragging) {
+                        console.log("draggin!");
+                    }
+        });  */
         main.attr("src", base + "/" + images[pos] + "-m.jpg").load(new function() {
             var inMemory = new Image();
             inMemory.onload = function() {
-                main.css('max-height', this.height + 'px')
+                width = this.width;
+                if (width > $(window).width()) {
+                    // we're probably in a width-constrained situation
+                    dWidth = $(window).width() * 0.95;
+                    dHeight = dWidth * this.height / this.width; 
+                    main.css('max-width', dWidth + 'px')
+                    main.css('max-height', dHeight + 'px')
+                } else {
+                    main.css('max-height', this.height + 'px')
+                }
             };
             inMemory.src = main.attr("src");
         });
