@@ -9,8 +9,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>nosher.net {% if page_title %} - {{ page_title }}{% endif %}</title>
   <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
-  <link rel="shortcut icon" href="https://static.nosher.net/images/nn.png">
-  <link rel="stylesheet" type="text/css" href="//devstatic.nosher.net/nosher2.css" title="default" />
+  <link rel="shortcut icon" href="//static.nosher.net/images/nn.png">
+  <link rel="stylesheet" type="text/css" href="//static.nosher.net/nosher2.css" title="default" />
   <style>
     @import url('https://fonts.googleapis.com/css?family=Arimo|Montserrat');
   </style>
@@ -60,6 +60,9 @@
         <li><a href="/content/saxonhorse/">The Saxon Horse burial at Eriswell</a>
         </li>
 
+        <li><a href="/content/brandonflint/">An 1887 history of flint knapping in Brandon</a>
+        </li>
+
         <!-- search -->
         <li>
         <p class="navlink">
@@ -72,6 +75,6 @@
     </ul>
   </nav>
   <main>{% block content %}{% endblock %}</main>
-  <footer><p>&copy; nosher.net 1999-{{ ""|get_now }}{%if mtime %}. Last updated: <nobr>{{ mtime }}</nobr>{% endif %}</p></footer>
+  <footer><p>{%if feedback %}Feedback: {{ feedback }}<br />{% endif %}&copy; nosher.net 1999-{{ ""|get_now }}{%if mtime %}. Last updated: <nobr>{{ mtime }}</nobr>{% endif %}</p></footer>
 </body>
 

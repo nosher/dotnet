@@ -32,6 +32,7 @@ def content(request, section):
         'body': body,
         'mtime': mtime,
         'intro': "",
+        'feedback': "{}@nosher.net".format(section),
     }
     return render(request, 'content/page.html', context)
 
@@ -47,6 +48,7 @@ def content_page(request, section, page):
         'body': body,
         'mtime': mtime,
         'intro': "",
+        'feedback': "{}@nosher.net".format(section),
     }
     return render(request, 'content/page.html', context)
 

@@ -19,6 +19,7 @@ from ..constants import *
 from collections import OrderedDict
 
 ARCHIVES = "/archives/computers"
+EMAIL = "microhistory@nosher.net"
 
 @register.filter
 def get_item(dictionary, key):
@@ -181,6 +182,7 @@ def catalogue(request, alpha = ""):
         'alphas': catalogue.keys(),
         'companies': companies,
         'catalogue': catalogue[alpha],
+        'feedback': EMAIL,
     }
     return render(request, 'computers/catalogue.html', context)
 
@@ -267,6 +269,7 @@ def computer_index(request):
         'prev': "?" + "&".join(prevparams) if len(prevparams) > 0 else None,
         'page': page,
         'companies': companies,
+        'feedback': EMAIL,
     }
     return render(request, 'computers/list.html', context)
 
@@ -348,6 +351,7 @@ def computer_advert(request, advert):
         'sources': sources,
         'mtime': fmt_date,
         'companies': companies,
+        'feedback': EMAIL,
     }
     return render(request, 'computers/advert.html', context)
 
@@ -379,6 +383,7 @@ def computer_filter_years(request):
         'ads': allads,
         'home': ARCHIVES,
         'url': "{}/{}".format(WEBROOT, DOCROOT),
+        'feedback': EMAIL,
     }
     return render(request, 'computers/years.html', context)
 
