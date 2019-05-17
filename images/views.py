@@ -18,7 +18,8 @@ def index(request):
     latest_albums = PhotoAlbum.objects.order_by('-date_created')[:30]
     context = {
         'latest_albums': latest_albums,
-        'years': _getYears()
+        'years': _getYears(),
+        'intro': _getTextForAlbum(ROOT)
     }
     return render(request, 'images/index.html', context)
 
@@ -29,6 +30,7 @@ def year(request, album_year):
         'year': album_year,
         'albums': albums,
         'years': _getYears(),
+        'intro': _getTextForAlbum(os.path.join(ROOT, album_year))
     }
     return render(request, 'images/year.html', context)
 
@@ -95,3 +97,10 @@ def _getYears():
         year.setCount(count)
     return years
     
+def _getTextForAlbum(path):
+    file_path = os.path.join(path, "intro.txt")
+    try:
+        with open(file_path) as fh:
+            return fh.read()
+    except IOError:
+        return ""

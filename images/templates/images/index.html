@@ -2,11 +2,13 @@
 
 {% block content %}
 
+{% if intro %}
+<div class="images_intro">{{intro|safe}}</div>
+{% endif %}
 <h1>Latest photos</h1>
 <ul class="index">
 {% for album in latest_albums %}
     <li><a href="/images/{{ album.path }}/">{{ album.title|safe }}</a></li>
 {% endfor %}
 </ul>
-
 {% endblock %}

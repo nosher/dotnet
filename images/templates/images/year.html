@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 
+{% if intro %}
+<div class="images_intro">{{intro|safe}}</div>
+{% endif %}
 {% block content %}
   <h1>{{year}} photos</h1>
   <ul class="albums">

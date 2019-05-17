@@ -14,14 +14,12 @@
     <p class="intro">{{ intro }}</p>
 {% endif %}
 <section class="archives">
-<p class="nav">
-    <a href="/archives/computers/">adverts home</a>
-</p>
-    <p>
-    {% for a in alphas %}<a href="/archives/computers/index/{{a}}">{{a}}</a> {%if not forloop.last%}· {%endif %}{% endfor %}
+<p class="nav">{% include "computers/navbar.html" %}</p>
+    <p style="margin: 0;">
+    Index entry: {% for a in alphas %}<a href="/archives/computers/index/{{a}}">{{a}}</a> {%if not forloop.last%}· {%endif %}{% endfor %}
     </p>
-    <p>Entries for {{current}}:</p>
-    <p><ul class="catalogue">
+    <p style="margin: 0;">Entries for <b>{{current}}</b>:</p>
+    <ul class="catalogue">
     {% for iword, ref in catalogue.items %}
       <li>
       {% if ref|length > 1 %}
@@ -31,7 +29,7 @@
       {% endif %}
       </li>
     {% endfor %}
-    </ul></p>
+    </ul>
 <p class="nav">
     <a href="/archives/computers/">adverts home</a>
 </p>

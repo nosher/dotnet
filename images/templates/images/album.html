@@ -75,12 +75,13 @@
     });
 
     function hideViewer() {
-        $("#viewer").hide();
-        main.attr('src', '');
+        $("#viewer").hide(300, function() {
+            main.attr('src', '');
+        });
     }
 
     function showViewer(pos) {
-        $("#viewer").show(200);
+        $("#viewer").show(300);
         showImage(pos);
     }
 
@@ -120,10 +121,18 @@
                         console.log("draggin!");
                     }
         });  */
+        main.hide();
         main.attr("src", base + "/" + images[pos] + "-m.jpg").load(new function() {
             var inMemory = new Image();
             inMemory.onload = function() {
                 width = this.width;
+                height = this.height;
+                if (height > 900) {
+                    // for extra-large images, scale down by half as these are intended as
+                    // hi-res images for high-density displays
+                    width = width / 2;
+                    height = height / 2;
+                }
                 if (width > $(window).width()) {
                     // we're probably in a width-constrained situation
                     dWidth = $(window).width() * 0.95;
@@ -131,8 +140,9 @@
                     main.css('max-width', dWidth + 'px')
                     main.css('max-height', dHeight + 'px')
                 } else {
-                    main.css('max-height', this.height + 'px')
+                    main.css('max-height', height + 'px')
                 }
+                main.fadeIn(100);
             };
             inMemory.src = main.attr("src");
         });
