@@ -31,6 +31,7 @@ def content(request, section):
         'home': CONTENT,
         'body': body,
         'mtime': mtime,
+        'server': WEBROOT,
         'intro': "",
         'feedback': "{}@nosher.net".format(section),
     }
@@ -47,6 +48,7 @@ def content_page(request, section, page):
         'home': CONTENT,
         'body': body,
         'mtime': mtime,
+        'server': WEBROOT,
         'intro': "",
         'feedback': "{}@nosher.net".format(section),
     }
