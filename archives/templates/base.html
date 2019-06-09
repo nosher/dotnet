@@ -35,6 +35,13 @@
           {% endfor %}
           </p>
         {% endif %}
+        {% if groups %}
+          <p class="navlink">
+          {% for group in groups %}
+            <a href="/images?title={{ group.title|urlencode }}&group={{ group.keys|urlencode }}">{{ group.title }}</a><br />
+          {% endfor %}
+          </p>
+        {% endif %}
         </li>
 
         <!-- computer adverts -->

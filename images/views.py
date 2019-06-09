@@ -3,6 +3,7 @@ import os
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import Http404
+from django.db.models import Q
 from .models import PhotoAlbum
 from .models import PhotoAlbums
 
@@ -15,13 +16,33 @@ DOCROOT = "images"
 ROOT = "/home/httpd/nosher.net/docs/" + DOCROOT
 
 def index(request):
-    latest_albums = PhotoAlbum.objects.order_by('-date_created')[:30]
-    context = {
-        'latest_albums': latest_albums,
-        'years': _getYears(),
-        'intro': _getTextForAlbum(ROOT)
-    }
-    return render(request, 'images/index.html', context)
+    params = request.GET
+    if "group" in params:
+        keys = params.get("group").split(",")
+        title = params.get("title")
+        if len(keys) == 1:
+            albums = PhotoAlbum.objects.filter(title__contains = keys[0]).order_by('-path')
+        else:
+            q = Q(title__contains = keys[0])
+            for i in range(1, len(keys)):
+                q |= Q(title__contains = keys[i])
+            albums = PhotoAlbum.objects.filter(q).order_by('-path')
+        context = {
+            'years': _getYears(),
+            'albums': albums,
+            'title': title,
+            'groups': _getGroups()
+        }
+        return render(request, 'images/groups.html', context)
+    else:
+        latest_albums = PhotoAlbum.objects.order_by('-date_created')[:30]
+        context = {
+            'latest_albums': latest_albums,
+            'years': _getYears(),
+            'intro': _getTextForAlbum(ROOT),
+            'groups': _getGroups()
+        }
+        return render(request, 'images/index.html', context)
 
 
 def year(request, album_year):
@@ -30,6 +51,7 @@ def year(request, album_year):
         'year': album_year,
         'albums': albums,
         'years': _getYears(),
+        'groups': _getGroups(),
         'intro': _getTextForAlbum(os.path.join(ROOT, album_year))
     }
     return render(request, 'images/year.html', context)
@@ -61,6 +83,7 @@ def album(request, album_year, album_path, index=-1):
         'images': images,
         'mtime': fmt_date,
         'years': _getYears(),
+        'groups': _getGroups(),
         'index': index,
         'next': nxt,
         'prev': prv,
@@ -90,12 +113,14 @@ def _getAlbumDetails(album_path):
                 
         return (title, intro, items, stats[ST_MTIME]) 
 
+
 def _getYears():
     years = PhotoAlbums.objects.order_by('xorder', '-year')
     for year in years:
         count = PhotoAlbum.objects.filter(year=year.year).count()
         year.setCount(count)
     return years
+
     
 def _getTextForAlbum(path):
     file_path = os.path.join(path, "intro.txt")
@@ -104,3 +129,16 @@ def _getTextForAlbum(path):
             return fh.read()
     except IOError:
         return ""
+
+
+def _getGroups():
+    with open(os.path.join(ROOT, "filters.txt")) as fh:
+        groups = fh.readlines()
+        group_list = [] 
+        for group in groups:
+            (title, keys) = group.split("|")
+            group_list.append({"title": title, "keys": keys.rstrip("\n")})
+
+        return group_list
+    return None
+
