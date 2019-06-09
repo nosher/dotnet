@@ -23,23 +23,24 @@
 
         <!-- home -->
 
-        <li><a href="/">Home</a>
-        <p class="navlink"></p>
-        </li>
+        <li><a href="/">Home</a></li>
 
         <!-- photos -->
 
         <li><a href="/images/">A life in photos</a>
-        <p class="navlink">
-        {% for year in years %}
+        {% if years %}
+          <p class="navlink">
+          {% for year in years %}
             <nobr><a href="/images/{{ year.year }}">{{ year.year }} <span>[{{ year.count }}]</span></a>{%if not forloop.last%}, &nbsp;{%endif%}</nobr>
-        {% endfor %}
-        </p>
+          {% endfor %}
+          </p>
+        {% endif %}
         </li>
 
         <!-- computer adverts -->
 
         <li><a href="/archives/computers/">A history of the microcomputer industry in 300 adverts</a>
+        {% if companies %}
         <p class="navlink">
         {% for company in companies %}
           {% if company.company != "" %}
@@ -53,6 +54,7 @@
           {% endif %}
         {% endfor %}
         </p>
+        {% endif %}
         </li>
 
         <li><a href="/content/ajo/">The Arnewood Jazz Orchestra Archive</a>
@@ -69,6 +71,12 @@
         <p class="navlink">
             <form action="/search" method="get">
             <input id="query" type="text" value="{{ query }}" name="q" maxlength="100" class="stext" required />
+            {% if years %} 
+            <input id="type" type="hidden" value="photos" name="filter" />
+            {% endif %}    
+            {% if companies %} 
+            <input id="type" type="hidden" value="ads" name="filter" />
+            {% endif %}    
             <input type="submit" value="Search" class="sbutton" />
             </form>
         </p>

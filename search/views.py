@@ -21,6 +21,8 @@ from collections import OrderedDict
 from whoosh.index import open_dir
 from whoosh.fields import Schema, TEXT, ID
 from whoosh.qparser import QueryParser
+from whoosh.query import Query
+from whoosh import query
 
 
 CONTENT = "/content/"
@@ -48,14 +50,24 @@ def _create_tooltip(result):
 def search(request):
 
     ix = open_dir("/home/httpd/django/nosher/index")
-    query = request.GET["q"]
+    query_param = request.GET["q"]
+    q_filter = request.GET.get("filter", "")
     start = int(request.GET.get("o", "0"))
     qp = QueryParser("content", schema = ix.schema)
-    q = qp.parse(query)
+    q = qp.parse(query_param)
     results =[] 
     page = 50
+    restrict_q = None
+    if q_filter == "photos":
+        restrict_q = query.Term("path", "images/")
+    elif q_filter == "micros":
+        restrict_q = query.Term("path", "computers/")
+
     with ix.searcher() as s:
-        results = s.search(q, limit = 500, sortedby="date", reverse=True)
+        if restrict_q:
+            results = s.search(q, limit = 500, sortedby="date", reverse=True, mask=restrict_q)
+        else:
+            results = s.search(q, limit = 500, sortedby="date", reverse=True)
         existing = []
         filtered = []
         pparams = []
@@ -69,13 +81,13 @@ def search(request):
         else:
             end = start + page
             nxt = end
-            nparams.extend(["q={}".format(query), "o={}".format(end)])
+            nparams.extend(["q={}".format(query_param), "o={}".format(end)])
         if start > 0:
-            pparams.extend(["q={}".format(query), "o={}".format(start - page)])
+            pparams.extend(["q={}".format(query_param), "o={}".format(start - page)])
         else:
             prev = 0
         context = {
-            'query': query,
+            'query': query_param,
             'start': start,
             'end': end,
             'total': len(filtered),
