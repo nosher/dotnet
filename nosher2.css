@@ -7,18 +7,43 @@
        url('https://static.nosher.net/fonts/vollkorn-v8-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
        url('https://static.nosher.net/fonts/vollkorn-v8-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
-
+@font-face {
+    font-family: 'droid_serifregular';
+    src: url('https://static.nosher.net/fonts/DroidSerif-Regular-webfont.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+}
+@font-face {
+    font-family: SegoeUI;
+    src:
+        local("Segoe UI"),
+        url(//c.s-microsoft.com/static/fonts/segoe-ui/west-european/normal/latest.woff2) format("woff2"),
+        url(//c.s-microsoft.com/static/fonts/segoe-ui/west-european/normal/latest.woff) format("woff"),
+        url(//c.s-microsoft.com/static/fonts/segoe-ui/west-european/normal/latest.ttf) format("truetype");
+    font-weight: 100;
+}
+@font-face {
+    font-family: SegoeUILight;
+    src:
+        local("Segoe UI Light"),
+        url(//c.s-microsoft.com/static/fonts/segoe-ui/west-european/light/latest.woff2) format("woff2"),
+        url(//c.s-microsoft.com/static/fonts/segoe-ui/west-european/light/latest.woff) format("woff"),
+        url(//c.s-microsoft.com/static/fonts/segoe-ui/west-european/light/latest.ttf) format("truetype");
+    font-weight: lighter;
+}
 body {
-  font-family: Vollkorn; 
+  font-family: droid_serifregular, Vollkorn; 
   width: 100vw;
-  font-size: 14pt;
+  font-size: 1rem;
+  font-color: #333;
   min-height: 100vh;
   margin: 0;
   padding: 0;
   background: url('https://static.nosher.net/graphics/bg.png');
+  overflow-x: hidden;
 }
 
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
     body {
         font-size: 10pt;
     }
@@ -26,13 +51,13 @@ body {
 
 .body {
   display: grid;
-  grid-template-rows: 60px auto 50px;
-  grid-template-columns: minmax(200px, 2.5fr) 10fr;
+  grid-template-rows: 60px auto 80px;
+  grid-template-columns: minmax(225px, 1.8fr) 10fr;
   grid-template-areas: "header header"
                       "nav    content"
                       "footer    footer";
 }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
     .body {
         display: grid;
         grid-template-columns: auto;
@@ -52,7 +77,7 @@ body {
                       ".    content   ."
                       ".    footer    .";
 }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
         #home {
           display: grid;
           grid-template-columns: auto;
@@ -82,7 +107,7 @@ body {
     width: 220px;
     margin: 6px 8px 8px 0;
 }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
         #sidebyside {
           margin-top: 20px;
           display: grid;
@@ -92,6 +117,9 @@ body {
                                " list";
         }
         #sidebyside > photo {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
             width: 100%;
         }
         #sidebyside > list {
@@ -100,15 +128,14 @@ body {
             margin-left: -12px;
         }
         #sidebyside > list ul li {
-            margin-bottom: 16px;
+            margin: 0 12px 12px 0;
         }
         #sidebyside > list h1,#sidebyside > list h3 {
             margin-top: 8px;
             padding: 8px 0 8px 4px;
         }
         #sidebyside > photo img {
-            align-self: center;
-            margin: 6px auto 8px auto;
+            margin: 0 auto 0 auto;
         }
 }
 
@@ -143,7 +170,7 @@ body {
 }
 #home > footer p, footer p {
     text-align: right;
-    margin: 4px 0 0 0;
+    margin: 4px 20px 0 0;
 }
 #home .splash {
     float: left;
@@ -168,11 +195,13 @@ nav ul {
     list-style-type: none;
 }
 nav ul li {
+    font-family: 'SegoeUILight', 'Arimo', sans-serif;
+    font-size: 110%;
     line-height: 1.1em; 
     padding: 12px;
     border-bottom: 0.5px solid #838ca0;
 }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
     nav ul li{
         padding: 6px;
     border-bottom: 0.5px solid #eee;
@@ -184,13 +213,13 @@ nav ul li p {
 nav ul li a:link, nav ul li a:visited {
     color: #303090;
 }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
     nav ul li {
         line-height: 1.8em; 
     }
 }
 ul.index {
-    margin: 8px 8px 0 20px;
+    margin: 8px 8px 20px 20px;
     padding: 0;
 }
 ul.index li {
@@ -211,24 +240,28 @@ main {
   padding: 16px 16px 0 20px;
   grid-area: content;
 }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
     main {
         padding: 0;
     }
+    main p {
+        margin: 0 4px 8px 4px;
+    }
 }
 h1 {
-  font-family: 'Arimo', sans-serif;
+  display: inline-block;
+  font-family: 'SegoeUILight', 'Arimo', sans-serif;
   text-shadow: rgba(30, 30, 30, 0.2) 3px 2px 3px;
   border: 1px solid #808080;
   background: #9b8443;
   color: #eeeeee;
-  padding: 8px;
+  padding: 4px 8px 8px 8px;
   border-radius: 4px;
-  margin: 4px 0 20px 0;
+  margin: 4px 12px 20px 0;
   font-size: 180%;
 }
 h2, h3 {
-    font-family: 'Arimo', sans-serif;
+    font-family: 'SegoeUILight', 'Arimo', sans-serif;
     color: #9b8443; 
     margin: 22px 0 8px 0;
     font-size: 180%;
@@ -237,12 +270,13 @@ h3 {
     font-size: 140%;
 }
 p {
-    margin: 0 0 0.75em 0;
+    margin: 0 0.75em 0.75em 0;
 
 }
 
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
     h1 {
+        display: block;
         margin: 0;
         font-size: 120%;
         padding: 4px;
@@ -263,8 +297,19 @@ p {
     list-style: none; 
     padding-left: 8px;
     margin: 0;
+    -webkit-column-count: 3;
+    -moz-column-count: 3;
+    column-count: 4;
 }
-.catalogue li {font-size: 90%; }
+@media screen and (max-width: 840px) {
+    .catalogue{ 
+        column-count: 2;
+    }
+}
+.catalogue li {
+  font-size: 90%; 
+  margin-bottom: 4px;
+}
 .catalogue li::before {
     content: "· ";
 }
@@ -278,7 +323,7 @@ article.thumb p {
   font-size: 85%;
   color: #606060;
 }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
     .thumbnails {
         grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
         grid-gap: 12px;
@@ -309,7 +354,7 @@ article.thumb img {
     color: #808080;
     margin: 0;
 }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
     .search img {
         width: 80px;
     }
@@ -334,7 +379,11 @@ a:hover {
 .intro {
   margin: 0 0 12px 0;
 }
-@media screen and (max-width: 980px) {
+.images_intro {
+    padding: 2px 20px 8px 2px;
+
+}
+@media screen and (max-width: 840px) {
     .intro {
         margin: 4px;
     }
@@ -355,13 +404,20 @@ ul.albums {
     overflow: auto;
     display: none;
 }
+@media screen and (max-width: 840px) {
+    #viewer {
+        padding: 0;
+    }
+}
 #main {
     padding: 20px 0 0 0;
     width: 100%;
     text-align: center;
 }
 #main img {
+    background-color: #ddd;
     height: calc(100vh - 170px);
+    margin: 0 auto 0 auto;
 }
 
 #viewer {
@@ -391,7 +447,7 @@ ul.albums {
 #fourbox img {
     width: 60px;
 }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
  
         #fourbox {
           grid-template-rows: 40px 40px;
@@ -427,6 +483,12 @@ ul.albums {
 }
 
 #fullsize { padding: 3px; background-color: #dddddd; }
+@media screen and (max-width: 840px) {
+    #fullsize { 
+        max-width: 85%;
+        margin: 0 auto 0 auto;
+    }
+}
 .nextprev {
     margin: 0 0 18px 0;
 }
@@ -434,17 +496,19 @@ ul.albums {
     font-size: 90%;
     color: #808080;
 }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
     .nextprev {
         margin: 4px 4px 12px 4px;
     }
 }
 #close {
     position: absolute;
-    right: 50px;
-    top: 100px;
-    font-size: 150%;
+    right: 10px;
+    top: 80px;
+    font-size: 180%;
     color: #dddddd;
+    padding: 20px;
+    text-shadow:0px 0px 12px #111
 }
 
 .stext {
@@ -466,7 +530,7 @@ ul.albums {
     text-decoration: none;
     display: inline-block;
 }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
     .stext, .sbutton {
         height: 30px;
     }
@@ -493,7 +557,7 @@ ul.albums {
 .archivedescription .title {font-weight: bold; color: #505050; margin: 0; }
 .archivedescription .summary {font-size: 90%; margin: 4px 0 0 0;}
 .archivedescription h3 {margin: 0px; }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
     .archivethumb {
         width: 75px;
         margin-left: 4px;
@@ -528,13 +592,13 @@ ul.albums {
 .liner p {
     margin: 0 0 16px 0;
 }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
     .advert img {
         width: 95%;
         margin: 0 0 0 4px;
     }
     .advert p {
-        margin: 0;
+        margin: 0 8px 16px 4px;
     }
     .advert p.nav {
         margin: 0;
@@ -543,16 +607,16 @@ ul.albums {
         margin: 8px 4px;
     }
     .liner {
-        padding: 0 12px 0 4px;
-        margin: 8px 0 12px 0;
+        padding: 0;
     }
 }
 p.navlink {
     font-size: 80%;
     line-height: 1.3;
-    font-family: 'Arimo';
+    font-family: 'SegoeUILight';
+    margin-top: 8px;
 }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
     p.navlink {
         font-size: 100%;
         line-height: 1.5;
@@ -572,7 +636,7 @@ p.navlink a span {
     color: #606060; 
     font-size: 80%; 
 }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
     .copy {
         margin: 12px 4px 12px 4px;
     }
@@ -588,7 +652,7 @@ p.navlink a span {
   grid-template-columns: 24px auto;
   grid-template-areas: "sourcepos sourcetext"
 }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
     .sources {
         margin: 0 4px;
     }
@@ -631,20 +695,21 @@ sup.src a {
 .extra_left {
     margin: 0 30px 10px 0; 
 }
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 840px) {
     .extra, .extra_left {
         display: block;
         float: none !important;
-        width: 95% !important;
+        width: 95.5% !important;
         margin: 8px 0 !important;
         padding: 8px !important;
         border-radius: 0 !important;
         box-shadow: none !important;
-        
+        text-align: center; 
         clear: all !important;
     }
     .extra img, .extra_left img {
         border-radius: 0;
+        margin 0 auto 0 auto;
     }
 }
 .sourcetext a {color: #808080; }
@@ -656,8 +721,13 @@ sup.src a {
     padding: 0 4px 20px 0;
     vertical-align: top;
 }
-.content {}
-@media screen and (max-width: 980px) {
+.content {
+    width: 99%;
+}
+.content p {
+    text-align: justify;
+}
+@media screen and (max-width: 840px) {
     .content p {
         padding: 4px 8px 4px 4px;
     }
@@ -665,3 +735,65 @@ sup.src a {
 .shlinx li {
     margin-bottom: 8px;
 }
+
+
+.content_medium, .content_large {
+    background-color: #fff;
+    border: 1px solid #333;
+    border-radius: 12px;
+    box-shadow: 2px 6px 8px #aaaaaa;
+    padding: 8px;
+    font-size: 80%;
+    color: #444;
+    text-align: center;
+}
+.content_medium {
+    width: 400px;
+}
+.content_large {
+    width: 600px;
+}
+.content_medium img {
+    width: 395px;
+}
+.content_large img {
+    width: 580px;
+}
+.left {
+    margin: 4px 12px 8px 0;
+    float: left;
+}
+.right {
+    margin: 4px 2px 8px 12px;
+    float: right;
+}
+.grid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-template-rows: auto;
+}
+@media screen and (max-width: 840px) {
+    .grid {
+        grid-template-columns: auto;
+    }
+}
+.griditem, .homegriditem {
+  border-radius: 4px;
+  background-color: #1d919b;
+  color: #fff;
+  margin: 5px;
+  padding: 10px;
+  font-size: 120%;
+  text-align: center;
+  vertical-align: middle;
+}
+.griditem a, .homegriditem a {
+    color: #fff;
+}
+.griditem audio {
+    margin-top: 12px;
+}
+.homegriditem {
+    font-size: 100%;
+}
+

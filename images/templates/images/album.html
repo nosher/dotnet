@@ -136,10 +136,11 @@
                 if (width > $(window).width()) {
                     // we're probably in a width-constrained situation
                     dWidth = $(window).width() * 0.95;
-                    dHeight = dWidth * this.height / this.width; 
+                    dHeight = dWidth * height / width; 
                     main.css('max-width', dWidth + 'px')
                     main.css('max-height', dHeight + 'px')
                 } else {
+                    main.css('max-width', width + 'px')
                     main.css('max-height', height + 'px')
                 }
                 main.fadeIn(100);
