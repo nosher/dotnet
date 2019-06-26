@@ -61,8 +61,9 @@ body {
     .body {
         display: grid;
         grid-template-columns: auto;
-        grid-template-rows: 60px auto auto 60px;
+        grid-template-rows: 60px auto auto auto 60px;
         grid-template-areas: "header"
+                      "navlite"
                       "content"
                       "nav"
                       "footer";
@@ -236,6 +237,23 @@ ul.index li {
   clear: left;
   margin-top: 20px !important;
 }
+.navlite {
+    visibility: hidden;
+}
+@media screen and (max-width: 840px) {
+        .navlite {
+            visibility: visible;
+            font-family: 'SegoeUILight', 'Arimo', sans-serif;
+            font-size: 110%;
+            padding: 6px;
+        }
+        .navlite a, .navlit a:visited {
+            margin: 2px;
+            color: #000040;
+        }
+
+}
+
 main {
   padding: 16px 16px 0 20px;
   grid-area: content;
@@ -772,11 +790,6 @@ sup.src a {
   grid-template-columns: auto auto auto;
   grid-template-rows: auto;
 }
-@media screen and (max-width: 840px) {
-    .grid {
-        grid-template-columns: auto;
-    }
-}
 .griditem, .homegriditem {
   border-radius: 4px;
   background-color: #1d919b;
@@ -786,6 +799,17 @@ sup.src a {
   font-size: 120%;
   text-align: center;
   vertical-align: middle;
+}
+@media screen and (max-width: 840px) {
+    .grid {
+        grid-template-columns: auto;
+    }
+    .griditem {
+        width: 90%;
+    }
+    .griditem audio {
+        width: 90%;
+    }
 }
 .griditem a, .homegriditem a {
     color: #fff;
