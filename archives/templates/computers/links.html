@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Industry Connections - a microcomputer family tree</h1>
+<p>Sometimes, it's a small world.</p>
+<p>Psion started out writing software for Sinclair machines, before going on to develop its Epoc operating system for its Organisers. This then became Symbian, which shipped on millions of Nokia phones. Acorn started a little side project working on RISC processors, which became ARM - the chip design on billions of mobile phones. Or see how Elliot and LEO - names from the 1960s - formed ICL, which in the mid 1980s was managed by Robb Wilmot who also had a hand in Sinclair Research, before heading off to manage Poqet Computers - a company founded by former employees of the legendary Fairchild Semiconductor, which gave rise to Intel and AMD, amongst others.</p>
+<p>These are a few of many sometimes-incestuous connections in the microcomputer industry, which this wiring chart attempts to visualise. It's a whopping great SVG - created by the graphing program Dot - but I've not found a decent way of managing zoom and scroll with JavaScript, so click on the sample image below to open the raw SVG in your browser, and pan and scale with abandon.</p>
+<a href="{{ staticServer }}/archives/computers/graphs/computers.svg"><img src="{{ staticServer }}/archives/computers/graphs/computers_screenshot.png" style="width: 700px;"/></a>
+<p></p>
+<h3>Legend</h3>
+
+<div class="legend">
+  <div class="box" style="background-color: #aa3690;">Hub Companies</div> <div class="def">Highly-connected "hubs" - these are Commodore, Sinclair and Acorn</div>
+  <div class="box" style="background-color: #9b8443">Other companies</div> <div class="def">Microcomputer and associated companies</div>
+  <div class="box" style="background-color: #939cb0">Products</div> <div class="def">Significant or influential products</div>
+  <div class="line" style="background-color: #009000"></div><div class="def">Founding events</div>
+  <div class="line" style="background-color: #600000"></div><div class="def">Product connections</div>
+  <div>dotted lines</div><div class="def">Other connections</div>
+  <div>ⓘ</div><div class="def">Hover your mouse over these for more information</div>
+</div>
+
+<h3>Controversy</h3>
+<p>Some may wonder why Apple isn't considered as a hub, given its hagiographic status in the early microcomputer industry. Well, although it liked to claim that it was the top-selling and most-influential manufacturer, it wasn't, and whilst it did posess the computer that many companies wanted to clone - the Apple II - it otherwise appeared as quite insular. Few people seemed to leave it to start other companies, apart from its founders, although one of those was forced out, and in the period from 1977 to the end of the 1980s it didn't seem to buy up any other companies - or if it did, there were no press releases about it. Also, over the same period it only produced four products of note (although two of them were reasonably influential) - Apple II, Apple III, Lisa and Macintosh.</p>
+
+</p>&nbsp;</p>
+
+<p class="nav">{% include "computers/navbar.html" %}</p>
+{% endblock %}

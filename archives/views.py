@@ -187,6 +187,17 @@ def catalogue(request, alpha = ""):
     return render(request, 'computers/catalogue.html', context)
 
 
+def links(request):
+    companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
+    context = {
+        'staticServer': WEBROOT,
+        'home': ARCHIVES,
+        'companies': companies,
+        'feedback': EMAIL
+    }
+    return render(request, 'computers/links.html', context)
+
+
 def computer_index(request):
     titles = {}
     summaries = {}
