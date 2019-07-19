@@ -821,3 +821,23 @@ sup.src a {
     font-size: 100%;
 }
 
+.legend {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 10px;
+  color: #444;
+  margin-bottom: 20px;
+}
+.box {
+  color: #fff;
+  border-radius: 5px;
+  padding: 4px;
+}
+.line {
+  margin-top: 12px;
+  height: 2px;
+}
+.def {
+  color: #222;
+  padding: 4px;
+}
