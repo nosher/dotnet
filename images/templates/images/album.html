@@ -5,8 +5,18 @@
 <p class="intro">{{intro|safe}}</p>
 {% if next or prev %}
 <p class="nextprev">{% if next %}<a href="/images/{{ next.path }}">next album: {{ next.title }}</a><br />{% endif %}{% if prev %}<a href="/images/{{ prev.path }}">previous album: {{ prev.title }}</a>{% endif %}
-  </p>
+</p>
 {% endif %}
+
+<script>
+  {% if next %}
+  var nextAlbum = "{{ next.path }}";
+  {% endif %}
+  {% if prev %}
+  var prevAlbum = "{{ prev.path }}";
+  {% endif %}
+</script>
+
 <section class="thumbnails">
 {% for im in images %}
     <article class="thumb">
@@ -14,6 +24,9 @@
         <p>{{ im.caption|safe }}</p>
     </article>{% endfor %}
 </section>
+
+<p class="hint">Hint: you can use the left and right cursor keys to navigate between albums, and between photos when in the photo viewer</p>
+
 <script type="text/javascript">
 
     var base = "{{ url }}";
@@ -49,12 +62,20 @@
 <script type="text/javascript">
     var main = $('#fullsize');
     $(window).keydown(function(event) {
-        if (event.which == 37 && pos > 0) {
+        if (event.which == 37) {
             // cursor left
-            goto(--pos, event);
-        } else if (event.which == 39 && pos < imgCount - 1) {
+            if ($("#viewer").is(":visible") && pos > 0) {
+                goto(--pos, event);
+            } else if (prevAlbum !== undefined) {
+                window.location.href = window.location.protocol + "//" + window.location.hostname + "/images/" + prevAlbum; 
+            }
+        } else if (event.which == 39) {
             // cursor right
-            goto(++pos, event);
+            if ($("#viewer").is(":visible") && pos < imgCount - 1) {
+                goto(++pos, event);
+            } else if (nextAlbum !== undefined) {
+                window.location.href = window.location.protocol + "//" + window.location.hostname + "/images/" + nextAlbum; 
+            }
         } else if (event.which == 35) {
             // end
             goto(imgCount - 1, event);
