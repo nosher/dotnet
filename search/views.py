@@ -52,30 +52,44 @@ def search(request):
     ix = open_dir("/home/httpd/django/nosher/index")
     query_param = request.GET["q"]
     q_filter = request.GET.get("filter", "")
+    q_show_as_list = request.GET.get("list", None)
     start = int(request.GET.get("o", "0"))
     qp = QueryParser("content", schema = ix.schema)
     q = qp.parse(query_param)
     results =[] 
     page = 50
-    restrict_q = None
+    limit = 500
+    filter = restrict_q = None
+    
     if q_filter == "photos":
-        restrict_q = query.Term("path", "images/")
+        filter = "images/"
+        restrict_q = query.Term("path", filter)
     elif q_filter == "micros":
-        restrict_q = query.Term("path", "computers/")
+        filter = "archives/computers"
+        restrict_q = query.Term("path", filter)
+
+    limit = 500 if q_show_as_list is None else 1000
 
     with ix.searcher() as s:
         if restrict_q:
-            results = s.search(q, limit = 500, sortedby="date", reverse=True, mask=restrict_q)
+            results = s.search(q, limit = limit, sortedby="date", reverse=True, mask=restrict_q)
         else:
-            results = s.search(q, limit = 500, sortedby="date", reverse=True)
+            results = s.search(q, limit = limit, sortedby="date", reverse=True)
         existing = []
         filtered = []
         pparams = []
         nparams = []
         for res in results:
             if not res["path"] in existing:
-                filtered.append(res)
-                existing.append(res["path"])
+                # crude filtering - this should be done on the search object
+                # property, but this will do for now
+                if filter is not None: 
+                    if res["path"].startswith(filter):
+                        filtered.append(res)
+                        existing.append(res["path"])
+                else:
+                    filtered.append(res)
+                    existing.append(res["path"])
         if start + page > len(filtered) or len(filtered) - start - page < 10:
             end = len(filtered)
         else:
@@ -86,18 +100,29 @@ def search(request):
             pparams.extend(["q={}".format(query_param), "o={}".format(start - page)])
         else:
             prev = 0
-        context = {
-            'query': query_param,
-            'start': start,
-            'end': end,
-            'total': len(filtered),
-            'results': map(_format_content, filtered[start:end]),
-            'next': _get_url(nparams),
-            'prev': _get_url(pparams),
-            'page': page,
-            'server': WEBROOT,
-        }
-        return render(request, 'search/search.html', context)
+
+        if q_show_as_list:
+            context = {
+                'query': query_param,
+                'total': len(filtered),
+                'results': filtered,
+                'server': WEBROOT,
+            }
+            response = render(request, 'search/raw.html', context, content_type="text/plain")
+            return HttpResponse(response, content_type="text/plain")
+        else:
+            context = {
+                'query': query_param,
+                'start': start,
+                'end': end,
+                'total': len(filtered),
+                'results': map(_format_content, filtered[start:end]),
+                'next': _get_url(nparams),
+                'prev': _get_url(pparams),
+                'page': page,
+                'server': WEBROOT,
+            }
+            return render(request, 'search/search.html', context)
 
 
 def _get_ellipsis(content, longlen, shortlen):
