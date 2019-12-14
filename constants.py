@@ -1,7 +1,7 @@
 import re
 import os
 
-WEBROOT = "http://devstatic.nosher.net"
+WEBROOT = "http://10.1.203.1"
 
 DOCROOT = "archives/computers"
 ROOT = "/home/httpd/nosher.net/docs/" + DOCROOT

@@ -52,15 +52,28 @@
     </div>
     <div id="close" onclick='hideViewer();'>×</div>
     <div id="main">
-        <img id="fullsize" src="" />
+        <img id="fullsize" src="" draggable="true"/>
         <p id="caption">{{images.0.caption|safe}}</p>
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
+<script src="https://static.nosher.net/js/touchswipe.js"
+        integrity="sha256-ztqZnG9YzCVSrlndn420J5Tq0jopsi6M+F8raET12LM="
+        crossorigin="anonymous"></script>
 <script type="text/javascript">
     var main = $('#fullsize');
+    main.swipe( {
+             threshold: 75,
+             swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
+                if (direction == "right" && $("#viewer").is(":visible") && pos > 0) {
+                    showImage(--pos);
+                } else if (direction == "left" && $("#viewer").is(":visible") && pos < imgCount - 1) {
+                    showImage(++pos);
+                } 
+             }
+    });
     $(window).keydown(function(event) {
         if (event.which == 37) {
             // cursor left
@@ -91,7 +104,7 @@
         } else if (event.which == 88) {
             hideViewer();
         } else {
-            console.log(event.which);
+            //console.log(event.which);
         }
     });
 
@@ -130,20 +143,10 @@
         } else if (newpos < half) {
             $("#wrapper").scrollLeft(0);
         }
-        /* var isDragging = false;
-        main.mousedown(function() {
-                    isDragging = false;
-        }).mousemove(function() {
-                    isDragging = true;
-        }).mouseup(function() {
-                    var wasDragging = isDragging;
-                    isDragging = false;
-                    if (wasDragging) {
-                        console.log("draggin!");
-                    }
-        });  */
         main.hide();
-        main.attr("src", base + "/" + images[pos] + "-m.jpg").load(new function() {
+        var imgUrl = base + "/" + images[pos] + "-m.jpg"
+        main.attr("src", imgUrl).on("load", function() {
+            
             var inMemory = new Image();
             inMemory.onload = function() {
                 width = this.width;
@@ -167,6 +170,7 @@
                 main.fadeIn(100);
             };
             inMemory.src = main.attr("src");
+            
         });
     }
     if ({{ index }} > -1) {
