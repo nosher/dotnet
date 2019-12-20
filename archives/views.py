@@ -287,6 +287,53 @@ def computer_index(request):
 
 def computer_advert(request, advert):
     adid = advert.split(",")[0]
+    print ("***", adid[-4:])
+    if (adid[-4:] == ".txt"):
+        return computer_advert_text(request, advert, adid)
+    else:
+        return computer_advert_html(request, advert, adid)
+
+
+def computer_advert_text(request, advert, adid):
+
+    title = body = None
+    path = os.path.join(ROOT, adid)
+    idx = request.GET.get("idx", "")
+
+    # get advert contents
+    with open(path, encoding="utf-8") as fh:
+        lines = fh.readlines()
+        if len(lines) > 1:
+            title = lines[0]
+            body = lines[1:]
+        else: 
+            body = lines
+
+    body = convert_values(body)
+    body = convert_acronyms(body)
+    (body, sources) = convert_sources(body)
+    body = "".join(body)
+    # remove HTML
+    body = re.sub("<.*?>", "", body)
+    body = re.sub("\[extra.*?\]", "", body)
+    
+    if not idx == "":
+        pos = body.find(idx)
+        orig_len = len(body)
+        start = 0 if pos < 50 else pos - 50
+        end = start + 500 if len(body) > start + 500 else len(body) - start
+        body = body[start:end]
+        if (start > 0): body = "..." + body
+        if (end < orig_len): body = body + "..."
+    
+    context = {
+        'body': body,
+    }
+    response = render(request, 'computers/text_advert.html', context, content_type="text/plain; charset=UTF-8")
+    return HttpResponse(response, content_type="text/plain; charset=UTF-8")
+
+
+def computer_advert_html(request, advert, adid):
     items = ArchiveItems.objects.all().order_by('year')
     item = ArchiveItems.objects.filter(adid__contains=advert)[0]
     related = ArchiveItems.objects.filter(company=item.company).order_by('year')
