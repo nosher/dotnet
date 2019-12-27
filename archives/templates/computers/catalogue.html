@@ -1,14 +1,45 @@
 {% extends "base.html" %}
 
 {% block script %}
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+
     <script type="text/javascript">
-    function popup(el) {
+    var showing = false;
+    function popup_show(event, path) {
+        url = "/archives/computers/" + path 
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        var x = event.clientX + 10;
+        var y = event.clientY - 10;
+        popup = $("#popup");
+        var dw = popup.width();
+        var dh = popup.height();
+        if (x + dw > w) {
+            x = x - dw - 60;
+        }
+        if (y + dh > h) {
+            y = y - dh;
+        }
+        console.log(x, y, w, h);
+        if (!showing) {
+            showing = true;
+            $(popup).css({top: y + "px", left: x + "px"});
+            $(popup).css('visibility', 'visible');
+            $(popup).load(url);
+        }
+    }
+    function popup_hide() {
+        $("#popup").css('visibility', 'hidden');
+        $("#popup").html("");
+        showing = false;
     }
     </script>
 {% endblock %}
 
 {% block content %}
-<div id="popup"></div>
+<div id="popup">.</div>
 <h1>{{ title }}</h1>
 {% if intro %}
     <p class="intro">{{ intro }}</p>
@@ -23,9 +54,9 @@
     {% for iword, ref in catalogue.items %}
       <li>
       {% if ref|length > 1 %}
-        {{iword}} ({% for index in ref%}<a href="/archives/computers/{{index}}?idx={{iword|urlencode}}">{{forloop.counter}}{%if not forloop.last%}, {%endif%}</a>{% endfor %}){%if not forloop.last%}<br /> {%endif%}
+        {{iword}} ({% for index in ref%}<a onmouseout="popup_hide();" onmouseover="popup_show(event, '{{index}}.txt?idx={{iword|urlencode}}')" href="/archives/computers/{{index}}?idx={{iword|urlencode}}">{{forloop.counter}}{%if not forloop.last%}, {%endif%}</a>{% endfor %}){%if not forloop.last%}<br /> {%endif%}
       {% else %}
-        <a onmouseover="popup('{{ref.0}}')" href="/archives/computers/{{ref.0}}?idx={{iword|urlencode}}">{{iword}}</a>{%if not forloop.last%}<br /> {%endif%}
+        <a onmouseout="popup_hide();" onmouseover="popup_show(event, '{{ref.0}}.txt?idx={{iword|urlencode}}')" href="/archives/computers/{{ref.0}}?idx={{iword|urlencode}}">{{iword}}</a>{%if not forloop.last%}<br /> {%endif%}
       {% endif %}
       </li>
     {% endfor %}

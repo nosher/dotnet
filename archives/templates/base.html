@@ -10,7 +10,7 @@
   <title>nosher.net {% if page_title %} - {{ page_title }}{% endif %}</title>
   <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
   <link rel="shortcut icon" href="//static.nosher.net/images/nn.png">
-  <link rel="stylesheet" type="text/css" href="//static.nosher.net/nosher2.css" title="default" />
+  <link rel="stylesheet" type="text/css" href="{{ staticServer }}/nosher2.css" title="default" />
   <style>
     @import url('https://fonts.googleapis.com/css?family=Arimo|Montserrat');
   </style>
@@ -67,6 +67,12 @@
         </li>
 
         <li><a href="/content/ajo/">The Arnewood Jazz Orchestra Archive</a>
+        </li>
+
+        <li><a href="/content/raf69th">The RAF Halton 69th Entry Archive</a>
+        {%if section == "raf69th" %}
+            <p class="navlink">{% include "content/rafnav.html" %}</p>
+        {% endif %}
         </li>
 
         <li><a href="/content/saxonhorse/">The Saxon Horse burial at Eriswell</a>

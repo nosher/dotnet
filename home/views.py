@@ -26,5 +26,6 @@ def index(request):
         'WEBROOT': WEBROOT,
         'latest_albums': latest_albums,
         'random_photo': pic_url,
+        'staticServer': WEBROOT,
     }
     return render(request, 'home/index.html', context)

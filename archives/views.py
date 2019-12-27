@@ -178,6 +178,7 @@ def catalogue(request, alpha = ""):
     context = {
         'title': "Index of adverts",
         'current': alpha,
+        'staticServer': WEBROOT,
         'home': ARCHIVES,
         'alphas': catalogue.keys(),
         'companies': companies,
@@ -270,6 +271,7 @@ def computer_index(request):
         'page_image': _get_page_image("{}-m.jpg".format(items[0].adid)),
         'page_title': page_title,
         'page_description': re.sub("<.*?>","", intro),
+        'staticServer': WEBROOT,
         'titles': titles,
         'home': ARCHIVES,
         'intro': intro,
@@ -328,6 +330,7 @@ def computer_advert_text(request, advert, adid):
     
     context = {
         'body': body,
+        'staticServer': WEBROOT,
     }
     response = render(request, 'computers/text_advert.html', context, content_type="text/plain; charset=UTF-8")
     return HttpResponse(response, content_type="text/plain; charset=UTF-8")
@@ -398,6 +401,7 @@ def computer_advert_html(request, advert, adid):
         'page_image': _get_page_image("{}-m.jpg".format(adid)),
         'item': item,
         'page_title': page_title,
+        'staticServer': WEBROOT,
         'page_description': raw_body,
         'next': nxt,
         'prev': prv,
@@ -439,6 +443,7 @@ def computer_filter_years(request):
     context = {
         'companies': companies,
         'ads': allads,
+        'staticServer': WEBROOT,
         'home': ARCHIVES,
         'url': "{}/{}".format(WEBROOT, DOCROOT),
         'feedback': EMAIL,

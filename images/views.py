@@ -31,6 +31,7 @@ def index(request):
             'years': _getYears(),
             'albums': albums,
             'title': title,
+            'staticServer': WEBROOT,
             'groups': _getGroups()
         }
         return render(request, 'images/groups.html', context)
@@ -40,6 +41,7 @@ def index(request):
             'latest_albums': latest_albums,
             'years': _getYears(),
             'intro': _getTextForAlbum(ROOT),
+            'staticServer': WEBROOT,
             'groups': _getGroups()
         }
         return render(request, 'images/index.html', context)
@@ -51,6 +53,7 @@ def year(request, album_year):
         'year': album_year,
         'albums': albums,
         'years': _getYears(),
+        'staticServer': WEBROOT,
         'groups': _getGroups(),
         'intro': _getTextForAlbum(os.path.join(ROOT, album_year))
     }
@@ -82,6 +85,7 @@ def album(request, album_year, album_path, index=-1):
         'intro': intro,
         'images': images,
         'mtime': fmt_date,
+        'staticServer': WEBROOT,
         'years': _getYears(),
         'groups': _getGroups(),
         'index': index,
