@@ -8,7 +8,7 @@ from .models import PhotoAlbum
 from .models import PhotoAlbums
 
 from stat import *
-from datetime import datetime
+import datetime
 
 from ..constants import * 
 
@@ -36,7 +36,7 @@ def index(request):
         }
         return render(request, 'images/groups.html', context)
     else:
-        latest_albums = PhotoAlbum.objects.order_by('-date_created')[:30]
+        latest_albums = PhotoAlbum.objects.order_by('-date_created')[:40]
         context = {
             'latest_albums': latest_albums,
             'years': _getYears(),
@@ -76,7 +76,8 @@ def album(request, album_year, album_path, index=-1):
             if i < len(all_albums) - 1:
                 nxt = all_albums[i + 1]
     (title, intro, images, mtime) = _getAlbumDetails("{}/{}".format(album_year, album_path))
-    fmt_date = datetime.fromtimestamp(mtime).strftime("%d %B %Y")
+    spotify = _getSpotifyDetails("{}/{}".format(album_year, album_path))
+    fmt_date = datetime.datetime.fromtimestamp(mtime).strftime("%d %B %Y")
     context = {
         'path': album_path,
         'year': album_year,
@@ -89,11 +90,23 @@ def album(request, album_year, album_path, index=-1):
         'years': _getYears(),
         'groups': _getGroups(),
         'index': index,
+        'spotify': spotify,
         'next': nxt,
         'prev': prv,
         'url': "{}/{}/{}/{}".format(WEBROOT, DOCROOT, album_year, album_path)
     }
     return render(request, 'images/album.html', context)
+
+
+def _getSpotifyDetails(album_path):
+    path = os.path.join(ROOT, album_path, "song.txt")
+    try:
+        with open(path) as fh:
+            # example: https://open.spotify.com/track/2GF0D3d6LKIsDnk8ufpBQa
+            url = fh.readlines()[0]
+            return "/".join(url.split("/")[-2:])
+    except Exception:
+        return None
 
 
 def _getAlbumDetails(album_path):
@@ -104,25 +117,30 @@ def _getAlbumDetails(album_path):
         intro = ""
         stats = os.stat(path)
         for line in fh.readlines():
-            line = line.replace("\n", "")
-            parts = line.split("\t")
-            if parts[0] == "title":
-                title = parts[1]
-            elif parts[0] == "intro":
-                intro = parts[1]
-            elif parts[0] == "locn":
-                pass
-            else:
-                items.append({"thumb": parts[0], "caption": parts[1].replace("\"","\'")})
+            if not line[0:1] == "#":
+                line = line.replace("\n", "")
+                parts = line.split("\t")
+                if parts[0] == "title":
+                    title = parts[1]
+                elif parts[0] == "intro":
+                    intro = parts[1]
+                elif parts[0] == "locn":
+                    pass
+                else:
+                    items.append({"thumb": parts[0], "caption": parts[1].replace("\"","\'")})
                 
         return (title, intro, items, stats[ST_MTIME]) 
 
 
 def _getYears():
     years = PhotoAlbums.objects.order_by('xorder', '-year')
+    cut_off = datetime.datetime.now() - datetime.timedelta(days=60)
+    clip = cut_off.strftime("%Y-%m-%d")
     for year in years:
         count = PhotoAlbum.objects.filter(year=year.year).count()
+        new_albums = PhotoAlbum.objects.filter(year=year.year).filter(date_created__gte=clip).count()
         year.setCount(count)
+        year.setHasNew(new_albums > 0)
     return years
 
     

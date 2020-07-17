@@ -2,6 +2,7 @@ from django.db import models
 import datetime
 import django
 
+from ..constants import * 
 
 class AlbumYears(models.Model):
 
@@ -64,7 +65,6 @@ class PhotoAlbums( models.Model ):
     def setHasNew( self, hasNew ):
         self.__hasNew = hasNew
 
-
     count = property( getCount, setCount)
     hasNew = property( getHasNew, setHasNew)
 
@@ -80,10 +80,18 @@ class PhotoAlbum(models.Model):
     def __str__(self):
         return self.year + ": " + self.title
 
-    def isRecentAlbum(self):
+    def getIsRecent(self):
+        try:
+            year = self.date_created.year
+            month = self.date_created.month
+            day = self.date_created.day
+            diff = datetime.datetime.now() - datetime.datetime(year, month, day)
+        except: 
+            diff = datetime.timedelta(70)
+        return diff.days < NEW_PHOTO_CUTOFF 
 
-        return ((datetime.datetime.now() - self.date_created) < datetime.timedelta(days = 35))
-        #return datetime.timedelta(days=1)
+    def setIsRecent(self):
+        pass
 
     def getIsFirstInGroup(self):
         return self.__isfirst
@@ -106,6 +114,4 @@ class PhotoAlbum(models.Model):
     isFirst = property(getIsFirstInGroup, setIsFirstInGroup)
     isLast= property(getIsLastInGroup, setIsLastInGroup)
     isJoined= property(getIsJoinedInGroup, setIsJoinedInGroup)
-    isNew = property(isRecentAlbum)
-
-
+    is_new = property(getIsRecent, setIsRecent)

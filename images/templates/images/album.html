@@ -3,6 +3,12 @@
 {% block content %}
 <h1>{{album.title}}</h1>
 <p class="intro">{{intro|safe}}</p>
+
+{% if spotify %}
+<p><b>Soundtrack for this album:</b></p>
+<iframe src="https://open.spotify.com/embed/{{ spotify }}" width="460" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+{% endif %}
+
 {% if next or prev %}
 <p class="nextprev">{% if next %}<a href="/images/{{ next.path }}">next album: {{ next.title }}</a><br />{% endif %}{% if prev %}<a href="/images/{{ prev.path }}">previous album: {{ prev.title }}</a>{% endif %}
 </p>
@@ -50,10 +56,14 @@
         </div> {% endfor %}
       </section>
     </div>
-    <div id="close" onclick='hideViewer();'>×</div>
     <div id="main">
-        <img id="fullsize" src="" draggable="true"/>
-        <p id="caption">{{images.0.caption|safe}}</p>
+        <div>.</div>
+        <div>
+            <img id="fullsize" src="" draggable="true" />
+            <p id="caption">{{images.0.caption|safe}}</p>
+        </div>
+        <div id="close" onclick='hideViewer();'><img src="{{ staticServer }}/graphics/close.png" /></div>
+        <div>.</div>
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -64,6 +74,7 @@
         crossorigin="anonymous"></script>
 <script type="text/javascript">
     var main = $('#fullsize');
+    var close = $('#close');
     main.swipe( {
              threshold: 75,
              swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
@@ -159,13 +170,15 @@
                 }
                 if (width > $(window).width()) {
                     // we're probably in a width-constrained situation
-                    dWidth = $(window).width() * 0.95;
+                    dWidth = $(window).width() * 0.8;
                     dHeight = dWidth * height / width; 
                     main.css('max-width', dWidth + 'px')
                     main.css('max-height', dHeight + 'px')
+                    console.log("dwidth ", dWidth)
                 } else {
                     main.css('max-width', width + 'px')
                     main.css('max-height', height + 'px')
+                    console.log("width ", width)
                 }
                 main.fadeIn(100);
             };

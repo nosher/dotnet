@@ -7,7 +7,7 @@
   <h1>{{year}} photos</h1>
   <ul class="albums">
 {% for album in albums %}
-    <li><a href="/images/{{ album.path }}/">{{ album.title|safe }}</a></li>
+    <li>{% if album.is_new %}<span class="new">New</span>{% endif %}<a href="/images/{{ album.path }}/">{{ album.title|safe }}</a></li>
 {% endfor %}
   </ul>
 {% endblock %}
