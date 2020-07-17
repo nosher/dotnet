@@ -104,6 +104,7 @@ def search(request):
         if q_show_as_list:
             context = {
                 'query': query_param,
+                'staticServer': WEBROOT,
                 'total': len(filtered),
                 'results': filtered,
                 'server': WEBROOT,
@@ -112,6 +113,7 @@ def search(request):
             return HttpResponse(response, content_type="text/plain")
         else:
             context = {
+                'staticServer': WEBROOT,
                 'query': query_param,
                 'start': start,
                 'end': end,

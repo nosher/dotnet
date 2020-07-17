@@ -103,6 +103,23 @@ def convert_extras(item):
                 item[i] = item[i].replace(repl, """<span class="%s" style="width: %spx; float: %s">%s<br />%s</span>""" % (cls, wid, flot, target, desc))
     return item
 
+def convert_images(item):
+    """
+    Convert occurances of [image: xxx} to a centred image with nicely-formatted description
+    """
+        
+    for i in range(len(item)):
+        groups = re.findall("\[image: (?P<img>.*?)\]", item[i], re.S|re.MULTILINE)
+        if not groups is None:
+            for ext in groups:
+                repl = "[image: %s]" % ext
+                bits = ext.split("|")
+                img = bits[0]
+                desc = bits[1]
+                target = """<div class="grid1"><img class="ctrimg" src="https://static.nosher.net/archives/computers/images/{}" alt="Image showing {}"><p class="desc">{}</p></div>""".format(img, desc, desc)
+                item[i] = item[i].replace(repl, target)
+    return item
+
 
 def convert_acronyms(item):
     for i in range(len(item)):
@@ -284,12 +301,12 @@ def computer_index(request):
         'companies': companies,
         'feedback': EMAIL,
     }
+
     return render(request, 'computers/list.html', context)
 
 
 def computer_advert(request, advert):
     adid = advert.split(",")[0]
-    print ("***", adid[-4:])
     if (adid[-4:] == ".txt"):
         return computer_advert_text(request, advert, adid)
     else:
@@ -313,21 +330,28 @@ def computer_advert_text(request, advert, adid):
 
     body = convert_values(body)
     body = convert_acronyms(body)
-    (body, sources) = convert_sources(body)
     body = "".join(body)
-    # remove HTML
+    # remove HTML, etc
     body = re.sub("<.*?>", "", body)
     body = re.sub("\[extra.*?\]", "", body)
-    
+    body = re.sub("\[image.*?\]", "", body)
+    body = re.sub("\[source.*?\]", "", body)
+    page = 500
+ 
     if not idx == "":
         pos = body.find(idx)
         orig_len = len(body)
-        start = 0 if pos < 50 else pos - 50
-        end = start + 500 if len(body) > start + 500 else len(body) - start
+        start = 0 if pos < 100 else pos - 100
+        end = start + page 
+        if end > orig_len and orig_len > page:
+            end = orig_len
+            start = end - page
         body = body[start:end]
         if (start > 0): body = "..." + body
         if (end < orig_len): body = body + "..."
-    
+        body = re.sub(idx, "<span class=\"hilite\">{}</span>".format(idx), body)
+    else:
+        body = body[0:500] 
     context = {
         'body': body,
         'staticServer': WEBROOT,
@@ -367,8 +391,10 @@ def computer_advert_html(request, advert, adid):
     body = convert_values(body)
     body = convert_acronyms(body)
     body = convert_extras(body)
+    body = convert_images(body)
     (body, sources) = convert_sources(body)
     body = "".join(body)
+    body = body.replace("{{staticServer}}", WEBROOT)
 
     # determine navigation
     nxt = prv = None

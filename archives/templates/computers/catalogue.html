@@ -12,7 +12,9 @@
         var w = window.innerWidth;
         var h = window.innerHeight;
         var x = event.clientX + 10;
-        var y = event.clientY - 10;
+        const el = document.scrollingElement || document.documentElement 
+        var scroll = el.scrollTop
+        var y = event.clientY - 10 + scroll
         popup = $("#popup");
         var dw = popup.width();
         var dh = popup.height();
@@ -22,7 +24,9 @@
         if (y + dh > h) {
             y = y - dh;
         }
-        console.log(x, y, w, h);
+        if (y - dh < scroll) {
+            y = y + dh;
+        }
         if (!showing) {
             showing = true;
             $(popup).css({top: y + "px", left: x + "px"});
