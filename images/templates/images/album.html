@@ -26,7 +26,7 @@
 <section class="thumbnails">
 {% for im in images %}
     <article class="thumb">
-	    <img src="{{ url }}/{{ im.thumb }}-s.jpg" onclick="showViewer({{ forloop.counter|add:"-1" }})"/>
+	    <img src="{{ url }}/{{ im.thumb }}-s.jpg" alt="{{year}} {{ im.caption|safe }}" onclick="showViewer({{ forloop.counter|add:"-1" }})"/>
         <p>{{ im.caption|safe }}</p>
     </article>{% endfor %}
 </section>
@@ -46,27 +46,27 @@
 {% endfor %}
 </script>
 <div id="viewer">
-    <div id="wrapper">
-      <section id="strip">
-{% for im in images %}
-        <div>
-	      <img id="{{ forloop.counter }}-img" src="{{ url }}/{{ im.thumb }}-s.jpg" onclick="showImage({{forloop.counter|add:"-1"}});" />{% if im == images.0 %}
-          <div id="{{ forloop.counter }}-marker" class="hilite"></div> {% else %}
-          <div id="{{ forloop.counter }}-marker" class="lolite"></div> {% endif %}
-        </div> {% endfor %}
-      </section>
-    </div>
-    <div id="main">
-        <div>.</div>
-        <div>
+    <div id="viewwindow">
+        <photoview>
             <img id="fullsize" src="" draggable="true" />
-            <p id="caption">{{images.0.caption|safe}}</p>
-        </div>
-        <div id="close" onclick='hideViewer();'><img src="{{ staticServer }}/graphics/close.png" /></div>
-        <div>.</div>
+        </photoview>
+        <capregion><div id="caption">{{images.0.caption|safe}}</div></capregion>
+        <photoclose><img src="{{ staticServer }}/graphics/close.png" onclick='hideViewer();' /></photoclose>
     </div>
+    <div id="wrapper">
+        <section id="strip">
+            {% for im in images %}
+                <div>
+                    <img id="{{ forloop.counter }}-img" src="{{ url }}/{{ im.thumb }}-s.jpg" onclick="showImage({{forloop.counter|add:"-1"}});" />{% if im == images.0 %}
+                    <div id="{{ forloop.counter }}-marker" class="hilite"></div> {% else %}
+                    <div id="{{ forloop.counter }}-marker" class="lolite"></div> {% endif %}
+                </div> 
+            {% endfor %}
+        </section>
+    </div>
+   
 </div>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+<script src="https://static.nosher.net/js/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
 <script src="https://static.nosher.net/js/touchswipe.js"
@@ -74,7 +74,6 @@
         crossorigin="anonymous"></script>
 <script type="text/javascript">
     var main = $('#fullsize');
-    var close = $('#close');
     main.swipe( {
              threshold: 75,
              swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
@@ -91,14 +90,14 @@
             if ($("#viewer").is(":visible") && pos > 0) {
                 goto(--pos, event);
             } else if (prevAlbum !== undefined) {
-                window.location.href = window.location.protocol + "//" + window.location.hostname + "/images/" + prevAlbum; 
+                window.location.href = window.location.protocol + "//" + window.location.hostname + (window.location.hostname != "nosher.net" ? ":8010" : "") + "/images/" + prevAlbum; 
             }
         } else if (event.which == 39) {
             // cursor right
             if ($("#viewer").is(":visible") && pos < imgCount - 1) {
                 goto(++pos, event);
             } else if (nextAlbum !== undefined) {
-                window.location.href = window.location.protocol + "//" + window.location.hostname + "/images/" + nextAlbum; 
+                window.location.href = window.location.protocol + "//" + window.location.hostname + (window.location.hostname != "nosher.net" ? ":8010" : "") + "/images/" + nextAlbum; 
             }
         } else if (event.which == 35) {
             // end
@@ -138,8 +137,8 @@
     function showImage(position) {
         pos = position; 
         console.log("showing " + pos);
-        main.prop("title", images[pos]);
-        $("#caption").html(captions[pos]);
+        main.prop("title", images[pos] + ", {{year}}, " + captions[pos]);
+        $("#caption").html(captions[pos] + "<span class=\"closetext\" onclick='hideViewer();'> (X) </span>");
         for (var i = 0; i < imgCount; i++) {
             elem = document.getElementById((i + 1) + "-marker");
             elem.className = "lolite";
@@ -156,6 +155,7 @@
         }
         main.hide();
         var imgUrl = base + "/" + images[pos] + "-m.jpg"
+        main.attr("alt", "{{year}}, " + captions[pos]);
         main.attr("src", imgUrl).on("load", function() {
             
             var inMemory = new Image();
@@ -183,7 +183,6 @@
                 main.fadeIn(100);
             };
             inMemory.src = main.attr("src");
-            
         });
     }
     if ({{ index }} > -1) {

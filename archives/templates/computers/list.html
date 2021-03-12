@@ -4,20 +4,22 @@
 <div class="advert">
 <h1>{{ title }}</h1>
 {% if intro %}
-    <p class="intro">{{ intro|safe }}</p>
+    {{ intro|safe }}
 {% endif %}
 <p class="nav">{% include "computers/navbar.html" %}</p>
 <section class="archives">
 {% for item in items %}
-    <article class="archiveitem">
-        <a href="{{ item.adid }}"><img src="{{ url }}/images/{{ item.adid }}-s.jpg" class="archivethumb" /></a>
-        <div class="archivedescription">
+    <archiveitem>
+        <archivethumb>
+            <a href="{{ item.adid }}"><img src="{{ url }}/images/{{ item.adid }}-s.jpg" /></a>
+        </archivethumb>
+        <archivedescription>
             <h3>{{ item.company }}</h3>
             <p class="year">{{ item.year|get_year }}</p>
             <a href="{{ item.adid }}"><p class="title">{{ titles|get_item:item.adid }}</p></a>
-            <p class="summary">{{ summaries|get_item:item.adid }}</p>
-        </div>
-    </article>
+            <a href="{{ item.adid }}"><p class="summary">{{ summaries|get_item:item.adid }}</p></a>
+        </archivedescription>
+    </archiveitem>
 {% endfor %}
 </section>
 <p class="navbottom">{% include "computers/navbar.html" %}</p>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <head>
+  <script>0</script> <!-- workaround for FOUC errors on FF -->
   <meta property="og:site_name" content="nosher.net" />
   <meta property="og:type" content="article" />
   <meta property="og:title" content="{{ page_title }}" />
@@ -8,19 +9,21 @@
   <meta property="og:description" content="{{ page_description }}" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>nosher.net {% if page_title %} - {{ page_title }}{% endif %}</title>
-  <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700|Source+Code+Pro:300,400,500,600,700" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Lora&family=PT+Serif&display=swap" rel="stylesheet"> 
-  <link rel="shortcut icon" href="//static.nosher.net/images/nn.png">
-  <link rel="stylesheet" type="text/css" href="{{ staticServer }}/nosher2.css" title="default" />
-  <style>
-    @import url('https://fonts.googleapis.com/css?family=Arimo|Montserrat');
-  </style>
+  <link rel="stylesheet" type="text/css" href="{{ staticServer }}/nosher2.css" title="default">
+  <link rel="shortcut icon" href="https://static.nosher.net/images/nn.png">
   {% block script %}{% endblock %}
 </head>
-<body class="body">
+<body id="mainbody" class="body">
+  <div class="navlite">
+    <a href="/">Home</a> | 
+    <a href="/images/">Photos</a> | 
+    <a href="/archives/computers/">Micro history</a> | 
+    <a href="/content/raf69th/">RAF 69th</a> | 
+    <a href="/content/ajo/">The AJO</a> | 
+    <a href="/content/saxonhorse/">Saxon horse</a> | 
+    <a href="#navigation"><nobr>more ▼</nobr></a>
+  </div>
   <header><p>nosher.net</p></header>
-  <navlite><div class="navlite"><a href="/">Home</a> | <a href="/images/">Photos</a> | <a href="/archives/computers/">Micro history</a> | <a href="/content/ajo/">The AJO</a> | <a href="/content/saxonhorse/">Saxon horse</a> | <a href="/content/brandonflint/">Brandon flint</a> | <a href="#navigation"><nobr>more ▼</nobr></a></div></navlite>
   <nav>
     <a name="navigation"></a>
     <ul>
@@ -90,7 +93,7 @@
         <li>
         <p class="navlink">
             <form action="/search" method="get">
-            <input id="query" type="text" value="{{ query }}" name="q" maxlength="100" class="stext" required />
+            <input id="query" type="text" value="{{ query }}" name="q" maxlength="100" class="stextnav" required />
             {% if years %} 
             <input id="type" type="hidden" value="photos" name="filter" />
             {% endif %}    

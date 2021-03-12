@@ -14,6 +14,7 @@ from ..constants import *
 
 DOCROOT = "images"
 ROOT = "/home/httpd/nosher.net/docs/" + DOCROOT
+EMAIL = "photos@nosher.net"
 
 def index(request):
     params = request.GET
@@ -32,6 +33,7 @@ def index(request):
             'albums': albums,
             'title': title,
             'staticServer': WEBROOT,
+            'feedback': EMAIL,
             'groups': _getGroups()
         }
         return render(request, 'images/groups.html', context)
@@ -42,6 +44,7 @@ def index(request):
             'years': _getYears(),
             'intro': _getTextForAlbum(ROOT),
             'staticServer': WEBROOT,
+            'feedback': EMAIL,
             'groups': _getGroups()
         }
         return render(request, 'images/index.html', context)
@@ -55,6 +58,7 @@ def year(request, album_year):
         'years': _getYears(),
         'staticServer': WEBROOT,
         'groups': _getGroups(),
+            'feedback': EMAIL,
         'intro': _getTextForAlbum(os.path.join(ROOT, album_year))
     }
     return render(request, 'images/year.html', context)
@@ -93,6 +97,7 @@ def album(request, album_year, album_path, index=-1):
         'spotify': spotify,
         'next': nxt,
         'prev': prv,
+        'feedback': EMAIL,
         'url': "{}/{}/{}/{}".format(WEBROOT, DOCROOT, album_year, album_path)
     }
     return render(request, 'images/album.html', context)
@@ -164,3 +169,54 @@ def _getGroups():
         return group_list
     return None
 
+def api_latest(request):
+    latest = PhotoAlbum.objects.order_by('-date_created')[:30]
+    output = []
+    for album in latest:
+        (title, intro, items, stats) = _getAlbumDetails(album.path)    
+        output.append("""{{"path":"{}", "title": "{}", "thumb": "{}"}}""".format(album.path, album.title.replace("\"", "'"), items[1]["thumb"]))
+    context = {
+        'body': """{{"latest": [{}]}}""".format(", ".join(output)),
+        'staticServer': WEBROOT,
+    }
+    response = render(request, 'images/api.html', context, content_type="text/plain; charset=UTF-8")
+    return HttpResponse(response, content_type="text/plain; charset=UTF-8")
+
+def api_years(request):
+    years = _getYears()
+    output = []
+    for year in years:
+        output.append("""{{"year":"{}", "count": {}, "new": "{}"}}""".format(
+            year.year, year.getCount(), year.hasNew))
+    context = {
+        'body': """{{"years":[{}]}}""".format(", ".join(output)),
+        'staticServer': WEBROOT,
+    }
+    response = render(request, 'images/api.html', context, content_type="text/plain; charset=UTF-8")
+    return HttpResponse(response, content_type="text/plain; charset=UTF-8")
+
+def api_year(request, album_year):
+    albums = PhotoAlbum.objects.filter(year=album_year).order_by('-path')
+    output = []
+    for album in albums:
+        (title, intro, items, stats) = _getAlbumDetails(album.path)    
+        output.append("""{{"path":"{}", "title":"{}", "thumb": "{}"}}""".format(album.path, album.title.replace("\n", "").replace("\"", "'"), items[1]["thumb"]))
+    context = {
+        'body': """{{"year": [{}]}}""".format(", ".join(output)),
+        'staticServer': WEBROOT,
+    }
+    response = render(request, 'images/api.html', context, content_type="text/plain; charset=UTF-8")
+    return HttpResponse(response, content_type="text/plain; charset=UTF-8")
+
+def api_album(request, album_year, album_path):
+    
+    (title, intro, items, modified) = _getAlbumDetails(album_year + "/" + album_path)
+    output = []
+    for item in items:
+        output.append("""{{"thumb": "{}", "caption": "{}"}}""".format(item["thumb"], item["caption"].replace("\"", "'")))
+    context = {
+        'body': """{{"title": "{}", "intro": "{}", "modified": "{}", "items": [{}]}}""".format(title.replace("\"", "'"), intro.replace("\"", "'"), modified, ", ".join(output)),
+        'staticServer': WEBROOT,
+    }
+    response = render(request, 'images/api.html', context, content_type="text/plain; charset=UTF-8")
+    return HttpResponse(response, content_type="text/plain; charset=UTF-8")
