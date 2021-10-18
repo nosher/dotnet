@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<div class="advert">
+
 <h1>{{album.title}}</h1>
 <p class="intro">{{intro|safe}}</p>
 
@@ -32,6 +35,8 @@
 </section>
 
 <p class="hint">Hint: you can use the left and right cursor keys to navigate between albums, and between photos when in the photo viewer</p>
+
+</div>
 
 <script type="text/javascript">
 
@@ -102,9 +107,6 @@
         } else if (event.which == 35) {
             // end
             goto(imgCount - 1, event);
-        } else if (event.which == 36) {
-            // home
-            goto(0, event);
         } else if (event.which == 38) {
             // cursor up
             $("#main").animate({scrollTop: 0});
@@ -114,7 +116,7 @@
         } else if (event.which == 88) {
             hideViewer();
         } else {
-            //console.log(event.which);
+            console.log(event.which);
         }
     });
 
