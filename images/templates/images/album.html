@@ -29,7 +29,9 @@
 <section class="thumbnails">
 {% for im in images %}
     <article class="thumb">
-	    <img src="{{ url }}/{{ im.thumb }}-s.jpg" alt="{{year}} {{ im.caption|safe }}" onclick="showViewer({{ forloop.counter|add:"-1" }})"/>
+	    <a href="/images/nojs?year={{ year }}&path={{ path }}&thumb={{ forloop.counter|add:'-1' }}">
+            <img src="{{ url }}/{{ im.thumb }}-s.jpg" alt="{{year}} {{ im.caption|safe }}" onclick="showViewer({{ forloop.counter|add:'-1' }}); return false;" />
+        </a>
         <p>{{ im.caption|safe }}</p>
     </article>{% endfor %}
 </section>

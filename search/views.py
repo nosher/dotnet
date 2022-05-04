@@ -58,7 +58,7 @@ def search(request):
     q = qp.parse(query_param)
     results =[] 
     page = 50
-    limit = 500
+    limit = 1000
     filter = restrict_q = None
     
     if q_filter == "photos":
@@ -68,7 +68,7 @@ def search(request):
         filter = "archives/computers"
         restrict_q = query.Term("path", filter)
 
-    limit = 500 if q_show_as_list is None else 1000
+    limit = 1000 if q_show_as_list is None else 2000
 
     with ix.searcher() as s:
         if restrict_q:

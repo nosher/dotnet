@@ -7,7 +7,7 @@
 <h1>Search results</h1>
 <p>Results for "{{ query }}". Showing {{ start|add:"1" }} to {{ end }} of {{ total }}</p>
 {% include "search/navbar.html" %}
-<section class="thumbnails">
+<section class="searchthumbnails">
 {% for result in results %}
     <article class="search">
         {% if result.imgs %}

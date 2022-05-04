@@ -10,6 +10,7 @@ urlpatterns = [
     path('api/<str:album_year>/<str:album_path>', views.api_album, name='api'),
     
     path('', views.index, name='images'),
+    path('nojs', views.nojs, name='nojs'),
     path('<str:album_year>', views.year, name='year'),
     path('<str:album_year>/', views.year, name='year'),
     path('<str:album_year>/<str:album_path>', views.album, name='album'),

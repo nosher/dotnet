@@ -90,6 +90,12 @@ class PhotoAlbum(models.Model):
             diff = datetime.timedelta(70)
         return diff.days < NEW_PHOTO_CUTOFF 
 
+    def getMonth(self):
+        return self.path.split("-")[1]
+
+    def setMonth(self, moth):
+        pass
+
     def setIsRecent(self):
         pass
 
@@ -111,6 +117,7 @@ class PhotoAlbum(models.Model):
     def setIsJoinedInGroup(self, isjoined):
         self.__isjoined = isjoined
 
+    month = property(getMonth, setMonth)
     isFirst = property(getIsFirstInGroup, setIsFirstInGroup)
     isLast= property(getIsLastInGroup, setIsLastInGroup)
     isJoined= property(getIsJoinedInGroup, setIsJoinedInGroup)

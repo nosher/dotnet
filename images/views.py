@@ -50,6 +50,27 @@ def index(request):
         return render(request, 'images/index.html', context)
 
 
+def nojs(request):
+    params = request.GET
+    year = path = thumb = None
+    if "year" in params:
+        year = params.get("year")
+    if "path" in params:
+        path = params.get("path")
+    if "thumb" in params:
+        thumb = int(params.get("thumb"))
+    (title, intro, images, mtime) = _getAlbumDetails("{}/{}".format(year, path))
+    img = images[thumb]
+    context = {
+        'year': year,
+        'path': path,
+        'title': title,
+        'staticServer': WEBROOT,
+        'img': img
+    }
+    return render(request, 'images/nojs.html', context)
+
+
 def year(request, album_year):
     albums = PhotoAlbum.objects.filter(year=album_year).order_by('-path')
     context = {
@@ -189,7 +210,7 @@ def api_years(request):
         output.append("""{{"year":"{}", "count": {}, "new": "{}"}}""".format(
             year.year, year.getCount(), year.hasNew))
     context = {
-        'body': """{{"years":[{}]}}""".format(", ".join(output)),
+        'body': """[{}]""".format(", ".join(output)),
         'staticServer': WEBROOT,
     }
     response = render(request, 'images/api.html', context, content_type="text/plain; charset=UTF-8")
