@@ -14,10 +14,16 @@
             <content>
                 <section id="sidebyside">
                     <photo>
-                        <img src="{{ random_photo }}" />
+                        <div class="minigrid">
+                        {% for album in this_month %}
+                            <a href="/images/{{album.1}}">
+                                <img style="width: 50px; margin: 0px !important;" src="{{ staticServer }}/images/{{ album.0 }}" />
+                            </a>
+                        {% endfor %}
+                        </div>
                     </photo>
                     <list>
-                        <h1>Recently-added photo albums:</h1>
+                        <h1>Recently-added/updated photo albums:</h1>
                         <ul class="homelist">
                         {% for album in latest_albums %}
                             <li><a href="/images/{{ album.path }}/">{{ album.title|safe }}</a></li>
@@ -28,6 +34,7 @@
                 </section>
                 <h3>More things:</h3>
                 <div class="grid">
+                    <div class="homegriditem"><a href="/images/">A Life in Photos: 1980 - {{ ""|get_now }} and more</a></div>
                     <div class="homegriditem"><a href="/archives/computers">A history of the microcomputer industry in 300 adverts</a></div>
                     <div class="homegriditem"><a href="/archives/computers/adve_002#fear">Fear of technology: Visions of a computer future at the end of the 1970s</a></div>
                     <div class="homegriditem"><a href="/content/ajo/"><p>The Arnewood Jazz Orchestra Archive</p></a></div>
