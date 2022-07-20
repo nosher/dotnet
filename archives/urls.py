@@ -6,6 +6,7 @@ urlpatterns = [
     path('computers/', views.computer_index, name='computers'),
     path('computers/index', views.catalogue, name='catalogue'),
     path('computers/index/<str:alpha>', views.catalogue, name='catalogue'),
+    path('computers/links/computers.svg', views.svg, name='svg'),
     path('computers/links/', views.links, name='links'),
     path('computers/years/', views.computer_filter_years, name='year'),
     path('computers/years/<str:year>', views.computer_filter_year, name='year'),

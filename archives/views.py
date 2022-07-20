@@ -2,6 +2,7 @@ import os
 import re
 import locale
 import sys
+import base64
 
 from django.db.models import Count
 from django.db.models.functions import Substr
@@ -11,6 +12,8 @@ from django.http import Http404
 from django.template.defaulttags import register
 from django.contrib.humanize.templatetags.humanize import ordinal
 from django.db.models import Count
+from django.views.decorators.clickjacking import xframe_options_sameorigin
+
 from stat import *
 from datetime import datetime
 from datetime import date
@@ -207,14 +210,26 @@ def catalogue(request, alpha = ""):
 
 def links(request):
     companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
+    encoded = None
+    with open("/home/httpd/nosher.net/docs/archives/computers/graphs/computers.svg", "rb") as fh:
+        svg = fh.read()
+        encoded = base64.b64encode(svg)
+
     context = {
         'staticServer': WEBROOT,
         'home': ARCHIVES,
         'companies': companies,
-        'feedback': EMAIL
+        'feedback': EMAIL,
+        'svgData': encoded.decode("ascii")
     }
     return render(request, 'computers/links.html', context)
 
+@xframe_options_sameorigin
+def svg(request):
+    svg = None
+    with open("/home/httpd/nosher.net/docs/archives/computers/graphs/computers.svg", "rb") as fh:
+        svg = fh.read()
+    return HttpResponse(svg, content_type="image/svg+xml")
 
 def computer_index(request):
     titles = {}

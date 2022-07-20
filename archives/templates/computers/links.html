@@ -1,33 +1,113 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Industry Connections - a microcomputer family tree</h1>
-<p>Sometimes, it's a small world.</p>
-<p>Psion started out writing software for Sinclair machines, before going on to create the Epoc operating system for its Organisers. This then became Symbian, which ended up shipping on countless millions of Nokia phones. Acorn started a little side project working on RISC processors, which became ARM - the chip design now on billions of mobile phones. Or see how Elliot and LEO - names from the 1960s - formed ICL, which in the mid 1980s was managed by Robb Wilmot who also had a hand in Sinclair Research, before he headed off to manage Poqet Computers - a company founded by former employees of the legendary Fairchild Semiconductor, which gave rise to Intel and AMD, amongst others.</p>
-<p>These are a few of many sometimes-incestuous connections in the microcomputer industry, which this wiring chart attempts to visualise. It's a whopping great SVG - created by the graphing program Dot - but I've not found a decent way of managing zoom and scroll with JavaScript, so click on the sample image below to open the raw SVG in your browser, and pan and scale with abandon.</p>
+
+<div class="advert">
+<h1>Microcomputer Industry Connections - a network family tree</h1>
 <p class="nav">{% include "computers/navbar.html" %}</p>
+<p>Sometimes, it's a small world.</p>
+<p>Psion started out writing software for Sinclair machines, before going on to create the Epoc operating system for 
+  its Organiser pocket computers. This then became Symbian, which ended up shipping on countless millions of Nokia phones. 
+  Acorn started a little side project working on RISC processors, which became ARM - the chip design now on billions of 
+  mobile phones. Or see how Elliot and LEO - names from the 1960s - formed ICL, which in the mid 1980s was managed by 
+  Robb Wilmot who also had a hand in Sinclair Research, before he headed off to manage Poqet Computers - a company 
+  founded by former employees of the legendary Fairchild Semiconductor, which gave rise to Intel and AMD, amongst others.</p>
+<p>These are a few of many sometimes-incestuous connections in the microcomputer industry, which this wiring graph 
+  attempts to visualise. Drag the graph around with a mouse or finger, and pinch or use a scroll wheel to zoom in or out.</p>
+
 
 <!--<a href="{{ staticServer }}/archives/computers/graphs/computers.svg"><img src="{{ staticServer }}/archives/computers/graphs/computers_screenshot.png" style="width: 700px;"/></a>-->
 
+<object class="svg" id="container" id="svg" data="computers.svg" type="image/svg+xml"></object>
 
-<div id="svgwrapper" style="width: 900px; height: 400px;">
-<object id="svg-object" data="{{ staticServer }}/archives/computers/graphs/computers.svg" type="image/svg+xml" style="width: 450px; transform: scale(2.0)"></object>
-</div>
+<script>
+  
+  var shape = document.getElementsByTagName("object")[0];
+  var width = shape.width;
+  var height = shape.height;
+  var svgData;
+  var svgDoc;
+  var mouseStartPosition = {x: 0, y: 0};
+  var mousePosition = {x: 0, y: 0};
+  var viewboxStartPosition = {x: 0, y: 0};
+  var viewboxPosition = {x: 8700, y: 2020};
+  var viewboxSize = {x: 1000, y: 1400};
+  var viewboxScale = 1.2;
+  var mouseDown = false;
 
+  shape.addEventListener("load",function() {
+      svgDoc = shape.contentDocument;
+      svgData = svgDoc.getElementById("inner");
+      svgDoc.addEventListener("mousemove", mousemove);
+      svgDoc.addEventListener("mousedown", mousedown);
+      //svgDoc.addEventListener("mouseup", mouseup);
+      svgDoc.addEventListener("wheel", wheel, {passive: false});
+      setviewbox();
+  }, false);
 
+  function mousedown(e) {
+    mouseStartPosition.x = e.pageX;
+    mouseStartPosition.y = e.pageY;
+    viewboxStartPosition.x = viewboxPosition.x;
+    viewboxStartPosition.y = viewboxPosition.y;
+    svgDoc.addEventListener("mouseup", mouseup);
+    mouseDown = true;
+  }
 
-<script type="text/javascript">
-  window.addEventListener("load", function() {
-    var svgObject = document.getElementById('svg-object');
-    //var svg = svgObject.getElementById('external-1');
-    console.log(svgObject.contentDocument);
-  });
+  function setviewbox() {
+
+    console.log("set box")  
+    var vp = {x: 0, y: 0};
+    var vs = {x: 0, y: 0};
+    
+    vp.x = viewboxPosition.x;
+    vp.y = viewboxPosition.y;
+    
+    vs.x = viewboxSize.x * viewboxScale;
+    vs.y = viewboxSize.y * viewboxScale;
+    svgData.setAttribute("viewBox", vp.x + " " + vp.y + " " + vs.x + " " + vs.y);
+    console.log("Viewbox: ", vp.x, ", ", vp.y);
+  }
+
+  function mousemove(e) {
+    mousePosition.x = e.offsetX;
+    mousePosition.y = e.offsetY;
+    
+    if (mouseDown)
+    {
+      viewboxPosition.x = viewboxStartPosition.x + (mouseStartPosition.x - e.pageX) * viewboxScale;
+      viewboxPosition.y = viewboxStartPosition.y + (mouseStartPosition.y - e.pageY) * viewboxScale;
+
+      setviewbox();
+    }
+    var mpos = {x: mousePosition.x * viewboxScale, y: mousePosition.y * viewboxScale};
+    var vpos = {x: viewboxPosition.x, y: viewboxPosition.y};
+    var cpos = {x: mpos.x + vpos.x, y: mpos.y + vpos.y}
+  }
+
+  function mouseup(e) {
+    mouseDown = false;
+    console.log("mouse up");
+    svgDoc.removeEventListener("mouseup", mouseup);
+  }
+
+  function wheel(event) {
+    event.preventDefault();
+    var scale = event.deltaY < 1.0 ? 0.8 : 1.2;
+    if ((viewboxScale * scale < 12.) && (viewboxScale * scale > 1./1.5)) {  
+      var mpos = {x: mousePosition.x * viewboxScale, y: mousePosition.y * viewboxScale};
+      var vpos = {x: viewboxPosition.x, y: viewboxPosition.y};
+      var cpos = {x: mpos.x + vpos.x, y: mpos.y + vpos.y}
+
+      viewboxPosition.x = (viewboxPosition.x - cpos.x) * scale + cpos.x;
+      viewboxPosition.y = (viewboxPosition.y - cpos.y) * scale + cpos.y;
+      viewboxScale *= scale;
+      setviewbox();
+      return false;
+    }
+  }
 </script>
 
-
-
-
-<p></p>
 <h3>Legend</h3>
 
 <div class="legend">
@@ -44,8 +124,7 @@
 
 <h3>Controversy</h3>
 <p>Some may wonder why Apple isn't considered as a hub, given its hagiographic status in the early microcomputer industry. Well, although it liked to claim that it was the top-selling and most-influential manufacturer, it wasn't, and whilst it did posess the computer that many companies wanted to clone, thanks to the large amount of business software available for it - the Apple II - it otherwise appeared as quite insular. Few people seemed to leave it to start other companies, apart from its founders (and one of those was forced out) and in the period from 1977 to the end of the 1980s it didn't seem to buy up any other companies - or if it did, there were no press releases about it. Also, over the same period it only produced four products of note (although two of them were reasonably influential) - Apple II, Apple III, Lisa and Macintosh.</p>
-
-</p>&nbsp;</p>
+</div>
 
 <p class="nav">{% include "computers/navbar.html" %}</p>
 {% endblock %}
