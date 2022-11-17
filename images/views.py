@@ -59,7 +59,7 @@ def nojs(request):
         path = params.get("path")
     if "thumb" in params:
         thumb = int(params.get("thumb"))
-    (title, intro, images, mtime) = _getAlbumDetails("{}/{}".format(year, path))
+    (title, intro, images, mtime, dimensions) = _getAlbumDetails("{}/{}".format(year, path))
     img = images[thumb]
     context = {
         'year': year,
@@ -100,7 +100,7 @@ def album(request, album_year, album_path, index=-1):
                 prv = all_albums[i - 1]
             if i < len(all_albums) - 1:
                 nxt = all_albums[i + 1]
-    (title, intro, images, mtime) = _getAlbumDetails("{}/{}".format(album_year, album_path))
+    (title, intro, images, mtime, dimensions) = _getAlbumDetails("{}/{}".format(album_year, album_path))
     spotify = _getSpotifyDetails("{}/{}".format(album_year, album_path))
     fmt_date = datetime.datetime.fromtimestamp(mtime).strftime("%d %B %Y")
     context = {
@@ -111,6 +111,7 @@ def album(request, album_year, album_path, index=-1):
         'intro': intro,
         'images': images,
         'mtime': fmt_date,
+        'dimensions': dimensions,
         'staticServer': WEBROOT,
         'years': _getYears(),
         'groups': _getGroups(),
@@ -137,6 +138,20 @@ def _getSpotifyDetails(album_path):
 
 def _getAlbumDetails(album_path):
     path = os.path.join(ROOT, album_path, "details.txt")
+    dimensions = os.path.join(ROOT, album_path, "dimensions.txt")
+    dims = [] 
+
+    # get image dimensions, if available
+    try: 
+        with open(dimensions) as d:
+            for d in d.readlines():
+                d = d.replace("\n", "")
+                (name, ratio) = d.split("\t")
+                dims.append({"name": name, "ratio": ratio})
+    except Exception:
+        pass # no dimensions
+
+    # get album details
     with open(path) as fh:
         items = []
         title = ""
@@ -155,7 +170,7 @@ def _getAlbumDetails(album_path):
                 else:
                     items.append({"thumb": parts[0], "caption": parts[1].replace("\"","\'")})
                 
-        return (title, intro, items, stats[ST_MTIME]) 
+        return (title, intro, items, stats[ST_MTIME], dims) 
 
 
 def _getYears():
@@ -194,7 +209,7 @@ def api_latest(request):
     latest = PhotoAlbum.objects.order_by('-date_created')[:30]
     output = []
     for album in latest:
-        (title, intro, items, stats) = _getAlbumDetails(album.path)    
+        (title, intro, items, stats, dimensions) = _getAlbumDetails(album.path)    
         output.append("""{{"path":"{}", "title": "{}", "thumb": "{}"}}""".format(album.path, album.title.replace("\"", "'"), items[1]["thumb"]))
     context = {
         'body': """{{"latest": [{}]}}""".format(", ".join(output)),
@@ -220,7 +235,7 @@ def api_year(request, album_year):
     albums = PhotoAlbum.objects.filter(year=album_year).order_by('-path')
     output = []
     for album in albums:
-        (title, intro, items, stats) = _getAlbumDetails(album.path)    
+        (title, intro, items, stats, dimensions) = _getAlbumDetails(album.path)    
         output.append("""{{"path":"{}", "title":"{}", "thumb": "{}"}}""".format(album.path, album.title.replace("\n", "").replace("\"", "'"), items[1]["thumb"]))
     context = {
         'body': """{{"year": [{}]}}""".format(", ".join(output)),
@@ -231,7 +246,7 @@ def api_year(request, album_year):
 
 def api_album(request, album_year, album_path):
     
-    (title, intro, items, modified) = _getAlbumDetails(album_year + "/" + album_path)
+    (title, intro, items, modified, dimensions) = _getAlbumDetails(album_year + "/" + album_path)
     output = []
     for item in items:
         output.append("""{{"thumb": "{}", "caption": "{}"}}""".format(item["thumb"], item["caption"].replace("\"", "'")))

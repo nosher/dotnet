@@ -30,7 +30,7 @@
 {% for im in images %}
     <article class="thumb">
 	    <a href="/images/nojs?year={{ year }}&path={{ path }}&thumb={{ forloop.counter|add:'-1' }}">
-            <img src="{{ url }}/{{ im.thumb }}-s.jpg" alt="{{year}} {{ im.caption|safe }}" onclick="showViewer({{ forloop.counter|add:'-1' }}); return false;" />
+            <img src="{{ url }}/{{ im.thumb }}-s.jpg" alt="{{ im.caption|safe }}, {{ title }}" onclick="showViewer({{ forloop.counter|add:'-1' }}); return false;" />
         </a>
         <p>{{ im.caption|safe }}</p>
     </article>{% endfor %}
@@ -39,19 +39,22 @@
 <p class="hint">Hint: you can use the left and right cursor keys to navigate between albums, and between photos when in the photo viewer</p>
 
 </div>
-
-<script type="text/javascript">
+<script>
 
     var base = "{{ url }}";
     var imgCount = {{ images|length }};
     var pos = 0;
     var images = [];
     var captions = [];
-{% for im in images %}    
+    var dimensions = {};
+{% for im in images %}
     images[{{ forloop.counter|add:"-1" }}] = "{{ im.thumb }}";
-    captions[{{ forloop.counter|add:"-1" }}] = "{{ im.caption|safe }}";
-{% endfor %}
+    captions[{{ forloop.counter|add:"-1" }}] = "{{ im.caption|safe }}"; {% endfor %}
+{% for im in dimensions %}
+    dimensions["{{ im.name }}"] = "{{ im.ratio }}"; {% endfor %}
 </script>
+
+<!-- Desktop photo viewer -->
 <div id="viewer">
     <div id="viewwindow">
         <photoview>
@@ -62,25 +65,54 @@
     </div>
     <div id="wrapper">
         <section id="strip">
-            {% for im in images %}
-                <div>
-                    <img id="{{ forloop.counter }}-img" src="{{ url }}/{{ im.thumb }}-s.jpg" onclick="showImage({{forloop.counter|add:"-1"}});" />{% if im == images.0 %}
-                    <div id="{{ forloop.counter }}-marker" class="hilite"></div> {% else %}
-                    <div id="{{ forloop.counter }}-marker" class="lolite"></div> {% endif %}
-                </div> 
+            {% for im in images %}<div>
+                <img id="{{ forloop.counter }}-img" src="{{ url }}/{{ im.thumb }}-s.jpg" onclick="showImage({{forloop.counter|add:"-1"}});" />{% if im == images.0 %}
+                <div id="{{ forloop.counter }}-marker" class="hilite"></div> {% else %}
+                <div id="{{ forloop.counter }}-marker" class="lolite"></div> {% endif %}
+            </div>
             {% endfor %}
         </section>
     </div>
-   
 </div>
+
+<!-- Mobile photo viewer -->
+<div id="mobile_viewer">{% for im in images %}    
+    <div class="mphoto" id="mphoto_{{ forloop.counter|add:"-1" }}">
+        <img src="" id="{{ im.thumb }}" />
+        <p>{{ im.caption|safe }}</p>
+    </div>{% endfor %}
+</div>
+
 <script src="https://static.nosher.net/js/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
-<script src="https://static.nosher.net/js/touchswipe.js"
+
+        <script src="https://static.nosher.net/js/touchswipe.js"
         integrity="sha256-ztqZnG9YzCVSrlndn420J5Tq0jopsi6M+F8raET12LM="
         crossorigin="anonymous"></script>
-<script type="text/javascript">
+
+<script>
+
     var main = $('#fullsize');
+    var isLandscape = false;
+    var isMobile = false;
+    var width = height = 0;
+
+    window.addEventListener("load", () => {
+        width = $(window).width();
+        height = $(window).height()
+        isLandscape = width > height;
+        isMobile = width < 840 // see nosher2.css for media rules defining a mobile view
+        console.log("MOBILE", isMobile)
+        for (i = 0; i < imgCount; i++) {
+            var name = images[i];
+            var ratio = dimensions[name];
+            var iheight = Math.floor(width * ratio);
+            $("#" + name).height(iheight);
+            console.log("set height to ", iheight);
+        }
+    });
+    
     main.swipe( {
              threshold: 75,
              swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
@@ -123,13 +155,22 @@
     });
 
     function hideViewer() {
-        $("#viewer").hide(300, function() {
-            main.attr('src', '');
-        });
+        if (isMobile) {
+            $("#mobile_viewer").hide(300, function() {})
+        } else {
+            $("#viewer").hide(300, function() {
+                main.attr('src', '');
+            });
+    
+        }
     }
 
     function showViewer(pos) {
-        $("#viewer").show(300);
+        if (isMobile) {
+            $("#mobile_viewer").show(300);
+        } else {
+            $("#viewer").show(300);
+        }
         showImage(pos);
     }
 
@@ -141,6 +182,45 @@
     function showImage(position) {
         pos = position; 
         console.log("showing " + pos);
+        if (isMobile) {
+            showMobileImage(position);
+        } else {
+            showDesktopImage(position);
+        }
+    }
+    
+    async function showMobileImage(position) {
+        orientationAwareImage(position);
+        for (var next = position + 1; next < imgCount; next++) {
+            await orientationAwareImage(next);
+        }
+        for (var prev = position - 1; prev > -1; prev--) {
+            await orientationAwareImage(prev);
+        }
+    }
+
+    function orientationAwareImage(position) {
+        var frame = $("#mphoto_" + position);
+        var url = base + "/" + images[position] + "-m.jpg";
+        var img = frame.find("img");
+        img.attr("src", url).on("load", function() {
+            var lwid = img.width();
+            var lheight = img.height();
+            if (isLandscape) {
+                img.attr("height", height);
+                img.attr("width", (lwid / lheight) * height);
+            } else {
+                console.log("height", lheight);
+                img.attr("width", width);
+                img.attr("height", (lheight / lwid) * width);
+            }
+            console.log(isLandscape);
+            return "done";
+        });
+
+    }
+
+    function showDesktopImage(position) {
         main.prop("title", images[pos] + ", {{year}}, " + captions[pos]);
         $("#caption").html(captions[pos] + "<span class=\"closetext\" onclick='hideViewer();'> (X) </span>");
         for (var i = 0; i < imgCount; i++) {
@@ -159,7 +239,7 @@
         }
         main.hide();
         var imgUrl = base + "/" + images[pos] + "-m.jpg"
-        main.attr("alt", "{{year}}, " + captions[pos]);
+        main.attr("alt", "{{title}}, " + captions[pos]);
         main.attr("src", imgUrl).on("load", function() {
             
             var inMemory = new Image();
@@ -189,9 +269,11 @@
             inMemory.src = main.attr("src");
         });
     }
+
     if ({{ index }} > -1) {
         showViewer({{index}});
     }
+
 </script>
 {% endblock %}
 
