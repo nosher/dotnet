@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="advert">
+
+    <h2>{{ title }}</h2>
+    <img src="{{ staticServer }}/images/{{ year }}/{{ path }}/{{ img.thumb }}-m.jpg" style="width: 800px;" alt="{{ title }}: {{ img.caption }}" title="{{ img.caption }}"/>
+    <p>{{ img.caption }}</p>
+
+</div>
+{% endblock %}
+
+
