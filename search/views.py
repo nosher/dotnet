@@ -17,6 +17,8 @@ from django.db.models import Count
 from stat import *
 from ..constants import *
 from collections import OrderedDict
+from ..images.models import PhotoAlbum
+from ..images.models import PhotoAlbums
 
 from whoosh.index import open_dir
 from whoosh.fields import Schema, TEXT, ID
@@ -104,6 +106,7 @@ def search(request):
         if q_show_as_list:
             context = {
                 'query': query_param,
+                'years': _getYears(),
                 'staticServer': WEBROOT,
                 'total': len(filtered),
                 'results': filtered,
@@ -114,6 +117,7 @@ def search(request):
         else:
             context = {
                 'staticServer': WEBROOT,
+                'years': _getYears(),
                 'query': query_param,
                 'start': start,
                 'end': end,
@@ -142,3 +146,14 @@ def _get_ellipsis(content, longlen, shortlen):
 
 def _get_url(params):
     return None if len(params) == 0 else "/search?" + "&".join(params)
+
+def _getYears():
+    years = PhotoAlbums.objects.order_by('xorder', '-year')
+    cut_off = datetime.datetime.now() - datetime.timedelta(days=60)
+    clip = cut_off.strftime("%Y-%m-%d")
+    for year in years:
+        count = PhotoAlbum.objects.filter(year=year.year).count()
+        new_albums = PhotoAlbum.objects.filter(year=year.year).filter(date_created__gte=clip).count()
+        year.setCount(count)
+        year.setHasNew(new_albums > 0)
+    return years
