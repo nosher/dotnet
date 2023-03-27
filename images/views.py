@@ -123,7 +123,8 @@ def album(request, album_year, album_path, index=-1):
         'next': nxt,
         'prev': prv,
         'feedback': EMAIL,
-        'url': "{}/{}/{}/{}".format("https://nosher.net", DOCROOT, album_year, album_path)
+        'url': "{}/{}/{}/{}".format(WEBROOT, DOCROOT, album_year, album_path),
+        'page_url': "{}/{}/{}/{}".format("https://nosher.net", DOCROOT, album_year, album_path)
     }
     return render(request, 'images/album.html', context)
 
