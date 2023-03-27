@@ -66,7 +66,7 @@ def nojs(request):
         'path': path,
         'title': title,
         'page_title': title,
-        'page_description': intro,
+        'page_description': img["caption"],
         'page_image': "{}/{}/{}/{}/{}{}".format(WEBROOT, DOCROOT, year, path, img["thumb"], "-m.jpg"),
         'staticServer': WEBROOT,
         'page_url': "{}/{}/{}/{}/{}".format("https://nosher.net", DOCROOT, year, path, thumb),
