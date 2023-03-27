@@ -108,7 +108,10 @@ def album(request, album_year, album_path, index=-1):
         'year': album_year,
         'album': album,
         'title': title,
+        'page_title': title,
         'intro': intro,
+        'page_description': intro,
+        'page_image': "{}/{}/{}/{}/{}{}".format(WEBROOT, DOCROOT,album_year,  album_path, images[0]["thumb"], "-m.jpg"),
         'images': images,
         'mtime': fmt_date,
         'dimensions': dimensions,
@@ -120,7 +123,7 @@ def album(request, album_year, album_path, index=-1):
         'next': nxt,
         'prev': prv,
         'feedback': EMAIL,
-        'url': "{}/{}/{}/{}".format(WEBROOT, DOCROOT, album_year, album_path)
+        'url': "{}/{}/{}/{}".format("https://nosher.net", DOCROOT, album_year, album_path)
     }
     return render(request, 'images/album.html', context)
 
