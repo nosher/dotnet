@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <head>
   <script>0</script> <!-- workaround for FOUC errors on FF -->
+  <title>nosher.net {% if page_title %} - {{ page_title }}{% endif %}</title>
+  <meta name="description" content="{{ page_description }}" />
   <meta property="og:site_name" content="nosher.net" />
   <meta property="og:type" content="article" />
   <meta property="og:title" content="{{ page_title }}" />
@@ -8,12 +10,13 @@
   <meta property="og:image" content="{{ page_image }}" />
   <meta property="og:description" content="{{ page_description }}" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>nosher.net {% if page_title %} - {{ page_title }}{% endif %}</title>
   <link rel="stylesheet" type="text/css" href="{{ staticServer }}/nosher2.css" title="default">
   <link rel="shortcut icon" href="https://static.nosher.net/images/nn.png">
   {% block script %}{% endblock %}
 </head>
+
 <body id="mainbody" class="body">
+
   <div class="navlite">
     <a href="/">Home</a> | 
     <a href="/images/">Photos</a> | 
@@ -23,17 +26,19 @@
     <a href="/content/saxonhorse/">Saxon horse</a> | 
     <a href="#navigation"><nobr>more ▼</nobr></a>
   </div>
+
   <header><p>nosher.net</p></header>
+
+  <main>{% block content %}{% endblock %}</main>
+
   <nav>
     <a name="navigation"></a>
     <ul>
 
         <!-- home -->
-
         <li><a href="/">Home</a></li>
 
         <!-- photos -->
-
         <li><a href="/images/">A life in photos</a>
         {% if years %}
           <p class="navlink">
@@ -52,43 +57,35 @@
         </li>
 
         <!-- computer adverts -->
-
         <li><a href="/archives/computers/">A history of the microcomputer industry in 300 adverts</a>
         {% if companies %}
         <p class="navlink">
-        {% for company in companies %}
-          {% if company.company != "" %}
-            {% if company.total == 1 %} 
-              {% if company.company|length < 30 %}<nobr>{% endif %}<a href="/archives/computers/{{ company.company|get_first_advert }}">{{ company.company }} <span>[{{ company.total }}]</span></a>{%if not forloop.last%}, &nbsp;{%endif%}{% if company.company|length < 30 %}</nobr>{% endif %}
-            {% else %}
-              {% if company.company != "" %}
-              {% if company.company|length < 30 %}<nobr>{% endif %}<a href="/archives/computers/?type=source&value={{ company.company }}">{{ company.company }} <span>[{{ company.total }}]</span></a>{%if not forloop.last%}, &nbsp;{%endif%}{% if company.company|length < 30 %}</nobr>{% endif %}
-              {% endif %}
-            {%endif%}
-          {% endif %}
-        {% endfor %}
-        </p>
-        {% endif %}
-        </li>
+        {% for company in companies %}{% if company.company != "" %}{% if company.total == 1 %}{% if company.company|length < 30 %}
+        <nobr>{% endif %}<a href="/archives/computers/{{ company.company|get_first_advert }}">{{ company.company }} <span>[{{ company.total }}]</span></a>{%if not forloop.last%},&nbsp;{%endif%}{% if company.company|length < 30 %}</nobr>{% endif %}{% else %}{% if company.company != "" %}{% if company.company|length < 30 %}
+        <nobr>{% endif %}<a href="/archives/computers/?type=source&value={{ company.company }}">{{ company.company }} <span>[{{ company.total }}]</span></a>{%if not forloop.last%},&nbsp;{%endif%}{% if company.company|length < 30 %}</nobr>{% endif %}{% endif %}{% endif %}{% endif %}{% endfor %}</p>{% endif %}</li>
 
-        <li><a href="/content/ajo/">The Arnewood Jazz Orchestra Archive</a>
-        </li>
+        <!-- the AJO Archive -->
+        <li><a href="/content/ajo/">The Arnewood Jazz Orchestra Archive</a></li>
 
+        <!-- RAF Halton 69th Entry Archive -->
         <li><a href="/content/raf69th">The RAF Halton 69th Entry Archive</a>
         {%if section == "raf69th" %}
             <p class="navlink"><ul class="contentlist">{% include "content/rafnav.html" %}</ul></p>
         {% endif %}
         </li>
 
+        <!-- The Saxon Horse -->
         <li><a href="/content/saxonhorse/">The Saxon Horse burial at Eriswell</a>
         {%if section == "saxonhorse" %}
             <p class="navlink"><ul class="contentlist">{% include "content/saxonnav.html" %}</ul></p>
         {% endif %}
         </li>
 
+        <!-- Flint knapping Brandon -->
         <li><a href="/content/brandonflint/">An 1887 history of flint knapping in Brandon</a>
         </li>
 
+        <!-- Family recipes -->
         <li><a href="/content/recipes/">Family recipes</a>
         </li>
 
@@ -109,7 +106,11 @@
         </li>
     </ul>
   </nav>
-  <main>{% block content %}{% endblock %}</main>
-  <footer><p>{%if feedback %}Feedback: {{ feedback }}<br />{% endif %}&copy; nosher.net 1999-{{ ""|get_now }}{%if mtime %}. Last updated: <nobr>{{ mtime }}</nobr>{% endif %}</p></footer>
+
+  <footer>
+    <p>{%if feedback %}Feedback: {{ feedback }}<br />{% endif %}&copy; nosher.net 1999-{{ ""|get_now }}{%if mtime %}. Last updated: <nobr>{{ mtime }}</nobr>{% endif %}
+    </p>
+  </footer>
+
 </body>
 

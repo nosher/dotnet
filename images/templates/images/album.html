@@ -131,8 +131,8 @@
             } else if (prevAlbum !== undefined) {
                 window.location.href = window.location.protocol + "//" + window.location.hostname + (window.location.hostname != "nosher.net" ? ":8010" : "") + "/images/" + prevAlbum; 
             }
-        } else if (event.which == 39) {
-            // cursor right
+        } else if (event.which == 39 || event.which == 32) {
+            // cursor right or spacebar
             if ($("#viewer").is(":visible") && pos < imgCount - 1) {
                 goto(++pos, event);
             } else if (nextAlbum !== undefined) {
