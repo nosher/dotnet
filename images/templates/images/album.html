@@ -51,7 +51,7 @@
     images[{{ forloop.counter|add:"-1" }}] = "{{ im.thumb }}";
     captions[{{ forloop.counter|add:"-1" }}] = "{{ im.caption|safe }}"; {% endfor %}
 {% for im in dimensions %}
-    dimensions["{{ im.name }}"] = "{{ im.ratio }}"; {% endfor %}
+    dimensions[{{ forloop.counter|add:"-1" }}] = "{{ im.ratio }}"; {% endfor %}
 </script>
 
 <!-- Desktop photo viewer -->
@@ -78,7 +78,7 @@
 <!-- Mobile photo viewer -->
 <div id="mobile_viewer">{% for im in images %}    
     <div class="mphoto" id="mphoto_{{ forloop.counter|add:"-1" }}">
-        <img src="" id="{{ im.thumb }}" />
+        <img src="" id="img{{ forloop.counter|add:"-1" }}" />
         <p>{{ im.caption|safe }}</p>
     </div>{% endfor %}
 </div>
@@ -97,20 +97,23 @@
     var isLandscape = false;
     var isMobile = false;
     var width = height = 0;
+    var index = {{index}};
 
-    window.addEventListener("load", () => {
+    window.addEventListener("load", function() {
         width = $(window).width();
         height = $(window).height()
         isLandscape = width > height;
         isMobile = width < 840 // see nosher2.css for media rules defining a mobile view
         console.log("MOBILE", isMobile)
         for (i = 0; i < imgCount; i++) {
-            var name = images[i];
-            var ratio = dimensions[name];
+            var ratio = dimensions[i];
             var iheight = Math.floor(width * ratio);
-            $("#" + name).height(iheight);
+            $("#img" + i).height(iheight);
             console.log("set height to ", iheight);
-        }
+        };
+        if (index > -1) {
+            setTimeout(showViewer(index), 1500);
+        };
     });
     
     main.swipe( {
@@ -269,11 +272,6 @@
             inMemory.src = main.attr("src");
         });
     }
-
-    if ({{ index }} > -1) {
-        showViewer({{index}});
-    }
-
 </script>
 {% endblock %}
 

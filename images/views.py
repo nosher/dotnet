@@ -127,7 +127,7 @@ def album(request, album_year, album_path, index=-1):
         'next': nxt,
         'prev': prv,
         'feedback': EMAIL,
-        'url': "{}/{}/{}/{}".format(WEBROOT, DOCROOT, album_year, album_path),
+        'url': "{}/{}".format(WEBROOT, DOCROOT),
         'page_url': "{}/{}/{}/{}".format("https://nosher.net", DOCROOT, album_year, album_path)
     }
     return render(request, 'images/album.html', context)
@@ -176,7 +176,10 @@ def _getAlbumDetails(album_path):
                 elif parts[0] == "locn":
                     pass
                 else:
-                    items.append({"thumb": parts[0], "caption": parts[1].replace("\"","\'")})
+                    path = parts[0]
+                    if path.find("/") < 0:
+                        path = "{}/{}".format(album_path, parts[0])
+                    items.append({"thumb": path, "caption": parts[1].replace("\"","\'")})
                 
         return (title, intro, items, stats[ST_MTIME], dims) 
 
