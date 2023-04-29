@@ -9,7 +9,7 @@
 
 {% if spotify %}
 <p><b>Soundtrack for this album:</b></p>
-<iframe src="https://open.spotify.com/embed/{{ spotify }}" width="460" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+<iframe src="https://open.spotify.com/embed/{{ spotify }}" class="music" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
 {% endif %}
 
 {% if next or prev %}
@@ -51,7 +51,7 @@
     images[{{ forloop.counter|add:"-1" }}] = "{{ im.thumb }}";
     captions[{{ forloop.counter|add:"-1" }}] = "{{ im.caption|safe }}"; {% endfor %}
 {% for im in dimensions %}
-    dimensions[{{ forloop.counter|add:"-1" }}] = "{{ im.ratio }}"; {% endfor %}
+    dimensions["{{ im.name }}"] = "{{ im.ratio }}"; {% endfor %}
 </script>
 
 <!-- Desktop photo viewer -->
@@ -106,10 +106,10 @@
         isMobile = width < 840 // see nosher2.css for media rules defining a mobile view
         console.log("MOBILE", isMobile)
         for (i = 0; i < imgCount; i++) {
-            var ratio = dimensions[i];
+            var ratio = dimensions[images[i]];
             var iheight = Math.floor(width * ratio);
             $("#img" + i).height(iheight);
-            console.log("set height to ", iheight);
+            console.log("set height of #img", i, " ",images[i], ", to ", iheight);
         };
         if (index > -1) {
             setTimeout(showViewer(index), 1500);

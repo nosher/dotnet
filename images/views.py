@@ -155,7 +155,7 @@ def _getAlbumDetails(album_path):
             for d in d.readlines():
                 d = d.replace("\n", "")
                 (name, ratio) = d.split("\t")
-                dims.append({"name": name, "ratio": ratio})
+                dims.append({"name": "{}/{}".format(album_path, name), "ratio": ratio})
     except Exception:
         pass # no dimensions
 
