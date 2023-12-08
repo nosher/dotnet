@@ -127,7 +127,7 @@ def album(request, album_year, album_path, index=-1):
         'next': nxt,
         'prev': prv,
         'feedback': EMAIL,
-        'url': "{}/{}/{}/{}".format(WEBROOT, DOCROOT, album_year, album_path),
+        'url': "{}/{}".format(WEBROOT, DOCROOT),
         'page_url': "{}/{}/{}/{}".format("https://nosher.net", DOCROOT, album_year, album_path)
     }
     return render(request, 'images/album.html', context)
@@ -136,7 +136,7 @@ def album(request, album_year, album_path, index=-1):
 def _getSpotifyDetails(album_path):
     path = os.path.join(ROOT, album_path, "song.txt")
     try:
-        with open(path) as fh:
+        with open(path, encoding="utf-8") as fh:
             # example: https://open.spotify.com/track/2GF0D3d6LKIsDnk8ufpBQa
             url = fh.readlines()[0]
             return "/".join(url.split("/")[-2:])
@@ -151,16 +151,16 @@ def _getAlbumDetails(album_path):
 
     # get image dimensions, if available
     try: 
-        with open(dimensions) as d:
+        with open(dimensions, encoding="utf-8") as d:
             for d in d.readlines():
                 d = d.replace("\n", "")
                 (name, ratio) = d.split("\t")
-                dims.append({"name": name, "ratio": ratio})
+                dims.append({"name": "{}/{}".format(album_path, name), "ratio": ratio})
     except Exception:
         pass # no dimensions
 
     # get album details
-    with open(path) as fh:
+    with open(path, encoding="utf-8") as fh:
         items = []
         title = ""
         intro = ""
@@ -176,7 +176,10 @@ def _getAlbumDetails(album_path):
                 elif parts[0] == "locn":
                     pass
                 else:
-                    items.append({"thumb": parts[0], "caption": parts[1].replace("\"","\'")})
+                    path = parts[0]
+                    if path.find("/") < 0:
+                        path = "{}/{}".format(album_path, parts[0])
+                    items.append({"thumb": path, "caption": parts[1].replace("\"","\'")})
                 
         return (title, intro, items, stats[ST_MTIME], dims) 
 
@@ -196,14 +199,14 @@ def _getYears():
 def _getTextForAlbum(path):
     file_path = os.path.join(path, "intro.txt")
     try:
-        with open(file_path) as fh:
+        with open(file_path, encoding="utf-8") as fh:
             return fh.read()
     except IOError:
         return ""
 
 
 def _getGroups():
-    with open(os.path.join(ROOT, "filters.txt")) as fh:
+    with open(os.path.join(ROOT, "filters.txt"), encoding="utf-8") as fh:
         groups = fh.readlines()
         group_list = [] 
         for group in groups:

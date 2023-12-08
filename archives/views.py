@@ -75,6 +75,19 @@ def convert_values(item):
             item[i] = item[i].replace("[[now]]", "{}".format(get_now("")))
     return item
 
+def convert_picture(item):
+    """ 
+    Convert occurances of [picture:img|text] to a nicely-formatted pictorial group with caption
+    """
+    for i in range(len(item)):
+        groups = re.findall("\[picture: (?P<pic>.*?)\]", item[i], re.S|re.MULTILINE)
+        if not groups is None:
+            for pic in groups:
+                repl = "[picture: %s]" % pic
+                bits = pic.split("|")
+                target = """<div class="grid1"><img class="ctrimg" src="https://static.nosher.net/archives/computers/images/{}" alt="{}" title="{}"><p class="desc">{}</p></div>""".format(bits[0], bits[1], bits[1], bits[1])
+                item[i] = item[i].replace(repl, target)
+    return item
 
 def convert_extras(item):
     """
@@ -406,6 +419,7 @@ def computer_advert_html(request, advert, adid):
     body = convert_values(body)
     body = convert_acronyms(body)
     body = convert_extras(body)
+    body = convert_picture(body)
     body = convert_images(body)
     (body, sources) = convert_sources(body)
     body = "".join(body)

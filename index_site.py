@@ -13,16 +13,16 @@ def createIndex(root):
     but not stored),textdata (stored text content)
     '''
     schema = Schema(path = ID(stored = True), imgs = IDLIST(stored = True), image = TEXT(stored = True), content = TEXT(stored = True), date = DATETIME(sortable = True))
-    if not os.path.exists("index"):
-        os.mkdir("index")
-    ix = create_in("index", schema)
+    if not os.path.exists("/home/httpd/django/nosher/index"):
+        os.mkdir("/home/httpd/django/nosher/index")
+    ix = create_in("/home/httpd/django/nosher/index", schema)
     writer = ix.writer()
 
     root = "/home/httpd/nosher.net/docs/archives/computers"
     files = [os.path.join(root, i) for i in os.listdir(root)]
     for f in files:
         if f[-4:] == ".txt":
-            with open(f, "r") as fh:
+            with open(f, "r", encoding="utf-8") as fh:
                 print (f)
                 lines = fh.readlines()
                 text = " ".join(lines).replace("\n", "")
@@ -37,12 +37,13 @@ def createIndex(root):
         for f in files:
                 if f == "details.txt":
                     full = os.path.join(path, f)
-                    print (full)
                     try:
                         timestamp = datetime.strptime(path.split("/")[-1][0:10], "%Y-%m-%d")
                     except ValueError:
+                        print ("Warning: failed to parse timestamp")
                         timestamp = datetime.strptime("1989-10-01", "%Y-%m-%d")
-                    with open(full, "r") as fh:
+                    print (full, timestamp)
+                    with open(full, "r", encoding="utf-8") as fh:
                         try:
                             first = 0 
                             text = fh.readlines()

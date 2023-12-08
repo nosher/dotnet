@@ -9,7 +9,7 @@
 
 {% if spotify %}
 <p><b>Soundtrack for this album:</b></p>
-<iframe src="https://open.spotify.com/embed/{{ spotify }}" width="460" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+<iframe src="https://open.spotify.com/embed/{{ spotify }}" class="music" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
 {% endif %}
 
 {% if next or prev %}
@@ -97,20 +97,23 @@
     var isLandscape = false;
     var isMobile = false;
     var width = height = 0;
+    var index = {{index}};
 
-    window.addEventListener("load", () => {
+    window.addEventListener("load", function() {
         width = $(window).width();
         height = $(window).height()
         isLandscape = width > height;
         isMobile = width < 840 // see nosher2.css for media rules defining a mobile view
         console.log("MOBILE", isMobile)
         for (i = 0; i < imgCount; i++) {
-            var name = images[i];
-            var ratio = dimensions[name];
+            var ratio = dimensions[images[i]];
             var iheight = Math.floor(width * ratio);
-            $("#" + name).height(iheight);
-            console.log("set height to ", iheight);
-        }
+            $("#img" + i).height(iheight);
+            console.log("set height of #img", i, " ",images[i], ", to ", iheight);
+        };
+        if (index > -1) {
+            setTimeout(showViewer(index), 1500);
+        };
     });
     
     main.swipe( {
@@ -269,11 +272,6 @@
             inMemory.src = main.attr("src");
         });
     }
-
-    if ({{ index }} > -1) {
-        showViewer({{index}});
-    }
-
 </script>
 {% endblock %}
 

@@ -23,7 +23,7 @@ def index(request):
     for latest in this_month:
         path = latest.path
         try:
-            with open("/home/httpd/nosher.net/docs/images/{}/details.txt".format(path)) as fh:
+            with open("/home/httpd/nosher.net/docs/images/{}/details.txt".format(path), encoding="utf-8") as fh:
                 lines = fh.readlines()
                 bits = lines[3].split("\t")
                 if (len(bits) > 1):
@@ -43,6 +43,5 @@ def index(request):
         'latest_albums': latest_albums,
         'random_photo': pic_url,
         'staticServer': WEBROOT,
-        'page_description': "nosher.net: an archive of photos from the 1880s until now, plus the RAF Halton 69th Entry archive, the history of the microcomputer industry in 300 adverts, and other stuff",
     }
     return render(request, 'home/index.html', context)

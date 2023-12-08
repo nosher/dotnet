@@ -1,4 +1,5 @@
 .git
+.gitignore
 __pycache__
 *.jpg
 *.JPG
@@ -7,4 +8,5 @@ settings.py
 settings_prod.py
 index/*
 start.sh
-
+constants.py
+settings_prod.py
