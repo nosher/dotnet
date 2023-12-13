@@ -137,6 +137,17 @@ def convert_images(item):
     return item
 
 
+def convert_tags(item):
+    updated = []
+    for i in range(len(item)):
+        if item[i].strip() == "":
+            pass
+        elif item[i][0] is not "<":
+            updated.append("<p>" + item[i].strip() + "</p>\n")
+        else: 
+            updated.append(item[i])
+    return updated 
+
 def convert_acronyms(item):
     for i in range(len(item)):
         for k, v in TLAS.items():
@@ -407,6 +418,7 @@ def computer_advert_html(request, advert, adid):
             body = lines[1:]
         else: 
             body = lines
+
     # stash the mostly-raw body for use as an OG description
     raw_body = "".join(convert_acronyms(body))
     # remove wiki-like tags
@@ -416,6 +428,8 @@ def computer_advert_html(request, advert, adid):
     # limit to 300 chars
     ellipsis = "..." if len(raw_body) > 300 else ""
     raw_body = raw_body[:300] + ellipsis
+
+    body = convert_tags(body)
     body = convert_values(body)
     body = convert_acronyms(body)
     body = convert_extras(body)
