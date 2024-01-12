@@ -24,6 +24,7 @@ from collections import OrderedDict
 ARCHIVES = "/archives/computers"
 EMAIL = "microhistory@nosher.net"
 
+
 @register.filter
 def get_item(dictionary, key):
     item = "".join(convert_values([dictionary.get(key)]))
@@ -183,6 +184,9 @@ def get_first_advert(company):
     item = ArchiveItems.objects.filter(company=company)[0]
     return item.adid
 
+def soft_url(value):
+    return value.replace("/","/​").replace("_", "_​") # replace "/ and _" with themselves and a zero-width space
+
 def convert_sources(item):
     g = 1
     sources = [] 
@@ -195,7 +199,7 @@ def convert_sources(item):
                 urls = re.findall("(?P<url>http.*)", src, re.S)
                 if not urls is None:
                     for url in urls:
-                        src = src.replace(url, """<a href="%s">%s</a>""" % (url, url))
+                        src = src.replace(url, """<a href="%s">%s</a>""" % (url, soft_url(url)))
                 sources.append(src)
                 g += 1
 
