@@ -17,7 +17,7 @@
         {% include "computers/navbar.html" %}
     </p>
     <h2>From {%if item.source %}{{ item.source }}{% else %}{%if item.type == "channel" %}sales brochure{% else %}Source unknown{% endif %}{% endif %}</h2>
-    <img src="{{ page_image }}" />
+    <img src="{{ page_image }}" class="ad" />
     <br clear="left" />  
     <h3>{{ title|safe }}</h3>
 

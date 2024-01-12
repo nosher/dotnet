@@ -93,7 +93,13 @@ def _format_page(page):
                 extras = "\n<diet->Healthier variation: {}".format(parts[4])
             return """<p><a href="/content/recipes/" class="dots">Recipe index</a></p>{}\n<intro->{}</intro->\n<recipe->{}</recipe->\n<method->\n{}\n</method->\n<serve->{}</serve->\n{}\n{}"""\
                 .format(start, parts[0], "\n".join(filtered_recipe), method, parts[3], rest, extras)
-        else:
-            return page
     else:
+        groups = re.findall("\[picture: (?P<pic>.*?)\]", page, re.S|re.MULTILINE)
+        if not groups is None:
+            for pic in groups:
+                repl = "[picture: %s]" % pic
+                bits = pic.split("|")
+                target = """<div class="grid1"><img class="ctrimg" src="https://static.nosher.net/content/raf69th/images/{}" alt="{}" title="{}"><p class="desc">{}</p></div>""" \
+                    .format(bits[0], bits[1], bits[1], bits[1])
+                page = page.replace(repl, target)
         return page

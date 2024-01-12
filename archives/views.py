@@ -140,10 +140,18 @@ def convert_images(item):
 def convert_tags(item):
     updated = []
     for i in range(len(item)):
+        line = item[i].strip()
         if item[i].strip() == "":
             pass
-        elif item[i][0] is not "<":
-            updated.append("<p>" + item[i].strip() + "</p>\n")
+        elif line[0] is not "<":
+            if line == "-origin":
+                updated.append("""<p class="origins">This is one of a small set of adverts from before 1975 - the dawn of microcomputers - which help set the scene.</p>""")
+            elif line[0] == "~":
+                updated.append("""<p class="ref">{}</p>\n""".format(line[1:]))
+            elif line[0] == "\\":
+                updated.append("""<p class="quote">{}</p>\n""".format(line[1:]))
+            else:
+                updated.append("<p>{}</p>\n".format(line))
         else: 
             updated.append(item[i])
     return updated 
@@ -153,6 +161,20 @@ def convert_acronyms(item):
         for k, v in TLAS.items():
             item[i] = item[i].replace(k, v)
     return item 
+
+def convert_to_text(body):
+           
+    body = list(filter(lambda s: s[0] is not "-", body))
+    # convert acronyms
+    raw_body = "".join(convert_acronyms(body)).replace("\n", "")
+    # remove wiki-like tags
+    raw_body = re.sub("\[.*?\]", "", raw_body)
+    # remove HTML
+    raw_body = re.sub("<.*?>", "", raw_body)
+    # limit to 300 chars
+    ellipsis = "..." if len(raw_body) > 300 else ""
+    raw_body = (raw_body[:300] + ellipsis).strip()
+    return raw_body
 
 @register.filter
 def get_first_advert(company):
@@ -262,7 +284,7 @@ def computer_index(request):
     items = []
     title = ""
     offset = 0
-    page = 15
+    page = pagination = 15
     urlparams = []
     intro = ""
     companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
@@ -303,7 +325,7 @@ def computer_index(request):
         with open(os.path.join(ROOT, "{}.txt".format(adid)), encoding="utf-8") as fh:
             lines = fh.readlines()
             titles[adid] = lines[0]
-            summaries[adid] = "".join(lines[1:])
+            summaries[adid] = convert_to_text(lines[1:])
  
     # if total items count is close to page, then set page to the total, so 
     # we don't get "next 1 items"
@@ -318,7 +340,7 @@ def computer_index(request):
         nextparams.append("offset={}".format(offset + page))
     if offset > 0:
         prevparams.extend(urlparams)
-        prevparams.append("offset={}".format(offset - page))
+        prevparams.append("offset={}".format(offset - pagination))
  
     context = {
         'url': "{}/{}".format(WEBROOT, DOCROOT),
@@ -333,10 +355,11 @@ def computer_index(request):
         'intro': intro,
         'summaries': summaries,
         'items': items[offset:offset + page],
+        'page': page,
         'next': "?" + "&".join(nextparams) if len(nextparams) > 0 else None,
         'next_count': (page if offset + (page * 2) < len(items) else len(items) - offset - page),
         'prev': "?" + "&".join(prevparams) if len(prevparams) > 0 else None,
-        'page': page,
+        'prev_count': (pagination if offset > 0 else 0),
         'companies': companies,
         'feedback': EMAIL,
     }
@@ -365,6 +388,7 @@ def computer_advert_text(request, advert, adid):
             title = lines[0]
             body = lines[1:]
         else: 
+            title = "A history of the computer industry in 300 adverts"
             body = lines
 
     body = convert_values(body)
@@ -375,7 +399,7 @@ def computer_advert_text(request, advert, adid):
     body = re.sub("\[extra.*?\]", "", body)
     body = re.sub("\[image.*?\]", "", body)
     body = re.sub("\[source.*?\]", "", body)
-    page = 500
+    page = 330
  
     if not idx == "":
         pos = body.find(idx)
@@ -390,7 +414,7 @@ def computer_advert_text(request, advert, adid):
         if (end < orig_len): body = body + "..."
         body = re.sub(idx, "<span class=\"hilite\">{}</span>".format(idx), body)
     else:
-        body = body[0:500] 
+        body = body[0:330] 
     context = {
         'body': body,
         'staticServer': WEBROOT,
@@ -400,8 +424,9 @@ def computer_advert_text(request, advert, adid):
 
 
 def computer_advert_html(request, advert, adid):
+    adid = adid.split(",")[0]
     items = ArchiveItems.objects.all().order_by('year')
-    item = ArchiveItems.objects.filter(adid__contains=advert)[0]
+    item = ArchiveItems.objects.filter(adid__startswith=adid)[0]
     related = ArchiveItems.objects.filter(company=item.company).order_by('year')
     title = body = None
     path = os.path.join(ROOT, "{}.txt".format(adid))
@@ -414,20 +439,13 @@ def computer_advert_html(request, advert, adid):
     with open(path, encoding="utf-8") as fh:
         lines = fh.readlines()
         if len(lines) > 1:
-            title = lines[0]
+            title = lines[0].strip()
             body = lines[1:]
         else: 
+            title = "A history of the computer industry in 300 adverts"
             body = lines
 
-    # stash the mostly-raw body for use as an OG description
-    raw_body = "".join(convert_acronyms(body))
-    # remove wiki-like tags
-    raw_body = re.sub("\[.*?\]", "", raw_body)
-    # remove HTML
-    raw_body = re.sub("<.*?>", "", raw_body)
-    # limit to 300 chars
-    ellipsis = "..." if len(raw_body) > 300 else ""
-    raw_body = raw_body[:300] + ellipsis
+    raw_body = convert_to_text(body)
 
     body = convert_tags(body)
     body = convert_values(body)
@@ -445,16 +463,20 @@ def computer_advert_html(request, advert, adid):
         if related[i].adid == item.adid:
             if i > 0:
                 prv = related[i - 1]
+                prv.adid = prv.adid.split(",")[0]
             if i < len(related) - 1:
                 nxt = related[i + 1] 
+                nxt.adid = nxt.adid.split(",")[0]
     
     nxtany = prvany = None
     for i in range(len(items)):
         if items[i].adid == item.adid:
             if i > 0:
                 prvany = items[i - 1]
+                prvany.adid = prvany.adid.split(",")[0]
             if i < len(items):
                 nxtany = items[i + 1] 
+                nxtany.adid = nxtany.adid.split(",")[0]
 
     page_title = "{} advert: {}".format(item.company, re.sub("<.*?>", "", title))
     
