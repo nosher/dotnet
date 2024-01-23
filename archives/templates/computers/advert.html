@@ -8,6 +8,50 @@
             scrollTop: ($('.hilite').first().top)
         },500);
     });
+    $(window).on("load", function() {
+      var doZoom = false;
+      var zoomer = $(".zoomer");
+      var magicon = $(".magicon");
+      var height = zoomer.height();
+      var zimg = zoomer.children("img");
+      var offset = zimg.offset()
+      var naturalWidth = zimg.get(0).naturalWidth;
+      if (naturalWidth > 1200) {
+        $(".magicon").show();
+        $(".magicon").on("click", function() {
+            doZoom = !doZoom;
+            if (doZoom) {
+                $(this).children("button").html("Turn off zoom");
+            } else {
+                $(this).children("button").html("🔍 Click to zoom");
+
+            }
+        });
+        zoomer.on("mouseover", function() {
+          if (doZoom) {
+                  console.log(zimg.get(0).naturalWidth);   
+                  zimg.width(1400);
+                  zoomer.height(height);
+                  zoomer.css('cursor','zoom-in');
+                  console.log(zimg.width());   
+                  zoomer.on("mousemove", function(event) {
+                    if (doZoom) {
+                        var newx = event.pageX - offset.left;
+                        var newy = event.pageY - offset.top;
+                        zimg.offset({left: offset.left - newx, top: offset.top - newy});
+                    } 
+                  });
+
+          }
+        });
+        zoomer.on("mouseout", function() {
+          if (doZoom) {
+                  zimg.width(700);
+                  zimg.offset(offset);
+          }
+        });
+      }
+    });
   </script>
 
   <h1>{{ item.company }} Advert - {{ item.year|get_year }}</h1>
@@ -17,7 +61,11 @@
         {% include "computers/navbar.html" %}
     </p>
     <h2>From {%if item.source %}{{ item.source }}{% else %}{%if item.type == "channel" %}sales brochure{% else %}Source unknown{% endif %}{% endif %}</h2>
-    <img src="{{ page_image }}" class="ad" />
+    <div class="zoomer">
+      <img src="{{ page_image }}" class="ad" />
+    </div>
+    <div class="magicon"><button type="button">🔍 click to zoom</button></div>
+    
     <br clear="left" />  
     <h3>{{ title|safe }}</h3>
 
