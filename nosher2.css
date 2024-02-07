@@ -1001,8 +1001,11 @@ div.magicon {
 
 
 @media screen and (max-width: 840px) {
+        div.zoomer {
+            width: 98%;
+        }
         img.ad {
-            width: 96% !important;
+            width: 100% !important;
         } 
 }
 
