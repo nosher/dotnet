@@ -317,7 +317,7 @@ def computer_index(request):
         title = page_title = "A history of the microcomputer industry in 300 adverts"
         section = "adverts"
         if offset == 0:
-            with open("/home/httpd/django/nosher/archives/computers-intro.txt", encoding="utf-8") as fh:
+            with open("/home/httpd/nosher.net/docs/archives/computers/intro.txt", encoding="utf-8") as fh:
                 intro = fh.read()
         else:
             intro = ""

@@ -46,7 +46,7 @@
 <div id="popup">.</div>
 <h1>{{ title }}</h1>
 {% if intro %}
-    <p class="intro">{{ intro }}</p>
+    <p class="intro">{{ intro|safe }}</p>
 {% endif %}
 <section class="archives">
 <p class="nav">{% include "computers/navbar.html" %}</p>
