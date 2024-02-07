@@ -3,7 +3,15 @@
 {% block content %}
   <script src="https://static.nosher.net/js/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
   <script>
+    function disableForMobile(x) {
+        if (x.matches) { 
+           $("#zoom").hide();
+        } 
+    }
     $(document).ready(function() {
+        
+        var media = window.matchMedia("(max-width: 840px)")
+        disableForMobile(media);
         $('html, body').animate({
             scrollTop: ($('.hilite').first().top)
         },500);
@@ -64,7 +72,7 @@
     <div class="zoomer">
       <img src="{{ page_image }}" class="ad" />
     </div>
-    <div class="magicon"><button type="button">🔍 click to zoom</button></div>
+    <div class="magicon"><button id="zoom" type="button">🔍 click to zoom</button></div>
     
     <br clear="left" />  
     <h3>{{ title|safe }}</h3>
