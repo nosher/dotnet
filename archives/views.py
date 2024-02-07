@@ -164,17 +164,18 @@ def convert_acronyms(item):
     return item 
 
 def convert_to_text(body):
-           
+          
+    char_limit = 180 
     body = list(filter(lambda s: s[0] is not "-", body))
-    # convert acronyms
-    raw_body = "".join(convert_acronyms(body)).replace("\n", "")
+    # convert acronyms and values
+    raw_body = " ".join(convert_values(convert_acronyms(body))).replace("\n", "")
     # remove wiki-like tags
     raw_body = re.sub("\[.*?\]", "", raw_body)
     # remove HTML
     raw_body = re.sub("<.*?>", "", raw_body)
     # limit to 300 chars
-    ellipsis = "..." if len(raw_body) > 300 else ""
-    raw_body = (raw_body[:300] + ellipsis).strip()
+    ellipsis = "..." if len(raw_body) > char_limit else ""
+    raw_body = (raw_body[:char_limit] + ellipsis).strip()
     return raw_body
 
 @register.filter
@@ -322,8 +323,17 @@ def computer_index(request):
         else:
             intro = ""
 
-    for i in items:
+    # if total items count is close to page, then set page to the total, so 
+    # we don't get "next 1 items"
+    if len(items) - (offset + page) < 4:
+        page = len(items) - offset
+
+    selected = []
+    for n in range(offset, offset + page):
+        i = items[n]
+        selected.append(i)
         adid = i.adid
+        # remove any multi-advert reference
         adid = adid.split(",")[0]
         i.adid = adid
         with open(os.path.join(ROOT, "{}.txt".format(adid)), encoding="utf-8") as fh:
@@ -331,11 +341,6 @@ def computer_index(request):
             titles[adid] = lines[0]
             summaries[adid] = convert_to_text(lines[1:])
  
-    # if total items count is close to page, then set page to the total, so 
-    # we don't get "next 1 items"
-    if len(items) - (offset + page) < 4:
-        page = len(items) - offset
-
     # determine next and previous 
     nextparams = []
     prevparams = []
@@ -358,7 +363,7 @@ def computer_index(request):
         'home': ARCHIVES,
         'intro': intro,
         'summaries': summaries,
-        'items': items[offset:offset + page],
+        'items': selected,
         'page': page,
         'next': "?" + "&".join(nextparams) if len(nextparams) > 0 else None,
         'next_count': (page if offset + (page * 2) < len(items) else len(items) - offset - page),
