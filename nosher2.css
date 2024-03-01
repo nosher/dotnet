@@ -1,9 +1,12 @@
 @charset "utf-8";
 :root {
     --main-bg-color: coral;
-    --header: #747a8b;
+    --header: #416788;
     --link-hover: #c3cce0;
-    --nav-bg: #e7eaf0;
+    --nav-bg: #e0e0e2;
+    --sidebar-bg: #b5bad0;
+    --headers: #B25785;
+    --headers2: #9F752D;
     --pad: 8px;
     --inset: 12px;
 }
@@ -85,7 +88,7 @@ h1 {
     display: inline-block;
     font-family: 'Roboto-Light', sans-serif;
     text-shadow: rgba(30, 30, 30, 0.2) 3px 2px 3px;
-    color: #885588;
+    color: var(--headers);
     margin: 4px 12px 20px 0;
     font-size: 200%;
     text-align: left;
@@ -93,7 +96,7 @@ h1 {
 
 h2, h3 {
     font-family: 'Roboto-Light', sans-serif;
-    color: #9b8443;
+    color: var(--headers2);
     margin: 22px 0 12px 0;
     font-size: 160%;
     width: 95%;
@@ -106,7 +109,7 @@ h3 {
     margin: 22px 0 12px 0;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     h1 {
         display: block;
         margin: 0 0 12px 0;
@@ -135,7 +138,7 @@ p {
     line-height: 1.5;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     p {
         margin: 0 0.75em 0.75em 8px;
     }
@@ -162,7 +165,7 @@ body {
     overflow-y: scroll !important;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     body {
         font-size: 11pt;
     }
@@ -173,16 +176,16 @@ body {
 .body {
     display: grid;
     grid-template-rows: 70px auto 80px;
-    grid-template-columns: minmax(280px, 2.0fr) 10fr;
-    grid-template-areas: "header header" "nav    content" "footer    footer";
+    grid-template-columns: minmax(280px, 2.0fr) 10fr 2fr;
+    grid-template-areas: "header header header" "nav    content    sidebar" "footer  footer  footer";
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .body {
         display: grid;
         grid-template-columns: auto;
-        grid-template-rows: 60px auto auto auto 60px;
-        grid-template-areas: "header" "navlite" "content" "nav" "footer";
+        grid-template-rows: 60px auto auto auto auto 60px;
+        grid-template-areas: "header" "navlite" "content" "sidebar" "nav" "footer";
     }
 }
 
@@ -196,7 +199,7 @@ body {
     grid-template-areas: ". header ." ".    content   ." ".    footer    .";
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     #home {
         margin-top: 0;
         display: grid;
@@ -231,7 +234,7 @@ body {
     grid-area: content;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     #home>content {
         padding-left: 0;
     }
@@ -264,7 +267,7 @@ main {
     grid-area: content;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     main {
         padding: 0;
     }
@@ -314,7 +317,7 @@ main {
     font-size: 80%;
     margin: 0;
 }
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     #sidebyside {
         margin: 0;
         display: grid;
@@ -382,7 +385,7 @@ nav ul li {
     list-style-position: outside;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     nav ul li {
         padding: 6px;
         border-bottom: 0.5px solid #000;
@@ -423,7 +426,7 @@ ul.index li {
 }
 
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     nav ul li {
         line-height: 1.8em;
     }
@@ -449,6 +452,51 @@ ul.index li {
     }
 }
 
+sidebar {
+    background-color: var(--sidebar-bg);
+    grid-area: sidebar;
+    padding: 0;
+    width: 240px;
+}
+
+.adthumb, .adthumb_dim {
+    text-align: center;
+    font-size: 70%;
+    font-family: "SegoeUILight";
+    margin: 0 8px 0 8px;
+}
+.adthumb img, .adthumb_dim img {
+    margin: 8px auto 4px auto;
+    width: 100px;
+    border: 2px solid #888;
+}
+
+.adthumb_dim img{
+    opacity: 20%;
+}
+
+.twogrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+@media screen and (max-width: 1250px) {
+    sidebar {
+        width: 99%;
+        padding: 8px 0 8px 0;
+    }
+    sidebar .adthumb img {
+        width: 60px;
+        margin: 4px 4px auto 4px;
+    }
+    sidebar .adthumb span {
+        display: none;
+    }
+    .twogrid {
+        display: grid;
+        grid-template-columns: repeat( auto-fit, minmax(76px, 1fr) );
+    }
+}
+
 .hilite {
     background-color: #00ff00;
 }
@@ -460,10 +508,16 @@ ul.index li {
     -webkit-column-count: 3;
     column-count: 4;
 }
+.catindex {
+    margin: 0;
+}
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .catalogue {
-        column-count: 2;
+        column-count: 1;
+    }
+    .catindex {
+        margin: 0 0 0 2px;
     }
 }
 
@@ -508,7 +562,7 @@ article.thumb p {
     color: #606060;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .thumbnails, .searchthumbnails {
         grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
         grid-gap: 12px;
@@ -543,7 +597,7 @@ article.thumb img {
     margin: 0;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .search img {
         width: 80px;
     }
@@ -553,9 +607,9 @@ article.thumb img {
     margin: 0 0 12px 0;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .intro {
-        margin: 4px 4px 0 8px !important;
+        margin: 4px 4px 0 0 !important;
     }
 }
 
@@ -612,7 +666,7 @@ ul.albums {
     }
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     #viewer {
         display: none;
     }
@@ -634,7 +688,7 @@ ul.albums {
     grid-template-areas: ". . ." ".    photoview   photoclose" "capregion capregion capregion";
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     #viewwindow {
         grid-column: viewport;
         display: inherit;
@@ -650,7 +704,7 @@ ul.albums {
     visibility: hidden;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .closetext {
         visibility: visible;
     }
@@ -684,7 +738,7 @@ photoclose {
     grid-area: photoclose;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     photoclose {
         visibility: hidden;
         width: 0px;
@@ -703,14 +757,14 @@ photoview img {
     margin: 0 auto 0 auto;
 }
 
-@media screen and (max-width: 840px) and (orientation: landscape) {
+@media screen and (max-width: 1250px) and (orientation: landscape) {
     photoview img {
         height: 80vh;
         width: unset;
     }
 }
 
-@media screen and (max-width: 840px) and (orientation: portrait) {
+@media screen and (max-width: 1250px) and (orientation: portrait) {
     #photoview img {
         width: 90vw;
         height: unset;
@@ -729,7 +783,7 @@ photoview img {
     overflow: hidden;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     #wrapper {
         height: 0;
     }
@@ -757,7 +811,7 @@ photoview img {
     background-color: #800000;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     #strip {
         visibility: hidden;
     }
@@ -775,7 +829,7 @@ photoview img {
     width: 60px;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     #fourbox {
         grid-template-rows: 40px 40px;
         grid-template-columns: 40px 40px;
@@ -792,7 +846,7 @@ photoview img {
     background-color: #dddddd;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     #fullsize {
         max-width: 85%;
         margin: 0 auto 0 auto;
@@ -816,7 +870,7 @@ p.nextprev:before {
     color: #808080;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .nextprev {
         margin: 8px 4px 18px 8px;
         font-size: 120%;
@@ -849,7 +903,7 @@ p.nextprev:before {
     margin: -2px 0 0 var(--inset);
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .stext, .sbutton {
         height: 30px;
     }
@@ -863,7 +917,7 @@ p.nextprev:before {
     margin-top: 40px;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .hint {
         visibility: hidden;
     }
@@ -926,7 +980,7 @@ archivedescription h3 {
     text-decoration: none;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     archiveitem {
         grid-template-columns: 80px auto;
         grid-template-rows: auto 8px;
@@ -1000,12 +1054,16 @@ div.magicon {
 }
 
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
         div.zoomer {
-            width: 98%;
+            width: 96%;
+            padding: 0;
+            margin: 0 0 0 6px;
         }
         img.ad {
             width: 100% !important;
+            display: block;
+            margin: 0 !important;
         } 
 }
 
@@ -1037,10 +1095,10 @@ div.magicon {
     font-weight: bold;
     background-color: #c4d6db;
     padding: 12px;
-    font-family: "Roboto Light";
+    font-family: "Roboto-Light";
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .advert {
         text-align: left;
     }
@@ -1072,7 +1130,7 @@ p.navlink {
     margin-top: 8px;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     p.navlink {
         font-size: 100%;
         line-height: 1.5;
@@ -1082,7 +1140,7 @@ p.navlink {
 }
 
 p.navlink a, p.navlink a span {
-    color: #202020 !important;
+    color: #101010 !important;
     text-decoration: none !important;
 }
 
@@ -1097,7 +1155,7 @@ p.navlink a span {
     max-width: 800px;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .copy {
         margin: 12px 4px 12px 8px;
     }
@@ -1141,7 +1199,7 @@ sup.src {
     margin-right: 0.1em;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .sources {
         margin: 0 4px;
     }
@@ -1182,7 +1240,7 @@ img.crest {
     margin: 0 1em 0 0;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .extra, .extra_left {
         display: block;
         float: none !important;
@@ -1222,7 +1280,7 @@ img.crest {
     width: 99%;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .content p {
         text-align: left;
     }
@@ -1272,7 +1330,7 @@ img.crest {
     grid-template-rows: auto;
     margin: 0 0 20px 0;
 }
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .grid {
         margin-left: 0px;
         width: 97%;
@@ -1308,7 +1366,7 @@ audio {
     text-align: center;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .grid {
         grid-template-columns: auto;
     }
@@ -1324,7 +1382,7 @@ audio {
     }
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .homegriditem {
         margin-left: 8px;
     }
@@ -1376,7 +1434,7 @@ audio {
     grid-template-areas: ". ." "desc desc";
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .grid2 {
         width: 95%;
         margin-bottom: 12px;
@@ -1409,7 +1467,7 @@ audio {
     margin-top: 0.5em;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .grid1 {
         margin: 8px 0 2px 0;
     }
@@ -1434,7 +1492,7 @@ audio {
     height: 443px;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .video {
         width: 300px;
         height: 230px;
@@ -1506,7 +1564,7 @@ div.poem p {
     color: #668;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     p.quote {
         margin: 0.5em 1.5em 0.5em 1.5em;
         font-size: 100%;
@@ -1552,7 +1610,7 @@ p.quote:before, p.small_quote:before {
     grid-template-columns: 5fr 5fr;
     grid-template-areas: "sideimg sidedesc";
 }
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .side {
         grid-template-columns: unset;
         grid-template-areas: "sideimg" "sidedesc";
@@ -1624,7 +1682,7 @@ div.bottom {
     text-decoration: underline;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .peoplelist {
         box-sizing: border-box;
         width: 96%;
@@ -1643,7 +1701,7 @@ ol li {
     list-style-position: inside;
     margin: 0 0 1em 0;
 }
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     ol li {
         width: 95%;
     }
@@ -1670,7 +1728,7 @@ ol li {
     padding: 0;
     margin-top: 3em;
 }
-@media screen and (max-width: 840px) { 
+@media screen and (max-width: 1250px) { 
     .contentlist-in {
         margin-top: 1em;
     }
@@ -1683,7 +1741,7 @@ ol li {
     margin-left: 0;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .contentlist-in li {
         list-style-type: disc;
         list-style-position: inside;
@@ -1711,7 +1769,7 @@ ol li {
     border-radius: 12px;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     .letter {
         margin-left: 8px;
         margin-right: 8px;
@@ -1727,7 +1785,7 @@ ol li {
     font-weight: bold;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 1250px) {
     p.ints {
         margin-top: 8px;
         margin-bottom: 0px;
@@ -1768,11 +1826,14 @@ article.ref, p.ref  {
 article.ref > p, article.ref li {
     color: #787878;
 }
-@media screen and (max-width: 840px) { 
+@media screen and (max-width: 1250px) { 
     article.ref  {
         width: 87%;
         margin: 42px 0 12px 8px;
         border-width: 0 12px 0 12px;
+    }
+    p.ref {
+        margin-left: 4px;
     }
 }
 
@@ -1838,7 +1899,7 @@ diet- {
     width: 30%;
     margin: 18px 0 4px 0;
 }
-@media screen and (max-width: 840px) { 
+@media screen and (max-width: 1250px) { 
     intro- {
         margin: 8px 8px 20px 8px;
     }
@@ -1863,7 +1924,7 @@ diet- {
     width: 480px;
     height: 80px;
 }
-@media screen and (max-width: 840px) { 
+@media screen and (max-width: 1250px) { 
     .music {
         width: 90%;
         height: 100px;

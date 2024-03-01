@@ -54,6 +54,13 @@ def get_year(raw_year):
         dt = datetime(parts[0], parts[1], 1, 0, 0)
         return "{} {}".format(ordinal(parts[2]), dt.strftime('%B %Y'))
 
+@register.filter
+def get_year_only(raw_year):
+    if raw_year == "":
+        return "Unknown"
+    parts = list(map(lambda x: int(x), raw_year.split("-")))
+    return parts[0]
+
 
 @register.filter
 def get_first_image(adid):
@@ -513,6 +520,7 @@ def computer_advert_html(request, advert, adid):
         'sources': sources,
         'mtime': fmt_date,
         'companies': companies,
+        'related': related,
         'feedback': EMAIL,
     }
     return render(request, 'computers/advert.html', context)

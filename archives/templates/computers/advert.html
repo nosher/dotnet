@@ -99,3 +99,22 @@
 
 <p class="copy">Text and otherwise-uncredited photos &copy; nosher.net {{ ""|get_now }}. Dollar/GBP conversions, where used, assume $1.50 to £1. "Now" prices are calculated dynamically using average RPI per year.</p>
 {% endblock %}
+
+{%block sidebar %}
+  {% if related and related|length > 1 %}
+    <div class="twogrid">
+      {% for rel in related %}
+        {% if rel.adid == item.adid %}
+        <div class="adthumb_dim">
+        {% else %}
+        <div class="adthumb">
+          <a href="{{ rel.adid|get_first_image }}">            
+        {% endif %}
+          <img src="{{url}}/images/{{ rel.adid|get_first_image }}-s.jpg" /><br />
+          {% if rel.adid != item.adid %}</a>{% endif %}
+          <span>{{rel.year|get_year_only}}</span>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endblock %}
