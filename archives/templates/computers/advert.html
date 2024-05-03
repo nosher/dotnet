@@ -24,6 +24,7 @@
       var zimg = zoomer.children("img");
       var offset = zimg.offset()
       var naturalWidth = zimg.get(0).naturalWidth;
+      var naturalHeight = zimg.get(0).naturalHeight;
       if (naturalWidth > 1200) {
         $(".magicon").show();
         $(".magicon").on("click", function() {
@@ -38,7 +39,8 @@
         zoomer.on("mouseover", function() {
           if (doZoom) {
                   console.log(zimg.get(0).naturalWidth);   
-                  zimg.width(1400);
+                  zimg.width(naturalWidth);
+                  zimg.height(naturalHeight);
                   zoomer.height(height);
                   zoomer.css('cursor','zoom-in');
                   console.log(zimg.width());   
@@ -55,6 +57,7 @@
         zoomer.on("mouseout", function() {
           if (doZoom) {
                   zimg.width(700);
+                  zimg.height(naturalHeight/2);
                   zimg.offset(offset);
           }
         });
@@ -70,7 +73,7 @@
     </p>
     <h2>From {%if item.source %}{{ item.source }}{% else %}{%if item.type == "channel" %}sales brochure{% else %}Source unknown{% endif %}{% endif %}</h2>
     <div class="zoomer">
-      <img src="{{ page_image }}" class="ad" />
+      <img src="{{ page_image }}" class="ad" width="{{width}}" height="{{height}}"/>
     </div>
     <div class="magicon"><button id="zoom" type="button">🔍 click to zoom</button></div>
     
@@ -110,7 +113,7 @@
         <div class="adthumb">
           <a href="{{ rel.adid|get_first_image }}">            
         {% endif %}
-          <img src="{{url}}/images/{{ rel.adid|get_first_image }}-s.jpg" /><br />
+          <img src="{{url}}/images/{{ rel.adid|get_first_image }}-s.jpg" width="100" height="100" /><br />
           {% if rel.adid != item.adid %}</a>{% endif %}
           <span>{{rel.year|get_year_only}}</span>
         </div>

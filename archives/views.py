@@ -20,6 +20,7 @@ from datetime import date
 from .models import ArchiveItems
 from ..constants import *
 from collections import OrderedDict
+from PIL import Image
 
 ARCHIVES = "/archives/computers"
 EMAIL = "microhistory@nosher.net"
@@ -444,12 +445,21 @@ def computer_advert_html(request, advert, adid):
     items = ArchiveItems.objects.all().order_by('year')
     item = ArchiveItems.objects.filter(adid__startswith=adid)[0]
     related = ArchiveItems.objects.filter(company=item.company).order_by('year')
+    companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
     title = body = None
     path = os.path.join(ROOT, "{}.txt".format(adid))
+    imgpath = os.path.join(ROOT, "images", "{}-m.jpg".format(adid))
     stats = os.stat(path)
     fmt_date = datetime.fromtimestamp(stats[ST_MTIME]).strftime("%d %B %Y")
-    companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
     idx = request.GET.get("idx", "")
+
+    # get image size
+    im = Image.open(imgpath)
+    (imgw, imgh) = im.size
+    # compensate for hi-res images
+    if imgw > 1200 or imgh > 1200:
+        imgw = int(imgw / 2)
+        imgh = int(imgh / 2)
 
     # get advert contents
     with open(path, encoding="utf-8") as fh:
@@ -506,6 +516,8 @@ def computer_advert_html(request, advert, adid):
         'url': "{}/{}".format(WEBROOT, DOCROOT),
         'adid': adid,
         'page_image': _get_page_image("{}-m.jpg".format(adid)),
+        'width': imgw,
+        'height': imgh,
         'item': item,
         'page_title': page_title,
         'staticServer': WEBROOT,
