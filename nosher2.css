@@ -413,7 +413,8 @@ ul.index {
 }
 
 ul.index li {
-    margin-bottom: 4px;
+    margin-bottom: 8px;
+    margin-left: 6px;
 }
 
 .nav, .navbottom {
@@ -615,7 +616,7 @@ article.thumb img {
 
 @media screen and (max-width: 1250px) {
     .intro {
-        margin: 4px 4px 0 0 !important;
+        margin: 4px 4px 0 8px !important;
     }
 }
 
@@ -625,6 +626,10 @@ article.thumb img {
 
 ul.albums {
     line-height: 1.4;
+}
+ul.albums li {
+    padding-left: 0;
+    margin-left: -16px;
 }
 
 #viewer {
