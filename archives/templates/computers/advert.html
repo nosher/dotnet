@@ -24,6 +24,7 @@
       var zimg = zoomer.children("img");
       var offset = zimg.offset()
       var naturalWidth = zimg.get(0).naturalWidth;
+      var naturalHeight = zimg.get(0).naturalHeight;
       if (naturalWidth > 1200) {
         $(".magicon").show();
         $(".magicon").on("click", function() {
@@ -38,7 +39,8 @@
         zoomer.on("mouseover", function() {
           if (doZoom) {
                   console.log(zimg.get(0).naturalWidth);   
-                  zimg.width(1400);
+                  zimg.width(naturalWidth);
+                  zimg.height(naturalHeight);
                   zoomer.height(height);
                   zoomer.css('cursor','zoom-in');
                   console.log(zimg.width());   
@@ -55,6 +57,7 @@
         zoomer.on("mouseout", function() {
           if (doZoom) {
                   zimg.width(700);
+                  zimg.height(naturalHeight/2);
                   zimg.offset(offset);
           }
         });
