@@ -518,6 +518,7 @@ def computer_advert_html(request, advert, adid):
         'page_image': _get_page_image("{}-m.jpg".format(adid)),
         'width': imgw,
         'height': imgh,
+        'aspect': (imgw / imgh),
         'item': item,
         'page_title': page_title,
         'staticServer': WEBROOT,

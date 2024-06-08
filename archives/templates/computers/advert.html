@@ -73,7 +73,7 @@
     </p>
     <h2>From {%if item.source %}{{ item.source }}{% else %}{%if item.type == "channel" %}sales brochure{% else %}Source unknown{% endif %}{% endif %}</h2>
     <div class="zoomer">
-      <img src="{{ page_image }}" class="ad" width="{{width}}" height="{{height}}"/>
+      <img src="{{ page_image }}" class="ad" style="aspect-ratio: {{ aspect }};" />
     </div>
     <div class="magicon"><button id="zoom" type="button">🔍 click to zoom</button></div>
     
@@ -113,7 +113,7 @@
         <div class="adthumb">
           <a href="{{ rel.adid|get_first_image }}">            
         {% endif %}
-          <img src="{{url}}/images/{{ rel.adid|get_first_image }}-s.jpg" width="100" height="100" /><br />
+          <img src="{{url}}/images/{{ rel.adid|get_first_image }}-s.jpg" /><br />
           {% if rel.adid != item.adid %}</a>{% endif %}
           <span>{{rel.year|get_year_only}}</span>
         </div>
