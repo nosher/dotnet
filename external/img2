@@ -1,5 +1,13 @@
 #!/usr/bin/python3
 
+"""
+Simple cgi-bin script to convert an image on the fly from JPEG to or from WEBP, and 
+serve it in place of the original
+
+Requires ImageMagick for converting to JPEG, and cwebp for converting to WEBP
+
+"""
+
 from urllib import parse
 import os
 import sys
@@ -8,8 +16,9 @@ import subprocess
 ROOT = "/home/httpd/nosher.net/docs/"
 img = width = content_type = request = output = None
 
-request = [("i", "https://static.nosher.net/images/2023/2023-09-02DragonflyRide/imgp6441-s.jpg"), ("t", "webp")]
-request = [("i", "https://static.nosher.net/archives/computers/images/ads_002-s.jpg"), ("t", "webp")]
+# test requests - uncomment to use
+# request = [("i", "https://static.nosher.net/images/2023/2023-09-02DragonflyRide/imgp6441-s.jpg"), ("t", "webp")]
+# request = [("i", "https://static.nosher.net/archives/computers/images/ads_002-s.jpg"), ("t", "webp")]
 
 if "QUERY_STRING" in os.environ:
     request = parse.parse_qsl(os.environ["QUERY_STRING"])
@@ -31,7 +40,7 @@ if request:
             fpath = fpath + ".webp"
             # is webp already
         print ("*", fpath)
-        # TODO : shortcut for when converting to webp and already webp
+        # TODO : provide no-op shortcut for converting to webp when image is already webp
         if content_type == "webp":
             data = subprocess.run(["/usr/bin/cwebp", "-quiet", "-o", "-", "-m", "2", fpath], stdout=subprocess.PIPE)
         elif content_type == "jpg":
