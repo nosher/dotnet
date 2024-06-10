@@ -71,10 +71,7 @@
         <!-- search -->
         <li>
         <form action="/search" method="get" class="navlink">
-            <label>Search: <input id="query" type="text" value="{{ query }}" name="q" maxlength="100" class="stextnav" required /></label>{% if years %}
-            <input id="type" type="hidden" value="photos" name="filter" />{% endif %}{% if companies %}
-            <input id="type" type="hidden" value="ads" name="filter" />{% endif %}
-            <input type="submit" value="Go" class="sbutton" />
+            <label>Search: <input id="query" type="text" value="{{ query }}" name="q" maxlength="100" class="stextnav" required /></label>{% if years %}<input id="type" type="hidden" value="photos" name="filter" />{% endif %}{% if companies %}<input id="type" type="hidden" value="ads" name="filter" />{% endif %}<input type="submit" value="Go" class="sbutton" />
         </form>
         </li>
     </ul>
@@ -83,5 +80,13 @@
     <p>{%if feedback %}Feedback: {{ feedback }}<br />{% endif %}&copy; nosher.net 1999-{{ ""|get_now }}{%if mtime %}. Last updated: <nobr>{{ mtime }}</nobr>{% endif %}
     </p>
   </footer>
+  <script>
+    // prevent space keypress from bubbling up and triggering "next page"
+    $("#query").keydown(function(event) {
+        if (event.which == 32) { 
+            event.stopPropagation();
+        }
+    });
+  </script>
 </body>
 </html>
