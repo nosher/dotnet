@@ -1,0 +1,57 @@
+#!/usr/bin/python3
+
+from urllib import parse
+import os
+import sys
+import subprocess
+
+ROOT = "/home/httpd/nosher.net/docs/"
+img = width = content_type = request = output = None
+
+request = [("i", "https://static.nosher.net/images/2023/2023-09-02DragonflyRide/imgp6441-s.jpg"), ("t", "webp")]
+request = [("i", "https://static.nosher.net/archives/computers/images/ads_002-s.jpg"), ("t", "webp")]
+
+if "QUERY_STRING" in os.environ:
+    request = parse.parse_qsl(os.environ["QUERY_STRING"])
+
+if request:
+    for (k,v) in request:
+        if k == "i":
+            img = v
+            img = img.replace(".jpg", "").replace(".webp", "").replace("https://static.nosher.net", "")
+        elif k == "w":
+            width = v
+        elif k == "t":
+            content_type = v
+    try:
+        fpath = ROOT + "/" + img
+        if os.path.isfile(fpath + ".jpg"):
+            fpath = fpath + ".jpg"
+        else:
+            fpath = fpath + ".webp"
+            # is webp already
+        print ("*", fpath)
+        # TODO : shortcut for when converting to webp and already webp
+        if content_type == "webp":
+            data = subprocess.run(["/usr/bin/cwebp", "-quiet", "-o", "-", "-m", "2", fpath], stdout=subprocess.PIPE)
+        elif content_type == "jpg":
+            try:
+                data = subprocess.run(["magick", fpath, "JPEG:-"], stdout=subprocess.PIPE)
+            except:
+                data = subprocess.run(["convert", fpath, "JPEG:-"], stdout=subprocess.PIPE)
+
+        else:
+            print("Content-type: text/html\n\n")
+            print("Exception processing file: invalid format {} for {}".format(content_type, fpath))
+            sys.exit()
+                
+        sys.stdout.buffer.write(bytes("Content-type: image/{}\n\n".format(content_type), "utf-8"))
+        sys.stdout.buffer.write(data.stdout)
+
+    except Exception as err:
+        print("Content-type: text/html\n\n")
+        print("Exception processing file: ", err)
+    
+else:
+    print("Content-type: text/html\n\n")
+    print("Error: not a valid request")
