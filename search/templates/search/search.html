@@ -14,13 +14,13 @@
         <a href="/{{ result.path }}">
             <div id="fourbox">
             {% for img in result.imgs|split:"," %}
-                <img title="{{ result|details }}" class="tiny" src="{{ server }}/{{ result.path }}/{{ img }}-s.jpg" />
+                <img title="{{ result|details }}" class="tiny" src="{{ server }}/cdn/img2?i=/{{ result.path }}/{{ img }}-s&t=webp" />
             {% endfor %}
             </div>
         </a>
         <p>{{ result.content|ellipsize }}</p>
         {% else %}
-        <a href="/{{ result.path }}"><img src="{{ result.image }}" title="{{ result|details }}"/></a>
+        <a href="/{{ result.path }}"><img src="{{ server }}/cdn/img2?i={{ result.image }}&t=webp" title="{{ result|details }}"/></a>
         <p>{{ result.content|ellipsize }}</p>
         {% endif %}
     </article>{% endfor %}
