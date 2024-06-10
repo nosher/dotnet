@@ -38,7 +38,7 @@ if request:
             fpath = fpath + ".jpg"
         else:
             fpath = fpath + ".webp"
-            # the image is webp already
+
         # TODO : provide no-op shortcut for converting to webp when image is already webp. 
         # See https://github.com/nosher/dotnet/issues/55
         if content_type == "webp":
