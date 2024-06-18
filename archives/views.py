@@ -363,7 +363,7 @@ def computer_index(request):
         'url': "{}/{}".format(WEBROOT, DOCROOT),
         'title': title,
         'section': section,
-        'page_image': _get_page_image("{}-m.jpg".format(items[0].adid)),
+        'page_image': _get_page_image("{}-m.webp".format(items[0].adid)),
         'page_title': page_title,
         'page_description': re.sub("<.*?>","", intro),
         'staticServer': WEBROOT,
@@ -448,7 +448,7 @@ def computer_advert_html(request, advert, adid):
     companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
     title = body = None
     path = os.path.join(ROOT, "{}.txt".format(adid))
-    imgpath = os.path.join(ROOT, "images", "{}-m.jpg".format(adid))
+    imgpath = os.path.join(ROOT, "images", "{}-m.webp".format(adid))
     stats = os.stat(path)
     fmt_date = datetime.fromtimestamp(stats[ST_MTIME]).strftime("%d %B %Y")
     idx = request.GET.get("idx", "")
@@ -515,7 +515,7 @@ def computer_advert_html(request, advert, adid):
     context = {
         'url': "{}/{}".format(WEBROOT, DOCROOT),
         'adid': adid,
-        'page_image': _get_page_image("{}-m.jpg".format(adid)),
+        'page_image': _get_page_image("{}-m.webp".format(adid)),
         'width': imgw,
         'height': imgh,
         'aspect': (imgw / imgh),
