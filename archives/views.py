@@ -270,15 +270,19 @@ def catalogue(request, alpha = ""):
 def links(request):
     companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
     encoded = None
+    index = None
     with open("/home/httpd/nosher.net/docs/archives/computers/graphs/computers.svg", "rb") as fh:
         svg = fh.read()
         encoded = base64.b64encode(svg)
+    with open("/home/httpd/nosher.net/docs/archives/computers/graphs/index.html") as ind:
+        index = ind.read()
 
     context = {
         'staticServer': WEBROOT,
         'home': ARCHIVES,
         'companies': companies,
         'feedback': EMAIL,
+        'index': index,
         'svgData': encoded.decode("ascii")
     }
     return render(request, 'computers/links.html', context)
@@ -451,6 +455,11 @@ def computer_advert_html(request, advert, adid):
     imgpath = os.path.join(ROOT, "images", "{}-m.webp".format(adid))
     stats = os.stat(path)
     fmt_date = datetime.fromtimestamp(stats[ST_MTIME]).strftime("%d %B %Y")
+    # HACK: all source files got their dates reset to 18 June 2024 at some point, so 
+    # ignore this if that's what the date is
+    if fmt_date == "18 June 2024":
+        fmt_date = None
+
     idx = request.GET.get("idx", "")
 
     # get image size

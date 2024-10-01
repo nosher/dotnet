@@ -7,9 +7,9 @@
 <p class="nav">{% include "computers/navbar.html" %}</p>
 <p>Sometimes, it's a small world.</p>
 <p>Psion started out writing software for Sinclair machines, before going on to create the Epoc operating system for 
-  its Organiser pocket computers. This then became Symbian, which ended up shipping on countless millions of Nokia phones. 
+  its Organiser pocket computers. This then evolved into Symbian, which ended up shipping on countless millions of (mostly) Nokia phones. 
   Acorn started a little side project working on RISC processors, which became ARM - the chip design now on billions of 
-  mobile phones. Or see how Elliot and LEO - names from the 1960s - formed ICL, which in the mid 1980s was managed by 
+  mobile phones. Or see how Elliot and LEO - names from the 1960s - merged into ICL, which in the mid 1980s was managed by 
   Robb Wilmot who also had a hand in Sinclair Research, before he headed off to manage Poqet Computers - a company 
   founded by former employees of the legendary Fairchild Semiconductor, which gave rise to Intel and AMD, amongst others.</p>
 <p>These are a few of many sometimes-incestuous connections in the microcomputer industry, which this wiring graph 
@@ -18,7 +18,10 @@
 
 <!--<a href="{{ staticServer }}/archives/computers/graphs/computers.svg"><img src="{{ staticServer }}/archives/computers/graphs/computers_screenshot.png" style="width: 700px;"/></a>-->
 
+
 <object class="svg" id="container" id="svg" data="computers.svg" type="image/svg+xml"></object>
+
+{{ index|safe }}
 
 <script>
   
@@ -34,6 +37,10 @@
   var viewboxSize = {x: 1000, y: 1400};
   var viewboxScale = 1.2;
   var mouseDown = false;
+  var oldFill = "";
+  var fillCount = 0;
+  var timeout;
+  var path;
 
   shape.addEventListener("load",function() {
       svgDoc = shape.contentDocument;
@@ -43,6 +50,39 @@
       svgDoc.addEventListener("wheel", wheel, {passive: false});
       setviewbox();
   }, false);
+
+  function flipColour() {
+    if (fillCount < 40) {
+      red = 255 - ((fillCount / 40) * 200);
+      path.setAttribute("fill", "#" + (Math.floor(red)).toString(16) + "0000");
+      timeout = window.setTimeout(flipColour, fillCount == 1 ? 4000 : 10);
+      fillCount++;
+    } else {
+      path.setAttribute("fill", oldFill);
+      fillCount = 0;
+    }
+
+    console.log("Path:", path);
+  }
+
+  function gosvg(elid, x, y) {
+    if (!oldFill == "") {
+        path.setAttribute("fill", oldFill);
+        oldFill = "";
+    }
+    var els = svgData.getElementById(elid);
+    path = els.getElementsByTagName("path")[0];
+    oldFill = path.getAttribute("fill");
+    viewboxStartPosition.x = viewboxPosition.x;
+    viewboxStartPosition.y = viewboxPosition.y;
+    viewboxPosition.x = x - (viewboxSize.x * viewboxScale / 2.0);
+    viewboxPosition.y = y - (viewboxSize.y * viewboxScale / 2.0);
+    console.log("GoSVG", x, y);
+    window.clearTimeout(timeout);
+    setviewbox();
+    fillCount = 0;
+    flipColour();
+  }
 
   function mousedown(e) {
     mouseStartPosition.x = e.pageX;
@@ -55,7 +95,6 @@
 
   function setviewbox() {
 
-    console.log("set box")  
     var vp = {x: 0, y: 0};
     var vs = {x: 0, y: 0};
     
@@ -64,7 +103,7 @@
     vs.x = viewboxSize.x * viewboxScale;
     vs.y = viewboxSize.y * viewboxScale;
     svgData.setAttribute("viewBox", vp.x + " " + vp.y + " " + vs.x + " " + vs.y);
-    console.log("Viewbox: ", vp.x, ", ", vp.y);
+    console.log("Viewbox: ", vp.x, ", ", vp.y, " scale: ", viewboxScale);
   }
 
   function mousemove(e) {
@@ -73,8 +112,8 @@
     
     if (mouseDown)
     {
-      viewboxPosition.x = viewboxStartPosition.x + (mouseStartPosition.x - e.pageX) * viewboxScale;
-      viewboxPosition.y = viewboxStartPosition.y + (mouseStartPosition.y - e.pageY) * viewboxScale;
+      viewboxPosition.x = viewboxStartPosition.x + (mouseStartPosition.x - e.pageX) * 4 * viewboxScale;
+      viewboxPosition.y = viewboxStartPosition.y + (mouseStartPosition.y - e.pageY) * 4 * viewboxScale;
 
       setviewbox();
     }
@@ -91,7 +130,7 @@
   function wheel(event) {
     event.preventDefault();
     var scale = event.deltaY < 1.0 ? 0.8 : 1.2;
-    if ((viewboxScale * scale < 12.) && (viewboxScale * scale > 1./2.)) {  
+    if ((viewboxScale * scale < 12.) && (viewboxScale * scale > 1./3.)) {  
       var mpos = {x: mousePosition.x * viewboxScale, y: mousePosition.y * viewboxScale};
       var vpos = {x: viewboxPosition.x, y: viewboxPosition.y};
       var cpos = {x: mpos.x + vpos.x, y: mpos.y + vpos.y}

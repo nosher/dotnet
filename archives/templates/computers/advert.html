@@ -73,7 +73,7 @@
     </p>
     <h2>From {%if item.source %}{{ item.source }}{% else %}{%if item.type == "channel" %}sales brochure{% else %}Source unknown{% endif %}{% endif %}</h2>
     <div class="zoomer">
-      <img src="{{ page_image }}" class="ad" style="aspect-ratio: {{ aspect }};" />
+      <img src="{{ page_image }}" class="ad" style="aspect-ratio: {{ aspect }};" alt="{{ item.company }} Advert: {{ title|safe }}, from {{ item.source }}, {{ item.year|get_year }}" />
     </div>
     <div class="magicon"><button id="zoom" type="button">🔍 click to zoom</button></div>
     
@@ -83,6 +83,10 @@
     <div class="liner">
     {{ body|safe }}
     </div>
+
+    {% if mtime %}
+    <p class="updated">Updated: {{ mtime }}</p>
+    {% endif %}
 
     <p class="navbottom">
         {% include "computers/navbar.html" %}
@@ -113,7 +117,7 @@
         <div class="adthumb">
           <a href="{{ rel.adid|get_first_image }}">            
         {% endif %}
-          <img src="{{url}}/images/{{ rel.adid|get_first_image }}-s.webp" /><br />
+          <img src="{{url}}/images/{{ rel.adid|get_first_image }}-s.webp" alt="Another {{rel.company}} advert, from {{rel.year|get_year}}" /><br />
           {% if rel.adid != item.adid %}</a>{% endif %}
           <span>{{rel.year|get_year_only}}</span>
         </div>
