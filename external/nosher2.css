@@ -118,7 +118,7 @@ p {
 /* Body */
 
 body {
-    font-family: "charterregular", serif;
+    font-family: "charterregular", "Georgia", "Times New Roman", serif;
     text-rendering: optimizeLegibility;
     font-weight: 300;
     width: 100vw;
@@ -318,13 +318,20 @@ main {
 
 #yearindex {
     display: grid;
-    grid-template-columns: repeat(auto-fit, 80px);
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     grid-gap: 20px;
     font-size: 80%;
 }
 
 #yearindex img {
     width: 80px;
+}
+
+@media screen and (max-width: 1000px) {
+    #yearindex {
+        padding-left: 8px;
+        grid-gap: 8px;
+    }
 }
 
 nav, navbottom {
@@ -592,8 +599,8 @@ article.thumb img {
 }
 
 @media screen and (max-width: 1000px) {
-    .intro {
-        margin: 4px 4px 0 0 !important;
+    p.intro {
+        margin: 4px 4px 0 8px !important;
     }
     .images_intro {
         padding: 2px 8px 8px 0;
@@ -1012,12 +1019,18 @@ archivedescription h3 {
 }
 
 .svg {
-    width: 860px;
-    height:900px;
+    width: 800px;
+    height: 600px;
     border: 1px solid #555;
     margin: 8px 0 24px 0;
 }
-
+.svgindex {
+    font-size: 70%;
+}
+.update {
+    font-family: arial;
+    font-size: 80%;
+}
 .advert, .album {
     color: #303030;
     color: #333;
@@ -1031,6 +1044,11 @@ archivedescription h3 {
     margin: 0 0 22px 0;
     box-shadow: 3px 3px 6px #888888;
     width: 95%;
+}
+
+.updated {
+    font-style: italic;
+    color: var(--headers2);
 }
 
 img.ad {
@@ -1939,3 +1957,4 @@ diet- {
         margin-left: 8px;
     }
 }
+
