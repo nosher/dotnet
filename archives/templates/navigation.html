@@ -1,0 +1,88 @@
+<script type="text/javascript">
+    // script to freeze the navigation at its bottom if on a very long
+    // page of content
+    window.addEventListener("load", function() {
+        var header = document.getElementById("header");
+        var nav = document.getElementById("navwrapper");
+        var windowHeight = window.innerHeight;
+        // see nosher2.css for definition of mobile width
+        var isMobile = window.innerWidth < 1001; 
+        var headerHeight = header.offsetHeight;
+        var navHeight = headerHeight + nav.offsetHeight;
+        var navWidth = nav.offsetWidth;
+        var lastY = 0;
+        var constrainedY = 0;
+        var boundY = navHeight - windowHeight;
+        if (!isMobile) {
+            window.addEventListener("scroll", (event) => {
+                var dY = scrollY - lastY;
+                constrainedY += dY;
+                if (constrainedY > boundY) {
+                    nav.style.position = "fixed";
+                    nav.style.width = navWidth + "px";
+                    nav.style.top = "-" + boundY + "px";
+                    constrainedY = boundY;
+                } else if (scrollY > headerHeight) {
+                    if (constrainedY < 0) {
+                        constrainedY = 0;
+                    }
+                    nav.style.position = "fixed";
+                    nav.style.width = navWidth + "px";
+                    nav.style.top = "-" + constrainedY + "px";
+                } else {
+                    nav.style.position = "relative";
+                    nav.style.top = "";
+                    constrainedY = 0;
+                }
+                lastY = scrollY;
+            });
+        }
+    }, false);
+</script>
+
+<a name="navigation"></a>
+<div id="navwrapper">
+    <ul>
+        <!-- home -->
+        <li><a href="/">Home</a></li>
+        <!-- photos -->
+        <li><a href="/images/">A life in photos</a>
+        {% if years %}
+            <p class="navlink">
+            {% for year in years %}<nobr>{% if year.hasNew %}<span class="inew">•</span>{% endif %}<a href="/images/{{ year.year }}">{{ year.year }}</a>{%if not forloop.last%}, {%endif%}</nobr>
+        {% endfor %}
+            <br clear="left" /><span class="inew">•</span> denotes new albums</p>
+        {% endif %}
+        {% if groups %}
+            <p class="navlink">
+            {% for group in groups %}<a href="/images?title={{ group.title|urlencode }}&group={{ group.keys|urlencode }}">{{ group.title }}</a><br />
+        {% endfor %}
+            </p>
+        {% endif %}
+        </li>
+        <!-- computer adverts -->
+        <li><a href="/archives/computers/">A history of the microcomputer industry in 300 adverts</a>{% if companies %}
+        <p class="navlink">
+        {% for company in companies %}{% if company.company != "" %}{% if company.total == 1 %}{% if company.company|length < 30 %}
+        <nobr>{% endif %}<a href="/archives/computers/{{ company.company|get_first_advert }}">{{ company.company }}</a>{%if not forloop.last%},&nbsp;{%endif%}{% if company.company|length < 30 %}</nobr>{% endif %}{% else %}{% if company.company != "" %}{% if company.company|length < 30 %}
+        <nobr>{% endif %}<a href="/archives/computers/?type=source&value={{ company.company }}">{{ company.company }}</a>{%if not forloop.last%},&nbsp;{%endif%}{% if company.company|length < 30 %}</nobr>{% endif %}{% endif %}{% endif %}{% endif %}{% endfor %}</p>{% endif %}</li>
+        <!-- the AJO Archive -->
+        <li><a href="/content/ajo/">The Arnewood Jazz Orchestra Archive</a></li>
+        <!-- RAF Halton 69th Entry Archive -->
+        <li><a href="/content/raf69th">The RAF Halton 69th Entry Archive</a>{%if section == "raf69th" %}
+            <p class="navlink"><ul class="contentlist">{% include "content/rafnav.html" %}</ul></p>{% endif %}</li>
+        <!-- The Saxon Horse -->
+        <li><a href="/content/saxonhorse/">The Saxon Horse burial at Eriswell</a>{%if section == "saxonhorse" %}
+            <p class="navlink"><ul class="contentlist">{% include "content/saxonnav.html" %}</ul></p>{% endif %}</li>
+        <!-- Flint knapping Brandon -->
+        <li><a href="/content/brandonflint/">An 1887 history of flint knapping in Brandon</a></li>
+        <!-- Family recipes -->
+        <li><a href="/content/recipes/">Family recipes</a></li>
+        <!-- search -->
+        <li>
+        <form action="/search" method="get" class="navlink">
+            <label>Search: <input id="query" type="text" value="{{ query }}" name="q" maxlength="100" class="stextnav" required /></label>{% if years %}<input id="type" type="hidden" value="photos" name="filter" />{% endif %}{% if companies %}<input id="type" type="hidden" value="ads" name="filter" />{% endif %}<input type="submit" value="Go" class="sbutton" />
+        </form>
+        </li>
+    </ul>
+</div>
