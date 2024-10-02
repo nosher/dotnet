@@ -1,9 +1,11 @@
 <script type="text/javascript">
-
+    // script to freeze the navigation at its bottom if on a very long
+    // page of content
     window.addEventListener("load", function() {
         var header = document.getElementById("header");
         var nav = document.getElementById("navwrapper");
         var windowHeight = window.innerHeight;
+        var isMobile = window.innerWidth < 1001; // see nosher2.css for definition of mobile width
         var headerHeight = header.offsetHeight;
         var navHeight =  headerHeight + nav.offsetHeight;
         var navWidth = nav.offsetWidth;
@@ -12,7 +14,8 @@
         var debounce = false;
         var constrainedY = 0;
         var boundY = navHeight - windowHeight;
-        window.addEventListener("scroll", (event) => {
+        if (!isMobile) {
+            window.addEventListener("scroll", (event) => {
             console.log("Scroll", scrollY);
             var dY = scrollY - lastY;
             constrainedY += dY;
@@ -34,7 +37,8 @@
                 constrainedY = 0;
             }
             lastY = scrollY;
-        });
+            });
+        }
     }, false);
 </script>
 
