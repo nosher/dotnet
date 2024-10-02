@@ -17,7 +17,9 @@
 </head>
 
 <body id="mainbody" class="body">
-
+  <script src="https://static.nosher.net/js/jquery-3.3.1.min.js" 
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" 
+    crossorigin="anonymous"></script>
   <div class="navlite">
     <a href="/">Home</a> | 
     <a href="/images/">Photos</a> | 
@@ -27,54 +29,11 @@
     <a href="/content/saxonhorse/">Saxon horse</a> | 
     <a href="#navigation"><nobr>more ▼</nobr></a>
   </div>
-  <header><p>nosher.net</p></header>
+  <header id="header"><p>nosher.net</p></header>
   <main>{% block content %}{% endblock %}</main>
   <sidebar>{% block sidebar %}{% endblock %}</sidebar>
   <nav>
-    <a name="navigation"></a>
-    <ul>
-        <!-- home -->
-        <li><a href="/">Home</a></li>
-        <!-- photos -->
-        <li><a href="/images/">A life in photos</a>
-        {% if years %}
-          <p class="navlink">
-          {% for year in years %}<nobr>{% if year.hasNew %}<span class="inew">•</span>{% endif %}<a href="/images/{{ year.year }}">{{ year.year }}</a>{%if not forloop.last%}, {%endif%}</nobr>
-        {% endfor %}
-          <br clear="left" /><span class="inew">•</span> denotes new albums</p>
-        {% endif %}
-        {% if groups %}
-          <p class="navlink">
-          {% for group in groups %}<a href="/images?title={{ group.title|urlencode }}&group={{ group.keys|urlencode }}">{{ group.title }}</a><br />
-        {% endfor %}
-          </p>
-        {% endif %}
-        </li>
-        <!-- computer adverts -->
-        <li><a href="/archives/computers/">A history of the microcomputer industry in 300 adverts</a>{% if companies %}
-        <p class="navlink">
-        {% for company in companies %}{% if company.company != "" %}{% if company.total == 1 %}{% if company.company|length < 30 %}
-        <nobr>{% endif %}<a href="/archives/computers/{{ company.company|get_first_advert }}">{{ company.company }}</a>{%if not forloop.last%},&nbsp;{%endif%}{% if company.company|length < 30 %}</nobr>{% endif %}{% else %}{% if company.company != "" %}{% if company.company|length < 30 %}
-        <nobr>{% endif %}<a href="/archives/computers/?type=source&value={{ company.company }}">{{ company.company }}</a>{%if not forloop.last%},&nbsp;{%endif%}{% if company.company|length < 30 %}</nobr>{% endif %}{% endif %}{% endif %}{% endif %}{% endfor %}</p>{% endif %}</li>
-        <!-- the AJO Archive -->
-        <li><a href="/content/ajo/">The Arnewood Jazz Orchestra Archive</a></li>
-        <!-- RAF Halton 69th Entry Archive -->
-        <li><a href="/content/raf69th">The RAF Halton 69th Entry Archive</a>{%if section == "raf69th" %}
-            <p class="navlink"><ul class="contentlist">{% include "content/rafnav.html" %}</ul></p>{% endif %}</li>
-        <!-- The Saxon Horse -->
-        <li><a href="/content/saxonhorse/">The Saxon Horse burial at Eriswell</a>{%if section == "saxonhorse" %}
-            <p class="navlink"><ul class="contentlist">{% include "content/saxonnav.html" %}</ul></p>{% endif %}</li>
-        <!-- Flint knapping Brandon -->
-        <li><a href="/content/brandonflint/">An 1887 history of flint knapping in Brandon</a></li>
-        <!-- Family recipes -->
-        <li><a href="/content/recipes/">Family recipes</a></li>
-        <!-- search -->
-        <li>
-        <form action="/search" method="get" class="navlink">
-            <label>Search: <input id="query" type="text" value="{{ query }}" name="q" maxlength="100" class="stextnav" required /></label>{% if years %}<input id="type" type="hidden" value="photos" name="filter" />{% endif %}{% if companies %}<input id="type" type="hidden" value="ads" name="filter" />{% endif %}<input type="submit" value="Go" class="sbutton" />
-        </form>
-        </li>
-    </ul>
+    {% include "navigation.html" %}
   </nav>
   <footer>
     <p>{%if feedback %}Feedback: {{ feedback }}<br />{% endif %}&copy; nosher.net 1999-{{ ""|get_now }}{%if mtime %}. Last updated: <nobr>{{ mtime }}</nobr>{% endif %}
