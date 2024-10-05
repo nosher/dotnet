@@ -83,9 +83,7 @@
     {{ body|safe }}
     </div>
 
-    {% if mtime %}
-    <p class="updated">Updated: {{ mtime }}</p>
-    {% endif %}
+    <p class="updated">Date created: {{ item.date_created|date:"d F Y"  }}{% if mtime %}<br />Last updated: {{ mtime }}{% endif %}</p>
 
     <p class="navbottom">
         {% include "computers/navbar.html" %}

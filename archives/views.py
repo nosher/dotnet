@@ -21,6 +21,7 @@ from .models import ArchiveItems
 from ..constants import *
 from collections import OrderedDict
 from PIL import Image
+from pytz import timezone
 
 ARCHIVES = "/archives/computers"
 EMAIL = "microhistory@nosher.net"
@@ -94,7 +95,7 @@ def convert_picture(item):
             for pic in groups:
                 repl = "[picture: %s]" % pic
                 bits = pic.split("|")
-                target = """<div class="grid1"><img class="ctrimg" src="https://static.nosher.net/archives/computers/images/{}" alt="{}" title="{}"><p class="desc">{}</p></div>""".format(bits[0], bits[1], bits[1], bits[1])
+                target = """<div class="grid1"><img class="ctrimg" src="https://static.nosher.net/archives/computers/images/extras/{}" alt="{}" title="{}"><p class="desc">{}</p></div>""".format(bits[0], bits[1], bits[1], bits[1])
                 item[i] = item[i].replace(repl, target)
     return item
 
@@ -450,21 +451,23 @@ def computer_advert_html(request, advert, adid):
     item = ArchiveItems.objects.filter(adid__startswith=adid)[0]
     related = ArchiveItems.objects.filter(company=item.company).order_by('year')
     companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
-    title = body = None
+    title = body = updated = None
     path = os.path.join(ROOT, "{}.txt".format(adid))
     imgpath = os.path.join(ROOT, "images", "{}-m.webp".format(adid))
+    idx = request.GET.get("idx", "")
     stats = os.stat(path)
-    fmt_date = datetime.fromtimestamp(stats[ST_MTIME]).strftime("%d %B %Y")
+    fmt_date = datetime.fromtimestamp(stats[ST_MTIME]).replace(tzinfo=timezone('UTC'))
+    mysql_date = item.date_created.replace(tzinfo=timezone('UTC'))
+
     # HACK: all source files got their dates reset to 18 June 2024 at some point, so 
     # ignore this if that's what the date is
-    if fmt_date == "18 June 2024":
-        fmt_date = None
-
-    idx = request.GET.get("idx", "")
+    if fmt_date.strftime("%d %B %Y") != "18 June 2024" and fmt_date > mysql_date:
+        updated =fmt_date.strftime("%d %B %Y") 
 
     # get image size
     im = Image.open(imgpath)
     (imgw, imgh) = im.size
+
     # compensate for hi-res images
     if imgw > 1200 or imgh > 1200:
         imgw = int(imgw / 2)
@@ -540,7 +543,7 @@ def computer_advert_html(request, advert, adid):
         'title': title,
         'body': body,
         'sources': sources,
-        'mtime': fmt_date,
+        'mtime': updated,
         'companies': companies,
         'related': related,
         'feedback': EMAIL,
