@@ -341,6 +341,9 @@ nav, navbottom {
     font-size: 90%;
     width: 99%;
 }
+#navwrapper {
+    position: relative;
+}
 
 nav ul {
     padding: 0;
@@ -1957,4 +1960,3 @@ diet- {
         margin-left: 8px;
     }
 }
-
