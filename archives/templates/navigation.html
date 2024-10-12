@@ -2,43 +2,39 @@
     // script to freeze the navigation at its bottom if on a very long
     // page of content
     window.addEventListener("load", function() {
+
         var header = document.getElementById("header");
         var footer = document.getElementById("footer");
         var cmain = document.getElementById("cmain");
         var nav = document.getElementById("navwrapper")
+
         var windowHeight = window.innerHeight;
-        // see nosher2.css for definition of mobile width
-        var isDesktop = window.innerWidth > 1000; 
+        var isDesktop = window.innerWidth > 1000; // see nosher2.css for definition of mobile width
         var headerHeight = header.offsetHeight;
+        var footerHeight = footer.offsetHeight + 40;
         var navHeight = nav.offsetHeight;
         var navWidth = nav.offsetWidth;
         var lastY = 0;
         var constrainedY = 0;
-        var offset = nav.offsetHeight - windowHeight;
+        var navOffsetHeight = nav.offsetHeight - windowHeight;
 
-        if (isDesktop)  {
-            console.log("Content: " + cmain.offsetHeight + " nav: " + navHeight);
-            //console.log("win: " + window.innerHeight);
+        // don't bother unless the content area is reasonably longer than the navigation
+        if (isDesktop && (cmain.offsetHeight > navHeight * 1.2)) {
             window.addEventListener("scroll", (event) => {
-                // only bother if the content area is longer than the navigation
-                if (cmain.offsetHeight > navHeight) {
-                    var dY = window.scrollY - lastY;
-                    var scrollY = window.scrollY;
-                    constrainedY += dY;
-                    if (scrollY > headerHeight) {
-                        constrainedY = Math.min(Math.max(constrainedY, 0), offset);
-                        console.log("dY: " + dY + " cY: " + constrainedY + " scroll:" + scrollY + " nav: " + navHeight + " header:" + headerHeight);
-                        nav.style.position = "fixed";
-                        nav.style.width = navWidth + "px";
-                        nav.style.top = "-" + (constrainedY + 70) + "px";
-                    } else {
-                        nav.style.position = "relative";
-                        nav.style.top = "";
-                        constrainedY = 0;
-                    } 
-                    lastY = scrollY;
-    
+                var scrollY = window.scrollY;
+                var dY = scrollY - lastY;
+                constrainedY += dY;
+                var max = 0;
+                if (navHeight > windowHeight) {
+                    max = (navHeight - windowHeight + (footerHeight * 2));
+                } else {
+                    max = headerHeight;
                 }
+                constrainedY = Math.min(Math.max(constrainedY, 0), max)
+                nav.style.position = "fixed";
+                nav.style.width = navWidth + "px";
+                nav.style.top = (headerHeight - constrainedY) + "px";
+                lastY = scrollY;
             });
         }
     }, false);

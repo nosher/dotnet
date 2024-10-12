@@ -30,11 +30,11 @@
     <a href="#navigation"><nobr>more ▼</nobr></a>
   </div>
   <header id="header"><p>nosher.net</p></header>
-  <main id="cmain">{% block content %}{% endblock %}</main>
-  <sidebar>{% block sidebar %}{% endblock %}</sidebar>
   <nav>
     {% include "navigation.html" %}
   </nav>
+  <main id="cmain">{% block content %}{% endblock %}</main>
+  <sidebar>{% block sidebar %}{% endblock %}</sidebar>
   <footer id="footer">
     <p>{%if feedback %}Feedback: {{ feedback }}<br />{% endif %}&copy; nosher.net 1999-{{ ""|get_now }}{%if mtime %}. Last updated: <nobr>{{ mtime }}</nobr>{% endif %}
     </p>
