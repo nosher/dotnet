@@ -1,0 +1,274 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="advert">
+<h1>Microcomputer company timelines</h1>
+<p class="nav">{% include "computers/navbar.html" %}</p>
+
+<p class="sort"><i>Sort by:</i> 
+  <a href="timelines?sort=range{{ filter }}">lifespan{% if sortkey == "range" %}*{% endif %}</a> |
+  <a href="timelines?sort=from{{ filter }}">date founded{% if sortkey == "from" %}*{% endif %}</a> |
+  <a href="timelines?sort=to{{ filter }}">date defunct</a>{% if sortkey == "to" %}*{% endif %} | 
+  <a href="timelines?sort=name{{ filter }}">company{% if sortkey == "name" %}*{% endif %}</a>
+  <br /><i>Filter by:</i>
+  <a href="timelines?filter=UK{{ sort }}">UK{% if filterkey == "UK" %}*{% endif %}</a> |
+  <a href="timelines?filter=US{{ sort }}">US{% if filterkey == "US" %}*{% endif %}</a> |
+  <a href="timelines?filter=none{{ sort }}">all{% if filterkey == "" or filterkey == "none" %}*{% endif %}</a>
+</p>
+<div class="scales">Scale: 
+    <input type="button" onclick="_setScale({{ rows }}, 0)" value=" 1x " />
+    <input type="button" onclick="_setScale(80, 0)" value=" 2x " />
+    <input type="button" onclick="_setScale(40, 1963)" value=" 4x " />
+    <input type="button" onclick="_setScale(30, 1967)" value=" 6x " />
+    <input type="button" onclick="_setScale(20, 1972)" value=" 8x " />
+  </div>
+
+<canvas class="timeline" id="timeline" width="700" height="700"></canvas><br />
+
+<p>View the history of microcomputer companies in timeline form. Data can be filtered by UK and US companies, 
+or everything, which includes some European and Far East manufacturers. 
+Sort by company name, company lifetime, the date the company was founded (or started producing calculators 
+or computers specifically), and the date it died, was sold off or otherwise exited the computer business.
+</p>
+<p>Most telling is to sort by defunct date, where the great mass extinction of micro companies between 
+1983 and 1986 can be seen as a cliff wall. There's another smaller wall around the dot-com bubble of 2000, for
+the few companies that lived that long.
+</p>
+<p>Click and drag, or swipe with a finger to move left or right, or drag vertically or use the mouse wheel to move up and down. Set the view scale using the buttons above the graph.
+<p class="nav">{% include "computers/navbar.html" %}</p>
+
+<script>
+
+  const canvas = document.getElementById("timeline");
+  const rect = canvas.getBoundingClientRect();
+  const ctx = canvas.getContext("2d", { alpha: true });
+  const cHeight = canvas.height;
+  const cWidth = canvas.width;
+  const rowcount = {{ rows }};
+  const maxYear = {{ now }}
+  const gridWidth = 1;
+  const headerHeight = 12;
+  const barCol = "#d4ae68";
+  const joinCol = "#947e38";
+  const startYear = {
+    value: 1965,
+    get val() {
+      return Math.floor(this.value);
+    }
+  };
+
+  // set up the canvas for high density displays
+  const dpr = window.devicePixelRatio;
+  // Set the actual size of the canvas
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  // Scale the context to ensure correct drawing operations
+  ctx.scale(dpr, dpr);
+  // Set the drawn size of the canvas
+  canvas.style.width = `${rect.width}px`;
+  canvas.style.height = `${rect.height}px`;
+  // set text rendering
+  ctx.textRendering = "geometricPrecision";
+
+  var rows = rowcount;
+  var rowOffset = 0;
+  var mouseStartPosition = {x: 0, y: 0};
+  var mousePosition = {x: 0, y: 0};
+  var mouseDown = false;
+  var tlines = [];
+  {% for t in timelines %}
+  tlines[{{ forloop.counter0 }}] = {"name": "{{ t.name }}", "from": {{ t.from }}, "to": {{ t.to }}, "joins": "{{ t.joins }}" };  
+  {% endfor %}
+
+  window.addEventListener("load", function() {
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, cWidth, cHeight);
+      ctx.rect(1, 1, cWidth - 2, cHeight - 2);
+      ctx.clip();
+      canvas.addEventListener("mousemove", mousemove);
+      canvas.addEventListener("mousedown", mousedown);
+      canvas.addEventListener("wheel", mousewheel, {passive: false});
+      startYear.value = maxYear - rows;
+      draw();
+    }, false
+  );
+
+  function draw() {
+    ctx.clearRect(1, 1, canvas.width - 2, canvas.height - 2);
+    ctx.fillStyle = "#f8f8f2";
+    ctx.fillRect(1, 1, cWidth - 2, cHeight - 2);
+    draw_grid();
+    draw_bars();
+    draw_labels();  
+    draw_joins();
+  }
+
+  function draw_grid() {
+    var cols = _get_colwidth();
+    ctx.strokeStyle = "#222";
+    ctx.lineWidth = 1;
+    for (i = 0; i < rows + 1; i++) {
+      ctx.beginPath();
+      ctx.moveTo(i * cols + 0.5, 0);
+      ctx.lineTo(i * cols + 0.5, cHeight);
+      ctx.stroke();
+    }
+  }
+
+  function draw_bars() {
+    var cols = _get_colwidth();
+    ctx.strokeStyle = barCol;
+    ctx.lineCap = "round";
+    ctx.lineWidth = _get_bar_height();
+    var toJoin = [];
+    for (i = 0; i < rows; i++) {
+      if (i + rowOffset < rowcount) {
+        var from = tlines[i + rowOffset]["from"];
+        var to = tlines[i + rowOffset]["to"];
+        var bar_width = (to - from) * cols;
+        var y = (_get_row_height() * i + (_get_row_height() * 1.2)) + headerHeight;
+        var x = (from - startYear.val) * cols;
+        draw_bar(x, y, bar_width)
+      }
+    }
+    return toJoin;
+  }
+
+  function draw_joins() {
+    for (i = 0; i < rowcount; i++) {
+      var join = tlines[i]["joins"];
+      var cols = _get_colwidth();
+      if (join != "") {
+        bits = join.split(":");
+          console.log("bits: ", bits);
+        if (bits.length == 3) {
+          var fr = _get_row_pos_by_name(bits[0]);
+          var to = _get_row_pos_by_name(bits[2]);
+          var year = parseFloat(bits[1]);
+          // Bezier start coordinates
+          var x1 = (year - startYear.val) * cols;
+          var y1 = (_get_row_height() * (fr - rowOffset + 1.2)) + headerHeight;
+          // Bezier end coordinates
+          var x4 = (year - startYear.val + 0.1) * cols;
+          var y4 = (_get_row_height() * (to - rowOffset + 1.2)) + headerHeight;
+          // Bezier first control point coordinates
+          var x2 = x1 + cols * (to - fr) / 2;
+          var y2 = y1 + (y4 - y1) * 0.1 ;
+          // Bezier second control point coordinates
+          var x3 = x1 - cols * (to - fr) / 2;
+          var y3 = y1 + (y4 - y1) * 0.9 ;
+          // switch control points around if "to" is higher up the graph than "from"
+          if (y4 < y1) {
+            var tmp = x3;
+            x3 = x2;
+            x2 = tmp;
+          }
+          ctx.strokeStyle = joinCol;
+          ctx.lineWidth = Math.max(80 / rows, 2);
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.bezierCurveTo(x2, y2, x3, y3, x4, y4);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function draw_bar(x, y, width) {
+    var corner = _get_bar_height() / 2;
+    ctx.beginPath();
+    ctx.moveTo(x + gridWidth + corner, y);
+    ctx.lineTo(x + gridWidth + width - corner, y);
+    ctx.stroke();
+  }
+
+  function draw_labels() {
+    var colwidth = _get_colwidth();
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 2;
+    ctx.fillStyle = 'black';
+
+    // year labels
+    for (i = 0; i < rows; i++) {
+      ctx.font = Math.floor(260 / rows) + "px Arial";
+      ctx.fillText(startYear.val + i, colwidth * i + 4, 20);
+    }
+
+    // company labels
+    for (i = 0; i < rows; i++) {
+      var y = headerHeight + (_get_row_height() * i + _get_row_height() + _get_bar_height() * 0.55 );
+      ctx.font = (_get_bar_height() * 0.90) + "px Arial";
+      idx = i + rowOffset;
+      if (idx < rowcount) {
+        ctx.strokeText(tlines[idx]["name"], 4, y);
+        ctx.fillText(tlines[idx]["name"], 4, y);
+      }
+    }
+  }
+
+  function mousedown(e) {
+    mousePosition.x = e.pageX;
+    mousePosition.y = e.pageY;
+    canvas.addEventListener("mouseup", mouseup);
+    mouseDown = true;
+  }
+
+
+  function mousemove(e) {
+    if (mouseDown) {
+      dx = mousePosition.x - e.pageX;
+      mousePosition.x = e.pageX;
+      console.log("x: ", dx, " year: ", startYear.value);
+      startYear.value = Math.min(startYear.value + (dx / 8), maxYear - rows + 1);
+      draw();
+    }
+  }
+
+  function mouseup(e) {
+    mouseDown = false;
+    canvas.removeEventListener("mouseup", mouseup);
+  }
+
+  function mousewheel(event) {
+    event.preventDefault();
+    var dy = event.deltaY < 1.0 ? -1 : 1;
+    rowOffset = Math.max(Math.min(rowOffset + dy, rowcount - rows + 3), 0);
+    console.log("rowOffset:", rowOffset);
+    draw();
+  }
+
+  function _get_bar_height() {
+    return (cHeight - headerHeight) / rows / 1.5;
+  }
+
+  function _get_row_height() {
+    return (cHeight - headerHeight) / (rows + 1) ;
+  }
+
+  function _get_colwidth() {
+    return Math.floor((cWidth / rows) + 0.5);
+  }
+
+  function _get_row_pos_by_name(name) {
+    for (r = 0; r < rowcount; r++) {
+      if (tlines[r]["name"] == name) {
+        return r;
+      }
+    }
+  }
+
+  function _setScale(scl, year) {
+    rows = scl;
+    if (year > 0) {
+      startYear.value = year;
+    } else {
+      startYear.value = maxYear - rows + 1
+    }
+    rowOffset = 0;
+    draw();
+  }
+
+</script>
+
+{% endblock %}
