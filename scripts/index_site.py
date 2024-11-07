@@ -12,26 +12,34 @@ def createIndex(root):
     Schema definition: title(name of file), path(as ID), content(indexed
     but not stored),textdata (stored text content)
     '''
-    schema = Schema(path = ID(stored = True), imgs = IDLIST(stored = True), image = TEXT(stored = True), content = TEXT(stored = True), date = DATETIME(sortable = True))
-    if not os.path.exists("/home/httpd/django/nosher/index"):
-        os.mkdir("/home/httpd/django/nosher/index")
-    ix = create_in("/home/httpd/django/nosher/index", schema)
+    index_file = "/home/httpd/django/nosher/index"
+
+    schema = Schema(path = ID(stored = True), \
+                    imgs = IDLIST(stored = True), \
+                    image = TEXT(stored = True), \
+                    content = TEXT(stored = True), \
+                    date = DATETIME(sortable = True) )
+    
+    if not os.path.exists(index_file):
+        os.mkdir(index_file)
+    ix = create_in(index_file, schema)
     writer = ix.writer()
 
+    # process computer adverts pages
     root = "/home/httpd/nosher.net/docs/archives/computers"
     files = [os.path.join(root, i) for i in os.listdir(root)]
     for f in files:
         if f[-4:] == ".txt":
             with open(f, "r", encoding="utf-8") as fh:
                 print (f)
-                lines = fh.readlines()
-                text = " ".join(lines).replace("\n", "")
-                text = re.sub("<.*?>|\[.*?\]", "", text)
-                img = "{}/archives/computers/images/{}-s.jpg".format(WEBROOT, f.split("/")[-1].replace(".txt", ""))
+                lines = [s.rstrip() for s in fh.readlines()]
+                text = re.sub("<.*?>|\[.*?\]", "", " ".join(lines))
+                img = "{}/archives/computers/images/{}-s.jpg".format("https://nosher.net", f.split("/")[-1].replace(".txt", ""))
                 url = "archives/computers/{}".format(f.split("/")[-1].replace(".txt", ""))
                 writer.add_document(path = url, content = text, image = img)
                 fh.close()
 
+    # process photo albums
     root = "/home/httpd/nosher.net/docs/images/"
     for path, folder, files in os.walk(root):
         for f in files:
@@ -74,14 +82,7 @@ def createIndex(root):
                                         print (path, l)
                         except UnicodeDecodeError:
                             print (full + " failed")
-
-            
     writer.commit()
-
-def _strip(txt):
-    txt = re.sub("\[.*?\]", "", txt)
-    txt = re.sub("<.*?>", "", txt)
-    return txt
 
 if __name__ == "__main__":
     root = "corpus"
