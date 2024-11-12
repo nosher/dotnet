@@ -1146,7 +1146,7 @@ div.magicon {
     }
 }
 
-p.navlink {
+p.navlink, ul.sublist li {
     font-size: 90%;
     line-height: 1.5;
     font-family: 'Roboto-Light', sans-serif;
@@ -1163,11 +1163,21 @@ p.navlink {
     }
 }
 
-p.navlink a, p.navlink a span {
+p.navlink a, p.navlink a span, ul.sublist li a {
     color: #101010 !important;
     text-decoration: none !important;
 }
-
+ul.sublist li {
+    border-bottom: none;
+    line-height: 1.1;
+    margin: 8px 0 8px 0;
+    padding: 0;
+}
+@media screen and (max-width: 1000px) {
+    ul.sublist li {
+        line-height: 1.2;
+    }
+}
 p.navlink a span {
     color: #505050 !important;
 }
