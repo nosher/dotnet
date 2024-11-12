@@ -67,6 +67,7 @@ def nojs(request):
         'title': title,
         'page_title': title,
         'webp_source': webp,
+        'album': "/images/{}/{}".format(year, path),
         'page_description': img["caption"],
         'page_image': "{}/{}/{}/{}/{}{}".format(WEBROOT, DOCROOT, year, path, img["thumb"], "-m.jpg"),
         'staticServer': WEBROOT,
