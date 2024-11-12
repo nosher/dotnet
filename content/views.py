@@ -58,15 +58,39 @@ def content_page(request, section, page):
     }
     return render(request, 'content/page.html', context)
 
+
 def _get_page(section, page):
     path = "/home/httpd/nosher.net/docs/content/{}/{}".format(section, page)
     mtime = datetime.date.fromtimestamp(os.stat(path)[7])
     with open(path, encoding="utf-8") as fh:
-        body = _format_page(fh.read())
+        body = _format_page(section, fh.read())
         t = Template(body)
         return (t.render(Context({'staticServer': WEBROOT})), mtime)
         
-def _format_page(page):
+
+def _format_page(section, page):
+
+    lines = page.split("\n")
+    newlines = []
+    for l in lines:
+        if l != "":
+            if l.find("[picture") > -1:
+                groups = re.findall("\[picture: (?P<pic>.*?)\]", l, re.S|re.MULTILINE)
+                if not groups is None:
+                    for pic in groups:
+                        repl = "[picture: %s]" % pic
+                        bits = pic.split("|")
+                        target = """<div class="grid1"><img class="ctrimg" src="https://static.nosher.net/content/{}/images/{}" alt="{}" title="{}"><p class="desc">{}</p></div>""".format(section, bits[0], bits[1], bits[1], bits[1])
+                        newlines.append(l.replace(repl, target))
+            elif l[0] == "~":
+                newlines.append("""<p class="ref">{}</p>\n""".format(l[1:]))
+            elif l.strip()[:1] != "<" and l != "":
+                newlines.append("\n<p>{}</p>".format(l))
+            else:
+                newlines.append(l)
+
+    page = "".join(newlines)
+
     # resolve any custom tags in content, e.g. for recipes
     if page.find("[recipe]") > -1:
         (start, rest) = page.split("[recipe]")
