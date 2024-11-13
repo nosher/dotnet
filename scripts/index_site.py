@@ -97,7 +97,7 @@ def createIndex(root, host, user, passwd):
                                     writer.add_document(
                                         path = ipath, 
                                         imgs = ",".join(images), 
-                                        content = parts[1], 
+                                        content = u"{}".format(parts[1]), 
                                         image = img, 
                                         date = timestamp
                                     )
@@ -109,6 +109,7 @@ def createIndex(root, host, user, passwd):
                                     img = "{}{}/{}-s.webp".format(WEBROOT, ipath, parts[0])
                                     writer.add_document(
                                         path = "{}/{}".format(ipath, i - first), 
+                                        imgs = "",
                                         content = parts[1], 
                                         image = img, 
                                         date = timestamp
