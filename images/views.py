@@ -109,10 +109,6 @@ def album(request, album_year, album_path, index=-1):
     (title, intro, images, mtime, dimensions, webp) = _getAlbumDetails("{}/{}".format(album_year, album_path))
     spotify = _getSpotifyDetails("{}/{}".format(album_year, album_path))
     fmt_date = datetime.datetime.fromtimestamp(mtime).strftime("%d %B %Y")
-    if request.META["HTTP_ACCEPT"].find("image/webp") > -1:
-        accept_webp = "true" 
-    else:
-        accept_webp = "false"
 
     context = {
         'path': album_path,
@@ -127,7 +123,7 @@ def album(request, album_year, album_path, index=-1):
         'mtime': fmt_date,
         'dimensions': dimensions,
         'staticServer': WEBROOT,
-        'accept_webp': accept_webp,
+        'accept_webp': "true",
         'is_webp': webp,
         'years': _getYears(),
         'groups': _getGroups(),

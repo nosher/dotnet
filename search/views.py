@@ -64,10 +64,10 @@ def search(request):
     filter = restrict_q = None
     
     if q_filter == "photos":
-        filter = "images/"
+        filter = "/images/"
         restrict_q = query.Term("path", filter)
     elif q_filter == "micros":
-        filter = "archives/computers"
+        filter = "/archives/computers"
         restrict_q = query.Term("path", filter)
 
     limit = 1000 if q_show_as_list is None else 2000

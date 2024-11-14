@@ -11,16 +11,16 @@
 {% for result in results %}
     <article class="search">
         {% if result.imgs %}
-        <a href="/{{ result.path }}">
+        <a href="{{ result.path }}">
             <div id="fourbox">
             {% for img in result.imgs|split:"," %}
-                <img title="{{ result|details }}" class="tiny" src="{{ server }}/cdn/img2?i=/{{ result.path }}/{{ img }}-s&t=webp" />
+                <img title="search result image" class="tiny" src="{{ result.image }}{{ img }}-s.webp" />
             {% endfor %}
             </div>
         </a>
         <p>{{ result.content|ellipsize }}</p>
         {% else %}
-        <a href="/{{ result.path }}"><img src="{{ server }}/cdn/img2?i={{ result.image }}&t=webp" title="{{ result|details }}"/></a>
+        <a href="{{ result.path }}"><img src="{{ result.image }}" title="search result image"/></a>
         <p>{{ result.content|ellipsize }}</p>
         {% endif %}
     </article>{% endfor %}
