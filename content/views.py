@@ -72,6 +72,7 @@ def _format_page(section, page):
 
     lines = page.split("\n")
     newlines = []
+    script = False
     for l in lines:
         if l != "":
             if l.find("[picture") > -1:
@@ -84,7 +85,13 @@ def _format_page(section, page):
                         newlines.append(l.replace(repl, target))
             elif l[0] == "~":
                 newlines.append("""<p class="ref">{}</p>\n""".format(l[1:]))
-            elif l.strip()[:1] != "<" and l != "":
+            elif l.strip()[:7] == "<script":
+                script = True
+                newlines.append(l) 
+            elif l.strip()[:8] == "</script":
+                script = False
+                newlines.append(l) 
+            elif l.strip()[:1] != "<" and l != "" and not script:
                 newlines.append("\n<p>{}</p>".format(l))
             else:
                 newlines.append(l)
