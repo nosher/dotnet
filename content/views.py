@@ -85,16 +85,16 @@ def _format_page(section, page):
                         newlines.append(l.replace(repl, target))
             elif l[0] == "~":
                 newlines.append("""<p class="ref">{}</p>\n""".format(l[1:]))
-            elif l.strip()[:7] == "<script":
+            elif l.strip()[:7] == "<script" or l[:8] == "[recipe]":
                 script = True
-                newlines.append(l) 
-            elif l.strip()[:8] == "</script":
+                newlines.append(l + "\n") 
+            elif l.strip()[:8] == "</script" or l[:5] == "[end]":
                 script = False
-                newlines.append(l) 
+                newlines.append(l + "\n") 
             elif l.strip()[:1] != "<" and l != "" and not script:
                 newlines.append("\n<p>{}</p>".format(l))
             else:
-                newlines.append(l)
+                newlines.append(l + "\n")
 
     page = "".join(newlines)
 
