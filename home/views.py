@@ -1,5 +1,6 @@
 import random
 
+from django.views.decorators.http import require_GET
 from django.shortcuts import render
 from django.http import HttpResponse
 from ..images.models import PhotoAlbum
@@ -9,9 +10,24 @@ from datetime import datetime
 from datetime import date
 from django.template.defaulttags import register
 
+robots_txt_content = """\
+User-Agent: *
+Allow: /
+
+User-Agent: GPTBot
+Disallow: /
+
+Sitemap: https://static.nosher.net/sitemap.xml
+"""
+
 @register.filter
 def get_now(null):
     return date.today().year
+
+@require_GET
+def robots_txt(request):
+    return HttpResponse(robots_txt_content, content_type="text/plain")
+
 
 def index(request):
     
