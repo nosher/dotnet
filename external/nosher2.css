@@ -390,6 +390,7 @@ ul.index li {
     clear: left;
     font-size: 90%;
     padding: 4px;
+    background-color: var(--nav-bg);
 }
 
 .navbottom {
@@ -1972,5 +1973,17 @@ diet- {
 }
 
 .scales {
+    margin-bottom: 20px;
+    display: inline-block;
+}
+.sort i {
+    font-weight: bold;
+    color: #800;
+    margin-right: 12px;
+}
+.sort a, .sort a:visited {
+    color: #222 !important;
+}
+.timeline {
     margin-bottom: 20px;
 }
