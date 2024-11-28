@@ -303,6 +303,8 @@ def timelines(request):
     filter_param = ""
     sort_param = ""
     sortkey = filterkey = title = ""
+    with open("/home/httpd/nosher.net/docs/archives/computers/timelines.txt") as fh:
+        intro = "".join(fh.readlines())
 
     with open("/home/httpd/nosher.net/docs/archives/computers/timeline.dat") as fh:
         for l in [f.strip() for f in fh.readlines()]:
@@ -348,6 +350,7 @@ def timelines(request):
         'sort': sort_param,
         'sortkey': sortkey,
         'filterkey': filterkey,
+        'intro': intro,
         'feedback': EMAIL,
     }
 

@@ -26,16 +26,8 @@
 
 <canvas class="timeline" id="timeline" width="700" height="700"></canvas><br />
 
-<p>View the history of microcomputer companies in timeline form. Data can be filtered by UK and US companies, 
-or everything, which includes some European and Far East manufacturers. 
-Sort by company name, company lifetime, the date the company was founded (or started producing calculators 
-or computers specifically), and the date it died, was sold off or otherwise exited the computer business.
-</p>
-<p>Most telling is to sort by defunct date, where the great mass extinction of micro companies between 
-1983 and 1986 can be seen as a cliff wall. There's another smaller wall around the dot-com bubble of 2000, for
-the few companies that lived that long.
-</p>
-<p>Click and drag, or swipe with a finger to move left or right, or drag vertically or use the mouse wheel to move up and down. Set the view scale using the buttons above the graph.
+{{ intro|safe }}
+
 <p class="nav">{% include "computers/navbar.html" %}</p>
 
 <script>
