@@ -389,8 +389,9 @@ ul.index li {
 .nav, .navbottom {
     clear: left;
     font-size: 90%;
-    padding: 4px;
+    padding: 4px 4px 8px 6px;
     background-color: var(--nav-bg);
+    box-sizing: border-box;
 }
 
 .navbottom {
@@ -430,11 +431,9 @@ ul.index li {
         color: #000040;
     }
     .nav, .navbottom {
-        padding-left: 0;
-    }
-    .nav {
-        margin-left: 8px !important;
-        width: 95%;
+        margin: 0 8px 8px 8px !important;
+        padding-left: 8px;
+        width: 94%;
     }
 }
 
@@ -1080,7 +1079,7 @@ div.magicon {
 
 @media screen and (max-width: 1000px) {
         div.zoomer {
-            width: 96%;
+            width: 94.5%;
             padding: 0;
             margin: 0 0 0 6px;
         }
@@ -1536,11 +1535,12 @@ audio {
 
 @media screen and (max-width: 1000px) {
     .video {
-        width: 300px;
-        height: 230px;
+        width: 240px;
+        height: 180px;
+        margin-left: 8px;
     }
     img.ctrimg {
-        width: 98%;
+        width: 90%;
     }
 }
 
@@ -1867,9 +1867,10 @@ article.ref > p, article.ref li {
 }
 @media screen and (max-width: 1000px) { 
     article.ref  {
-        width: 87%;
-        margin: 42px 0 12px 8px;
-        border-width: 0 12px 0 12px;
+        width: 94%;
+        margin: 22px 0 12px 8px;
+        border-width: 0 0 0 4px;
+        padding-left: 0;
     }
     p.ref {
         padding: 0 0 0 4px;
@@ -1973,7 +1974,7 @@ diet- {
 }
 
 .scales {
-    margin-bottom: 20px;
+    margin: 0 0 20px 8px;
     display: inline-block;
 }
 .sort i {
@@ -1985,5 +1986,21 @@ diet- {
     color: #222 !important;
 }
 .timeline {
+    display: block;
     margin-bottom: 20px;
+    width: 700px;
+    height: 600px;
+}
+.timeline_mob {
+    display: none;
+}
+@media screen and (max-width: 1000px) { 
+    .timeline {
+        display: none;
+    }
+    .timeline_mob {
+        display: block;
+        margin-left: 8px;
+        width: 94%;
+    }
 }
