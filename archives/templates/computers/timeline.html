@@ -24,7 +24,10 @@
     <input type="button" onclick="_setScale(20, 1972)" value=" 8x " />
   </div>
 
-<canvas class="timeline" id="timeline" width="700" height="700"></canvas><br />
+
+<canvas class="timeline" id="timeline" width="700" height="600"></canvas><br />
+<canvas class="timeline_mob" id="timeline_mob" width="700" height="1200"></canvas><br />
+
 
 {{ intro|safe }}
 
@@ -32,11 +35,8 @@
 
 <script>
 
-  const canvas = document.getElementById("timeline");
-  const rect = canvas.getBoundingClientRect();
-  const ctx = canvas.getContext("2d", { alpha: true });
-  const cHeight = canvas.height;
-  const cWidth = canvas.width;
+  const canvas_dt = document.getElementById("timeline");
+  const canvas_mob = document.getElementById("timeline_mob");
   const rowcount = {{ rows }};
   const maxYear = {{ now }}
   const gridWidth = 1;
@@ -50,35 +50,39 @@
     }
   };
 
-  // set up the canvas for high density displays
-  const dpr = window.devicePixelRatio;
-  // Set the actual size of the canvas
-  canvas.width = rect.width * dpr;
-  canvas.height = rect.height * dpr;
-  // Scale the context to ensure correct drawing operations
-  ctx.scale(dpr, dpr);
-  // Set the drawn size of the canvas
-  canvas.style.width = `${rect.width}px`;
-  canvas.style.height = `${rect.height}px`;
-  // set text rendering
-  ctx.textRendering = "geometricPrecision";
-
+  var context;
   var rows = rowcount;
   var rowOffset = 0;
   var mouseStartPosition = {x: 0, y: 0};
   var mousePosition = {x: 0, y: 0};
   var mouseDown = false;
   var tlines = [];
+  var canvas;
+  var cHeight;
+  var cWidth;
+
   {% for t in timelines %}
   tlines[{{ forloop.counter0 }}] = {"name": "{{ t.name }}", "from": {{ t.from }}, "to": {{ t.to }}, "joins": "{{ t.joins }}" };  
   {% endfor %}
 
   window.addEventListener("load", function() {
+      if (window.innerWidth < window.innerHeight) {
+        canvas = canvas_mob;
+      } else {
+        canvas = canvas_dt;
+      }
+      cHeight = canvas.height;
+      cWidth = canvas.width;
+      ctx = canvas.getContext("2d", { alpha: true });
+      ctx.textRendering = "geometricPrecision";
       ctx.fillStyle = "#000000";
       ctx.fillRect(0, 0, cWidth, cHeight);
       ctx.rect(1, 1, cWidth - 2, cHeight - 2);
       ctx.clip();
+      console.log("canvas:", canvas.getBoundingClientRect());
+      canvas_mob.style.height = (canvas.getBoundingClientRect().width * 12/7.0 ) + "px";
       canvas.addEventListener("mousemove", mousemove);
+      canvas.addEventListener("touchmove", mousemove);
       canvas.addEventListener("mousedown", mousedown);
       canvas.addEventListener("wheel", mousewheel, {passive: false});
       startYear.value = maxYear - rows;
