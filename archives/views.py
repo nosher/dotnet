@@ -157,9 +157,9 @@ def convert_tags(item):
             if line == "-origin":
                 updated.append("""<p class="origins">This is one of a small set of adverts from before 1975 - the dawn of microcomputers - which help set the scene.</p>""")
             elif line[0] == "~":
-                updated.append("""<p class="ref">{}</p>\n""".format(line[1:]))
+                updated.append("""<blockquote class="ref">{}</blockquote>\n""".format(line[1:]))
             elif line[0] == "\\":
-                updated.append("""<p class="quote">{}</p>\n""".format(line[1:]))
+                updated.append("""<blockquote class="quote">{}</blockquote>\n""".format(line[1:]))
             else:
                 updated.append("<p>{}</p>\n".format(line))
         else: 

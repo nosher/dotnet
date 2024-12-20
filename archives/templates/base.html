@@ -16,7 +16,7 @@
   {% block script %}{% endblock %}
 </head>
 
-<body id="mainbody" class="body">
+<body id="mainbody" class="body" title="">
   <script src="https://static.nosher.net/js/jquery-3.3.1.min.js" 
     integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" 
     crossorigin="anonymous"></script>
@@ -29,15 +29,14 @@
     <a href="/content/saxonhorse/">Saxon horse</a> | 
     <a href="#navigation"><nobr>more ▼</nobr></a>
   </div>
-  <header id="header"><p>nosher.net</p></header>
+  <header id="header">nosher.net</header>
   <nav>
     {% include "navigation.html" %}
   </nav>
   <main id="cmain">{% block content %}{% endblock %}</main>
   <sidebar>{% block sidebar %}{% endblock %}</sidebar>
   <footer id="footer">
-    <p>{%if feedback %}Feedback: {{ feedback }}<br />{% endif %}&copy; nosher.net 1999-{{ ""|get_now }}{%if mtime %}. Last updated: <nobr>{{ mtime }}</nobr>{% endif %}
-    </p>
+    {%if feedback %}Feedback: {{ feedback }}<br />{% endif %}&copy; nosher.net 1999-{{ ""|get_now }}{%if mtime %}. Last updated: <nobr>{{ mtime }}</nobr>{% endif %}
   </footer>
   <script>
     // prevent space keypress from bubbling up and triggering "next page"

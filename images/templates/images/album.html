@@ -25,14 +25,19 @@
 {% for im in dimensions %}
     dimensions["{{ im.name }}"] = "{{ im.ratio }}"; {% endfor %}
 </script>
+
 <section class="thumbnails">
 {% for im in images %}
     <article class="thumb">
-	    <a href="/images/nojs?year={{ year }}&path={{ path }}&thumb={{ forloop.counter|add:'-1' }}">{% if is_webp == "true" and accept_webp == "true" %}<img src="{{ url }}/{{ im.thumb }}-s.webp"{% elif is_webp == "true" and accept_webp == "false" %}<img src="https://static.nosher.net/cdn/img2?i={{ url }}/{{ im.thumb }}-s.webp&t=jpg"{% else %}<img src="{{ url }}/{{ im.thumb }}-s.jpg"{% endif %} alt="{{ im.caption|safe }}, {{ title }}" onclick="showViewer({{ forloop.counter|add:'-1' }}); return false;" /></a>
-        <p>{{ im.caption|safe }}</p>
+	    <a href="/images/nojs?year={{ year }}&path={{ path }}&thumb={{ forloop.counter|add:'-1' }}">{% if is_webp == "true" and accept_webp == "true" %}<img src="{{ url }}/{{ im.thumb }}-s.webp"{% elif is_webp == "true" and accept_webp == "false" %}<img src="https://static.nosher.net/cdn/img2?i={{ url }}/{{ im.thumb }}-s.webp&t=jpg"{% else %}
+            <img src="{{ url }}/{{ im.thumb }}-s.jpg"{% endif %} alt="{{ im.caption|safe }}, {{ title }}" onclick="showViewer({{ forloop.counter|add:'-1' }}); return false;" />
+            <p>{{ im.caption|safe }}</p>
+        </a>
     </article>{% endfor %}
 </section>
+
 <p class="hint">Hint: you can use the left and right cursor keys to navigate between albums, and between photos when in the photo viewer</p>
+
 <!-- Desktop photo viewer -->
 <div id="viewer">
     <div id="viewwindow">

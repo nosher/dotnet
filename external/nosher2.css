@@ -6,12 +6,175 @@
     --nav-bg: #e0e0e2;
     --sidebar-bg: #b5bad0;
     --headers: #B25785;
-    --headers2: #9F752D;
+    --headers2: #7f5d21;
     --pad: 8px;
     --inset: 12px;
 }
 
+@media (forced-colors: active) {
+    :root {
+        forced-color-adjust: none;
+        --main-bg-color: coral;
+        --header: #666;
+        --link-hover: #aaa;
+        --nav-bg: #333;
+        --sidebar-bg: #555;
+        --headers: #fff;
+        --headers2: #eee;
+        --pad: 8px;
+        --inset: 12px;
+    }
+    main, content {
+        background-color: Canvas !important;
+    }
+    a:visited {
+        color: #eee !important;
+    }
+    a {
+        color: #fff !important;
+    }
+    .homegriditem {
+        background-color: #323232 !important;
+    }
+    .intro {
+        color: CanvasText !important;
+    }
+    p,
+    p.navlink, 
+    p.navlink a, 
+    p.navlink,
+    li, 
+    a:visited, 
+    a:link > *,
+    nav ul li, 
+    nav ul li a, 
+    nav ul li a:hover,
+    nav ul li a:link,
+    nav ul li a:visited,
+    .catalogue li,
+    .sort,
+    .sort i,
+    .sort a,
+    .sort a:visited,
+    article.thumb p,
+    article.thumb p a,
+    .adthumb,
+    archivedescription .summary,
+    archivedescription .year,
+    .advert,
+    intro-,
+    serve-,
+    blockquote
+    {
+        color: CanvasText !important;
+    }
+    p.title, p.quote {
+        color: Highlight !important;
+    }
+    .updated, .copy, .adthumb_dim {
+        color: GrayText !important;
+    }
+    .extra, .extra_left, .extra > a, .extra > a:visited {
+        background-color: CanvasText !important;
+        color: Canvas !important;
+    }
+    .extra p, .extra_left p {
+        color: Canvas !important;
+    }
+    diet- {
+        color: #0f0 !important;
+    }
+    .letter, .letter > * {
+        color: Canvas !important;
+        font-weight: bold;
+    }
+}
 
+@media (prefers-color-scheme: dark)  {
+    :root {
+        forced-color-adjust: none;
+        --main-bg-color: coral;
+        --header: #444;
+        --link-hover: #aaa;
+        --nav-bg: #333;
+        --sidebar-bg: #333;
+        --headers: rgb(75, 123, 187);
+        --headers2: rgb(68, 108, 160);
+        --pad: 8px;
+        --inset: 12px;
+    }
+    body {
+        background-color: #222;
+        background-image: unset !important;
+    }
+    main, content {
+        background-color: #222 !important;
+    }
+    a:visited {
+        color: #ddd !important;
+    }
+    a {
+        color: #eee !important;
+    }
+    .homegriditem {
+        background-color: #323232 !important;
+    }
+    .intro {
+        color: #eee !important;
+    }
+    p,
+    p.navlink, 
+    p.navlink a, 
+    p.navlink,
+    li, 
+    a:visited, 
+    a:link > *,
+    nav ul li, 
+    nav ul li a, 
+    nav ul li a:hover,
+    nav ul li a:link,
+    nav ul li a:visited,
+    .catalogue li,
+    .sort,
+    .sort i,
+    .sort a,
+    .sort a:visited,
+    article.thumb p,
+    article.thumb p a,
+    .adthumb,
+    archivedescription .summary,
+    archivedescription .year,
+    .advert,
+    intro-,
+    serve-,
+    blockquote
+    {
+        color: #ddd !important;
+    }
+    p.title, p.quote {
+        color: #888 !important;
+    }
+    .updated, .copy, .adthumb_dim {
+        color: #888 !important;
+    }
+    .extra, .extra_left, .extra > a, .extra > a:visited {
+        background-color: #fff !important;
+        color: #444 !important;
+    }
+    .extra p, .extra_left p {
+        color: #444 !important;
+    }
+    diet- {
+        color: #0f0 !important;
+    }
+    .letter, .letter > * {
+        color: Canvas !important;
+        font-weight: bold;
+    }
+    .desc {
+        color: #888 !important;
+    }
+}
 @font-face {
     font-family: 'Roboto-Light';
     src: url(https://static.nosher.net/fonts/Roboto-Light.woff2) format('woff2');
@@ -44,6 +207,10 @@ a:link {
 
 a:hover {
     text-decoration: underline;
+}
+
+br {
+    clear:left;
 }
 
 /* Horizontal rule */
@@ -188,8 +355,10 @@ body {
     grid-area: header;
 }
 
-#home>header p, header p {
+#home>header, header {
+    width: 100%;
     margin: 0 auto 0 auto;
+    padding: 6px 0 0 0;
     text-align: center;
 }
 
@@ -210,11 +379,9 @@ body {
     padding: 8px;
     vertical-align: baseline;
     grid-area: footer;
-}
-
-#home>footer p, footer p {
     text-align: right;
-    margin: 0 20px 0 0;
+    padding-right: 20px;
+    margin: 0;
 }
 
 #home .splash {
@@ -389,8 +556,9 @@ ul.index li {
 .nav, .navbottom {
     clear: left;
     font-size: 90%;
-    padding: 4px;
+    padding: 4px 4px 8px 6px;
     background-color: var(--nav-bg);
+    box-sizing: border-box;
 }
 
 .navbottom {
@@ -430,11 +598,9 @@ ul.index li {
         color: #000040;
     }
     .nav, .navbottom {
-        padding-left: 0;
-    }
-    .nav {
-        margin-left: 8px !important;
-        width: 95%;
+        margin: 0 8px 8px 8px !important;
+        padding-left: 8px;
+        width: 94%;
     }
 }
 
@@ -874,7 +1040,7 @@ p.nextprev:before {
 
 .nextprev a {
     font-size: 85%;
-    color: #808080;
+    color: #606060;
 }
 
 @media screen and (max-width: 1000px) {
@@ -908,10 +1074,11 @@ p.nextprev:before {
     height: 26px;
     text-align: center;
     text-decoration: none;
-    padding: 0px 6px 2px 6px;
+    padding: 0px 12px 2px 12px;
     display: table-cell;
     vertical-align: middle;
-    margin: 0 0 0 4px;
+    margin: 1px 0 0 4px;
+    border-radius: 4px;
 }
 
 @media screen and (max-width: 1000px) {
@@ -1080,7 +1247,7 @@ div.magicon {
 
 @media screen and (max-width: 1000px) {
         div.zoomer {
-            width: 96%;
+            width: 94.5%;
             padding: 0;
             margin: 0 0 0 6px;
         }
@@ -1197,7 +1364,7 @@ p.navlink a span {
 }
 
 .sources {
-    font-size: 85%;
+    font-size: 90%;
     display: grid;
     grid-template-rows: auto;
     row-gap: 4px;
@@ -1218,8 +1385,10 @@ sup.src a {
     grid-area: sourcepos;
 }
 
-.sourcetext {
-    color: #808080;
+.sourcetext, .sourcetext a {
+    color: #505050;
+}
+.sourcetext a {
     grid-area: sourcetext;
 }
 
@@ -1305,10 +1474,6 @@ img.crest {
     }
 }
 
-.sourcetext a {
-    color: #808080;
-}
-
 .saxon {
     margin-right: 8px;
 }
@@ -1385,7 +1550,7 @@ audio {
 
 .griditem, .homegriditem {
     border-radius: 4px;
-    background-color: #1d919b;
+    background-color: #177881;
     color: #fff;
     margin: 5px 5px 5px 0;
     padding: 10px;
@@ -1395,6 +1560,11 @@ audio {
 
 .griditem a, .homegriditem a {
     color: #fff;
+}
+.griditem h4 {
+    margin: 0;
+    color: #fff;
+    font-weight: normal;
 }
 
 .griditem audio {
@@ -1536,11 +1706,12 @@ audio {
 
 @media screen and (max-width: 1000px) {
     .video {
-        width: 300px;
-        height: 230px;
+        width: 240px;
+        height: 180px;
+        margin-left: 8px;
     }
     img.ctrimg {
-        width: 98%;
+        width: 90%;
     }
 }
 
@@ -1563,7 +1734,7 @@ p.quote, p.small_quote {
     font-style: italic;
     margin: 1em 3em 1em 3em;
     text-align: center !important;
-    color: #668 !important;
+    color: #668;
 }
 p.small_quote {
     font-size: 1.05em;
@@ -1851,7 +2022,7 @@ span.inew {
     color: #d22;
 }
 
-article.ref, p.ref  {
+article.ref, blockquote.ref  {
     box-sizing: border-box;
     padding: 0 0 0 12px;
     border-style: solid;
@@ -1862,14 +2033,15 @@ article.ref, p.ref  {
     color: #676767;
     
 }
-article.ref > p, article.ref li {
+article.ref > blockquote, article.ref li {
     color: #787878;
 }
 @media screen and (max-width: 1000px) { 
     article.ref  {
-        width: 87%;
-        margin: 42px 0 12px 8px;
-        border-width: 0 12px 0 12px;
+        width: 94%;
+        margin: 22px 0 12px 8px;
+        border-width: 0 0 0 4px;
+        padding-left: 0;
     }
     p.ref {
         padding: 0 0 0 4px;
@@ -1973,7 +2145,7 @@ diet- {
 }
 
 .scales {
-    margin-bottom: 20px;
+    margin: 0 0 20px 8px;
     display: inline-block;
 }
 .sort i {
@@ -1982,8 +2154,39 @@ diet- {
     margin-right: 12px;
 }
 .sort a, .sort a:visited {
-    color: #222 !important;
+    color: #222;
 }
 .timeline {
+    display: block;
     margin-bottom: 20px;
+    width: 700px;
+    height: 600px;
 }
+.timeline_mob {
+    display: none;
+}
+@media screen and (max-width: 1000px) { 
+    .timeline {
+        display: none;
+    }
+    .timeline_mob {
+        display: block;
+        margin-left: 8px;
+        width: 94%;
+    }
+}
+
+
+/* WCAG accessibility "hidden" for form labels, etc */
+.visuallyhidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+  
+  

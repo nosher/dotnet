@@ -52,7 +52,7 @@
         <p class="navlink">
         {% for year in years %}<nobr>{% if year.hasNew %}<span class="inew">•</span>{% endif %}<a href="/images/{{ year.year }}">{{ year.year }}</a>{%if not forloop.last%}, {%endif%}</nobr>
     {% endfor %}
-        <br clear="left" /><span class="inew">•</span> denotes new albums</p>
+        <br /><span class="inew">•</span> denotes new albums</p>
     {% endif %}
     {% if groups %}
         <p class="navlink">
@@ -81,8 +81,12 @@
     <li><a href="/content/recipes/">Family recipes</a></li>
     <!-- search -->
     <li>
-    <form action="/search" method="get" class="navlink">
-        <label>Search: <input id="query" type="text" value="{{ query }}" name="q" maxlength="100" class="stextnav" required /></label>{% if years %}<input id="type" type="hidden" value="photos" name="filter" />{% endif %}{% if companies %}<input id="type" type="hidden" value="ads" name="filter" />{% endif %}<input type="submit" value="Go" class="sbutton" />
+    <form action="/search" method="get" class="navlink" title="Search nosher.net">
+        <label for="query" class="visuallyhidden">Search:</label>
+        <input id="query" type="text" value="{{ query }}" name="q" maxlength="100" class="stextnav" required />
+        {% if years %}<input id="type" type="hidden" value="photos" name="filter" />{% endif %}
+        {% if companies %}<input id="type" type="hidden" value="ads" name="filter" />{% endif %}
+        <button type="submit" class="sbutton">Search</button>
     </form>
     </li>
 </ul>
