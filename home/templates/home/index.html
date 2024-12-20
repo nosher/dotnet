@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-GB">
     <head>
         <title>nosher.net</title>
         <meta name="description" content="{{ page_description }}" />
@@ -11,14 +11,15 @@
     </head>
     <body>
         <section id="home">
-            <header><p>nosher.net</p></header>
+            <header>nosher.net</header>
             <content>
+                <main>
                 <section id="sidebyside">
                     <photo>
                         <div class="minigrid">
                         {% for album in this_month %}
                             <a href="/images/{{album.1}}">
-                                <img style="width: 50px; margin: 0px !important;" src="{{ staticServer }}/images/{{ album.0 }}" />
+                                <img style="width: 50px; margin: 0px !important;" src="{{ staticServer }}/images/{{ album.0 }}" alt=""/>
                             </a>
                         {% endfor %}
                         </div>
@@ -44,14 +45,18 @@
                     <div class="homegriditem"><a href="/content/brandonflint/">An 1887 history of flint knapping in Brandon, Suffolk</a></div>
                     <div class="homegriditem"><a href="/content/recipes">Family recipes</a></div>
                     <div class="homegriditem">
-                        <form action="/search" method="get">Search: 
+                        <search>
+                        <form action="/search" method="get" title="Search nosher.net">
+                            <label for="query" class="visuallyhidden">Search:</label>
                             <input id="query" type="text" value="{{ query }}" name="q" maxlength="100" class="stext" required />
-                            <input type="submit" value="go" class="sbutton" />
+                            <button type="submit" class="sbutton">Search</button>
                         </form>
+                        </search>
                     </div>
                 </div>
+                </main>
             </content>
-            <footer><p>&copy; nosher.net 1999-{{ ""|get_now }}</p></footer>
+            <footer>&copy; nosher.net 1999-{{ ""|get_now }}</footer>
             <space></space>
         </section>
     </body>

@@ -84,7 +84,7 @@ def _format_page(section, page):
                         target = """<div class="grid1"><img class="ctrimg" src="https://static.nosher.net/content/{}/images/{}" alt="{}" title="{}"><p class="desc">{}</p></div>""".format(section, bits[0], bits[1], bits[1], bits[1])
                         newlines.append(l.replace(repl, target))
             elif l[0] == "~":
-                newlines.append("""<p class="ref">{}</p>\n""".format(l[1:]))
+                newlines.append("""<blockquote class="ref">{}</blockquote>\n""".format(l[1:]))
             elif l.strip()[:7] == "<script" or l[:8] == "[recipe]":
                 script = True
                 newlines.append(l + "\n") 
