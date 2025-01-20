@@ -29,8 +29,8 @@
 <section class="thumbnails">
 {% for im in images %}
     <article class="thumb">
-	    <a href="/images/nojs?year={{ year }}&path={{ path }}&thumb={{ forloop.counter|add:'-1' }}">{% if is_webp == "true" and accept_webp == "true" %}<img src="{{ url }}/{{ im.thumb }}-s.webp"{% elif is_webp == "true" and accept_webp == "false" %}<img src="https://static.nosher.net/cdn/img2?i={{ url }}/{{ im.thumb }}-s.webp&t=jpg"{% else %}
-            <img src="{{ url }}/{{ im.thumb }}-s.jpg"{% endif %} alt="{{ im.caption|safe }}, {{ title }}" onclick="showViewer({{ forloop.counter|add:'-1' }}); return false;" />
+	    <a onclick="showViewer({{ forloop.counter|add:'-1' }}); return false;" href="/images/nojs?year={{ year }}&path={{ path }}&thumb={{ forloop.counter|add:'-1' }}">
+            <img src="{{ url }}/{{ im.thumb }}-s.webp" alt="{{ im.caption|safe }}, {{ title }}" />
             <p>{{ im.caption|safe }}</p>
         </a>
     </article>{% endfor %}
