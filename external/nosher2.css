@@ -10,12 +10,17 @@
     --nav-bg: #e0e0e2;
     --sidebar-bg: #b5bad0;
     --headers: #B25785;
+    --hgradf: #B25785;
+    --hgradto: #7c385a;
     --headers2: #7f5d21;
     --quote: #555;
     --poem: #668;
     --desc: #668;
     --pad: 8px;
     --inset: 12px;
+    --extra: #fff;
+    --extra_text: #444;
+    --box_shadow: #222;
 }
 
 @media (forced-colors: active) {
@@ -24,17 +29,22 @@
         --main: Canvas;
         --text: CanvasText;
         --header: #666;
-        --link-hover: #aaa;
+        --link-hover: #555;
         --link: CanvasText;
         --link_v: CanvasText;
         --navlink: #555;
         --nav-bg: #333;
         --sidebar-bg: #555;
         --headers: #fff;
+        --hgradf: CanvasText;
+        --hgradto: CanvasText;
         --headers2: #eee;
         --quote: CanvasText;
         --poem: CanvasText;
         --desc: CanvasText;
+        --extra: CanvasText;
+        --extra_text: Canvas;
+        --box_shadow: #444;
         --pad: 8px;
         --inset: 12px;
     }
@@ -61,6 +71,7 @@
     .sort i,
     .sort a,
     .sort a:visited,
+    .scales,
     article.thumb p,
     article.thumb p a,
     .adthumb,
@@ -97,20 +108,26 @@
 @media (prefers-color-scheme: dark)  {
     :root {
         forced-color-adjust: none;
-        --main: #222;
+        --main: #111;
         --text: #eee;
         --header: #444;
-        --link-hover: #aaa;
-        --link: #ddd;
+        --link-hover: #555;
+        --link: #ccc;
         --link_v: #bbb;
-        --nav-bg: #333;
+        --nav-bg: #222;
         --navlink: #ccc;
         --sidebar-bg: #333;
         --headers: rgb(75, 123, 187);
+        --hgradf: rgb(75, 123, 187);
+        --hgradto: rgb(188, 203, 228);
+    
         --headers2: rgb(68, 108, 160);
-        --quote: #abd;
+        --quote: #bbb;
         --poem: #abe;
         --desc: #aaa;
+        --extra: #444;
+        --extra_text: #eee;
+        --box_shadow: #333;
         --pad: 8px;
         --inset: 12px;
     }
@@ -140,6 +157,7 @@
     .sort i,
     .sort a,
     .sort a:visited,
+    .scales,
     article.thumb p,
     article.thumb p a,
     .adthumb,
@@ -158,17 +176,17 @@
         color: #888 !important;
     }
     .extra, .extra_left, .extra > a, .extra > a:visited {
-        background-color: #fff !important;
-        color: #444 !important;
+        background-color: var(--extra) !important;
+        color: var(--extra_text) !important;
     }
     .extra p, .extra_left p {
-        color: #444 !important;
+        color: var(--extra_text) !important;
     }
     diet- {
         color: #0f0 !important;
     }
     .letter, .letter > * {
-        color: Canvas !important;
+        color: #222 !important;
         font-weight: bold;
     }
 }
@@ -226,10 +244,12 @@ h1 {
     display: inline-block;
     font-family: "Roboto-Light", sans-serif;
     text-shadow: rgba(30, 30, 30, 0.2) 3px 2px 3px;
-    color: var(--headers);
+    color: #0000;
     margin: 4px 12px 20px 0;
     font-size: 200%;
     text-align: left;
+    background-image: linear-gradient(40deg, var(--hgradf), var(--hgradto));
+    background-clip: text;
 }
 
 h2, h3 {
@@ -1210,11 +1230,19 @@ archivedescription h3 {
     max-width: 800px;
 }
 
-.advert img {
+.advert img, .content img {
     border: 1px solid #505050;
     margin: 0 0 22px 0;
-    box-shadow: 3px 3px 6px #888888;
+    box-shadow: 3px 3px 6px var(--box_shadow);
     width: 95%;
+}
+.content img {
+    width: unset;
+}
+@media screen and (max-width: 1000px) {
+    .content img {
+        width: 95%;
+    }
 }
 
 .updated {
@@ -1264,8 +1292,9 @@ div.magicon {
 }
 
 .advert a:link {
-    color: #0033aa;
+    color: var(--link);
 }
+
 .adlist li {
     margin-bottom: 24px;
 }
@@ -1425,7 +1454,7 @@ sup.src {
     text-align: left;
     font-size: 80%;
     font-weight: normal;
-    box-shadow: 2px 6px 8px #dddddd;
+    box-shadow: 2px 6px 8px var(--box_shadow);
 }
 
 .extra img, .extra_left img {
@@ -1629,7 +1658,7 @@ audio {
 }
 
 .grid1 {
-    margin: 40px 0 20px 0;
+    margin: 40px 0 40px 0;
     display: grid;
     width: 98%;
     justify-items: center;
@@ -1639,11 +1668,15 @@ audio {
 
 .grid2 {
     padding: 18px 0 18px 0;
+    margin: 40px 0 40px 0;
     display: grid;
     width: 98%;
     grid-template-columns: 50% 50%;
     grid-gap: 10px;
     grid-template-areas: ". ." "desc desc";
+}
+.grid2 img {
+    max-width: 90%;
 }
 
 @media screen and (max-width: 1000px) {
@@ -1669,13 +1702,13 @@ audio {
 }
 
 .grid1 p:after, .grid2 p:after, .sep:after, p.sidedesc:after {
-    padding-top: 1.2em;
-    border-bottom: 1px solid #ddd;
+    padding-top: 0.8em;
+    border-bottom: 1px solid var(--extra);
 }
 
 .grid1 p:before, .grid2 p:before, p.sidedesc:before {
-    border-top: 1px solid #ddd;
-    padding-top: 1.2em;
+    border-top: 1px solid var(--extra);
+    padding-top: 0.6em;
     margin-top: 0.5em;
 }
 
@@ -1697,6 +1730,7 @@ audio {
 
 .ctrimg {
     grid-area: ctrimg;
+    max-width: 90%;
 }
 
 .video {
@@ -1711,6 +1745,7 @@ audio {
         margin-left: 8px;
     }
     img.ctrimg {
+        max-width: unset;
         width: 90%;
     }
 }
@@ -1747,7 +1782,7 @@ p.small_quote br {
     padding: 16px 0 16px 0;
     font-style: italic;
     quotes: "\201C""\201D""\2018""\2019";
-    color: #585858;
+    color: var(--quote);
     line-height: 1.5;
 }
 .speech br {
@@ -1843,6 +1878,33 @@ p.quote:before, p.small_quote:before {
     grid-template-columns: 1fr 3fr;
     grid-template-areas: "sideimg sidedesc";
     border-bottom: 1px #888 solid;
+}
+.ss {
+    border-bottom: 1px #888 solid;
+    clear: left;
+    overflow: auto;
+    padding: 0 0 12px 0;
+    margin: 0 0 24px 0;
+}
+.ss img {
+    width: 100px;
+    float: left;
+    margin: 8px 16px 0 0;
+}
+.ss p {
+    margin-bottom: 20px;
+}
+
+@media screen and (max-width: 1000px) {
+    .ss {
+        margin: 0 0 8px 0;
+    }
+    .ss img {
+        margin: 7px 12px 0 8px;
+    }
+    .ss p {
+        margin-bottom: 4px;
+    }
 }
 
 .smallside h3 {
@@ -2033,9 +2095,15 @@ article.ref, blockquote.ref  {
     color: var(--quote);
     
 }
-article.ref > blockquote, article.ref li {
+article.ref > blockquote {
     color: var(--quote);
 }
+
+article.ref li {
+    color: var(--text);
+    line-height: 1.5;
+}
+
 @media screen and (max-width: 1000px) { 
     article.ref  {
         width: 94%;
@@ -2148,14 +2216,6 @@ diet- {
     margin: 0 0 20px 8px;
     display: inline-block;
 }
-.sort i {
-    font-weight: bold;
-    color: #800;
-    margin-right: 12px;
-}
-.sort a, .sort a:visited {
-    color: #222;
-}
 .timeline {
     display: block;
     margin-bottom: 20px;
@@ -2188,5 +2248,18 @@ diet- {
     position: absolute;
     width: 1px;
   }
+
+.content {
+    max-width: 800px;
+}
   
-  
+.saxlogo {
+    width: 305px;
+    margin: 0;
+} 
+@media screen and (max-width: 1000px) { 
+    .saxlogo {
+        width: 95%;
+        clear: left;
+    }
+}
