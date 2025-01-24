@@ -828,9 +828,11 @@ ul.albums li {
     display: none;
 }
 .mphoto {
+    display: block;
     margin: 0 0 8px 0;
 }
 .mphoto p {
+    display: block;
     color: #fff;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 80%;
@@ -843,15 +845,19 @@ ul.albums li {
 @media (orientation: landscape) {
     #mobile_viewer {
         height: 100%;
-        width: 100000%;
+        width: 100%;
         overflow-x: scroll;
         overflow-y: hidden;
     }
     .mphoto {
+        display: inline-block;
         margin: 0 8px 0 0;
-        float: left;
+    }
+    .mphoto p {
+        display: none;
     }
 }
+
 
 @media screen and (max-width: 1000px) {
     #viewer {

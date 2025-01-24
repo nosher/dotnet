@@ -1,50 +1,74 @@
 <!DOCTYPE html>
 <html lang="en-GB">
-<head>
-  <script>0</script> <!-- workaround for FOUC errors on FF -->
-  <title>nosher.net {% if page_title %} - {{ page_title }}{% endif %}</title>
-  <meta name="description" content="{{ page_description }}" />
-  <meta property="og:site_name" content="nosher.net" />
-  <meta property="og:type" content="article" />
-  <meta property="og:title" content="{{ page_title }}" />
-  <meta property="og:url" content="{{ page_url }}" />
-  <meta property="og:image" content="{{ page_image }}" />
-  <meta property="og:description" content="{{ page_description }}" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" type="text/css" href="{{ staticServer }}/nosher2.css" title="default">
-  <link rel="shortcut icon" href="https://static.nosher.net/images/nn.png">
-  {% block script %}{% endblock %}
-</head>
+  <head>
+    <script>0</script> <!-- workaround for FOUC errors on FF -->
+    <title>nosher.net {% if page_title %} - {{ page_title }}{% endif %}</title>
+    <meta name="description" content="{{ page_description }}" />
+    <meta property="og:site_name" content="nosher.net" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="{{ page_title }}" />
+    <meta property="og:url" content="{{ page_url }}" />
+    <meta property="og:image" content="{{ page_image }}" />
+    <meta property="og:description" content="{{ page_description }}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="{{ staticServer }}/nosher2.css" title="default">
+    <link rel="shortcut icon" href="https://static.nosher.net/images/nn.png">
+    {% block script %}{% endblock %}
+  </head>
 
-<body id="mainbody" class="body" title="">
-  <script src="https://static.nosher.net/js/jquery-3.3.1.min.js" 
-    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" 
-    crossorigin="anonymous"></script>
-  <div class="navlite">
-    <a href="/">Home</a> | 
-    <a href="/images/">Photos</a> | 
-    <a href="/archives/computers/">Micro history</a> | 
-    <a href="/content/raf69th/">RAF 69th</a> | 
-    <a href="/content/ajo/">The AJO</a> | 
-    <a href="/content/saxonhorse/">Saxon horse</a> | 
-    <a href="#navigation"><nobr>more ▼</nobr></a>
-  </div>
-  <header id="header">nosher.net</header>
-  <nav>
+  <body id="mainbody" class="body" title="" style="visibility: hidden;">
+
+    <!-- scripts -->
+    <script src="https://static.nosher.net/js/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="/js/navscroller.js" ></script>
+    <script>
+      let docReady = (callback) => {
+        document.readyState === 'complete' || document.readyState === 'interactive' 
+          ? callback() 
+          : document.addEventListener('DOMContentLoaded', callback);
+      };
+      docReady(() => {
+        document.body.style.visibility = 'visible';
+      });
+      window.addEventListener("load", navscroll, false);
+    </script>
+    
+    <!-- mobile quick navigation -->
+    <div class="navlite">
+      <a href="/">Home</a> | 
+      <a href="/images/">Photos</a> | 
+      <a href="/archives/computers/">Micro history</a> | 
+      <a href="/content/raf69th/">RAF 69th</a> | 
+      <a href="/content/ajo/">The AJO</a> | 
+      <a href="/content/saxonhorse/">Saxon horse</a> | 
+      <a href="#navigation"><nobr>more ▼</nobr></a>
+    </div>
+
+    <!-- header -->
+    <header id="header">nosher.net</header>
+
+    <!-- navigation -->
+    <nav>
     {% include "navigation.html" %}
-  </nav>
-  <main id="cmain">{% block content %}{% endblock %}</main>
-  <sidebar>{% block sidebar %}{% endblock %}</sidebar>
-  <footer id="footer">
-    {%if feedback %}Feedback: {{ feedback }}<br />{% endif %}&copy; nosher.net 1999-{{ ""|get_now }}{%if mtime %}. Last updated: <nobr>{{ mtime }}</nobr>{% endif %}
-  </footer>
-  <script>
-    // prevent space keypress from bubbling up and triggering "next page"
-    $("#query").keydown(function(event) {
-        if (event.which == 32) { 
-            event.stopPropagation();
-        }
-    });
-  </script>
-</body>
+    </nav>
+
+    <!-- content area -->
+    <main id="cmain">
+    {% block content %}{% endblock %}
+    </main>
+
+    <!-- sidebar -->
+    <sidebar>
+    {% block sidebar %}{% endblock %}
+    </sidebar>
+
+    <!-- footer -->
+    <footer id="footer">{%if feedback %}Feedback: {{ feedback }}<br />{% endif %}&copy; nosher.net 1999-{{ ""|get_now }}{%if mtime %}. Last updated: <nobr>{{ mtime }}</nobr>{% endif %}</footer>
+  <!-- make body visible when javascript is disabled -->  
+  <noscript>
+    <style>
+      body { visibility: visible; }
+    </style>
+  </noscript>
+  </body>
 </html>
