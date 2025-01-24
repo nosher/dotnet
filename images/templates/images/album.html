@@ -190,7 +190,6 @@
 
     function scrollImgToView(position) {
         var el = document.getElementById(ids[position]);
-        var top = el.offsetTop;
         el.scrollIntoView();
         if (position < (imgCount - 1)) {
             // show a bit of the previous image
@@ -260,6 +259,7 @@
         var others = [];
         var next = position + 1;
         var prev = position - 1;
+        // interleave remaining images, e.g. 4 5 3 6 2 7 1
         while (next < imgCount || prev > -1) {
             if (next < imgCount) {
                 others.push(next);
@@ -301,5 +301,3 @@
 </script>
 
 {% endblock %}
-
-
