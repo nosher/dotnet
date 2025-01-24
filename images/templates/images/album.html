@@ -49,10 +49,11 @@
     </div>
     <div id="wrapper">
         <section id="strip">
-            {% for im in images %}<div><img id="{{ forloop.counter }}-img" src={% if is_webp == "true" and accept_webp == "true" %}"{{ url }}/{{ im.thumb }}-s.webp"{% elif is_webp == "true" and accept_webp == "false" %}"https://static.nosher.net/cdn/img2?i={{ url }}/{{ im.thumb }}-s.webp&t=jpg"{% else %}"{{ url }}/{{ im.thumb }}-s.jpg" {% endif %} onclick="showImage({{forloop.counter|add:"-1"}});" />{% if im == images.0 %}<div id="{{ forloop.counter }}-marker" class="hilite"></div> {% else %}<div id="{{ forloop.counter }}-marker" class="lolite"></div> {% endif %}</div>{% endfor %}
+            {% for im in images %}<div><img id="{{ forloop.counter }}-img" src="{{ url }}/{{ im.thumb }}-s.webp" onclick="showImage({{forloop.counter|add:"-1"}});" />{% if im == images.0 %}<div id="{{ forloop.counter }}-marker" class="hilite"></div> {% else %}<div id="{{ forloop.counter }}-marker" class="lolite"></div> {% endif %}</div>{% endfor %}
         </section>
     </div>
 </div>
+
 <!-- Mobile photo viewer -->
 <div id="mobile_viewer">{% for im in images %}    
     <div class="mphoto" id="mphoto_{{ forloop.counter|add:"-1" }}">
@@ -60,81 +61,97 @@
         <p>{{ im.caption|safe }}</p>
     </div>{% endfor %}
 </div>
+
 </div><!-- end of class=advert block -->
+
 <script src="https://static.nosher.net/js/touchswipe.js"
         integrity="sha256-ztqZnG9YzCVSrlndn420J5Tq0jopsi6M+F8raET12LM="
         crossorigin="anonymous"></script>
+
 <script>
+
     var main = $('#fullsize');
     var isLandscape = false;
     var isMobile = false;
     var width = height = 0;
     var index = {{index}};
-    var webp = {{is_webp}};
-    var tail;
-    if (webp) {
-        tail = "webp";
-    } else {
-        tail = "jpg";
-    }
+    
+    window.addEventListener("load", imageSetter);
+    addSwipe();
+    addKeyListeners();
 
-    window.addEventListener("load", function() {
+    function imageSetter() {
         width = $(window).width();
-        height = $(window).height()
+        height = $(window).height();
         isLandscape = width > height;
-        isMobile = width < 1000 // see nosher2.css for media rules defining a mobile view
-        console.log("MOBILE", isMobile)
+        // see nosher2.css for media rules defining a mobile view
+        isMobile = width < 1000;
         for (i = 0; i < imgCount; i++) {
             var ratio = dimensions[ids[i]];
             var iheight = Math.floor(width * ratio);
             $("#" + ids[i]).height(iheight);
-            console.log("set height of #" + ids[i], "to", iheight);
         };
         if (index > -1) {
             setTimeout(showViewer(index), 1500);
         };
-    });
-    
-    main.swipe( {
+    }
+
+    function addSwipe() {
+        main.swipe( {
              threshold: 75,
              swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
-                if (direction == "right" && $("#viewer").is(":visible") && pos > 0) {
+                if (direction == "right" 
+                        && $("#viewer").is(":visible") 
+                        && pos > 0) {
                     showImage(--pos);
-                } else if (direction == "left" && $("#viewer").is(":visible") && pos < imgCount - 1) {
+                } else if (direction == "left" 
+                            && $("#viewer").is(":visible") 
+                            && pos < imgCount - 1) {
                     showImage(++pos);
                 } 
              }
-    });
-    $(window).keydown(function(event) {
-        if (event.which == 37) {
-            // cursor left
-            if ($("#viewer").is(":visible") && pos > 0) {
-                goto(--pos, event);
-            } else if (prevAlbum !== undefined) {
-                window.location.href = window.location.protocol + "//" + window.location.hostname + (window.location.hostname != "nosher.net" ? ":8010" : "") + "/images/" + prevAlbum; 
+        });
+    }
+    
+    function addKeyListeners() {
+        $(window).keydown(function(event) {
+            if (event.which == 37) {
+                // cursor left
+                if ($("#viewer").is(":visible") && pos > 0) {
+                    goto(--pos, event);
+                } else if (prevAlbum !== undefined) {
+                    window.location.href = getUrl() + prevAlbum; 
+                }
+            } else if (event.which == 39 || event.which == 32) {
+                // cursor right or spacebar
+                if ($("#viewer").is(":visible") && pos < imgCount - 1) {
+                    goto(++pos, event);
+                } else if (nextAlbum !== undefined) {
+                    window.location.href = getUrl() + nextAlbum; 
+                }
+            } else if (event.which == 35) {
+                // end
+                goto(imgCount - 1, event);
+            } else if (event.which == 38) {
+                // cursor up
+                $("#main").animate({scrollTop: 0});
+            } else if (event.which == 40) {
+                // cursor down 
+                $("#main").animate({scrollTop: 9999});
+            } else if (event.which == 88) {
+                hideViewer();
+            } else {
+                console.log(event.which);
             }
-        } else if (event.which == 39 || event.which == 32) {
-            // cursor right or spacebar
-            if ($("#viewer").is(":visible") && pos < imgCount - 1) {
-                goto(++pos, event);
-            } else if (nextAlbum !== undefined) {
-                window.location.href = window.location.protocol + "//" + window.location.hostname + (window.location.hostname != "nosher.net" ? ":8010" : "") + "/images/" + nextAlbum; 
-            }
-        } else if (event.which == 35) {
-            // end
-            goto(imgCount - 1, event);
-        } else if (event.which == 38) {
-            // cursor up
-            $("#main").animate({scrollTop: 0});
-        } else if (event.which == 40) {
-            // cursor down 
-            $("#main").animate({scrollTop: 9999});
-        } else if (event.which == 88) {
-            hideViewer();
-        } else {
-            console.log(event.which);
-        }
-    });
+        });
+    }
+
+    function getUrl() {
+        return window.location.protocol 
+                    + "//" + window.location.hostname 
+                    + (window.location.hostname != "nosher.net" ? ":8010" : "") 
+                    + "/images/"
+    }
 
     function hideViewer() {
         if (isMobile) {
@@ -149,7 +166,7 @@
 
     function showViewer(pos) {
         if (isMobile) {
-            $("#mobile_viewer").show(300);
+            $("#mobile_viewer").show(0);
         } else {
             $("#viewer").show(300);
         }
@@ -157,8 +174,8 @@
     }
 
     function goto(pos, event) {
-            event.preventDefault();
-            showImage(pos);
+        event.preventDefault();
+        showImage(pos);
     }
 
     function showImage(position) {
@@ -170,36 +187,14 @@
             showDesktopImage(position);
         }
     }
-    
-    async function showMobileImage(position) {
-        orientationAwareImage(position);
-        for (var next = position + 1; next < imgCount; next++) {
-            await orientationAwareImage(next);
-        }
-        for (var prev = position - 1; prev > -1; prev--) {
-            await orientationAwareImage(prev);
-        }
-    }
 
-    function orientationAwareImage(position) {
-        var frame = $("#mphoto_" + position);
-        var url = base + "/" + images[position] + "-m." + tail;
-        var img = frame.find("img");
-        img.attr("src", url).on("load", function() {
-            var lwid = img.width();
-            var lheight = img.height();
-            if (isLandscape) {
-                img.attr("height", height);
-                img.attr("width", (lwid / lheight) * height);
-            } else {
-                console.log("height", lheight);
-                img.attr("width", width);
-                img.attr("height", (lheight / lwid) * width);
-            }
-            console.log(isLandscape);
-            return "done";
-        });
-
+    function scrollImgToView(position) {
+        var el = document.getElementById(ids[position]);
+        el.scrollIntoView();
+        if (position < (imgCount - 1)) {
+            // show a bit of the previous image
+            window.scrollBy(0, -80);
+        }
     }
 
     function showDesktopImage(position) {
@@ -220,7 +215,7 @@
             $("#wrapper").scrollLeft(0);
         }
         main.hide();
-        var imgUrl = base + "/" + images[pos] + "-m." + tail
+        var imgUrl = base + "/" + images[pos] + "-m.webp";
         main.attr("alt", "{{title}}, " + captions[pos]);
         main.attr("src", imgUrl).on("load", function() {
             
@@ -251,7 +246,58 @@
             inMemory.src = main.attr("src");
         });
     }
+
+    /*
+    *
+    * Asynchronous functions
+    *
+    */
+
+    async function showMobileImage(position) {
+        const pos = await orientationAwareImage(position);
+        scrollImgToView(position)
+        var others = [];
+        var next = position + 1;
+        var prev = position - 1;
+        // interleave remaining images, e.g. 4 5 3 6 2 7 1
+        while (next < imgCount || prev > -1) {
+            if (next < imgCount) {
+                others.push(next);
+            }
+            if (prev > -1) {
+                others.push(prev);
+            }
+            prev--;
+            next++;
+        }
+        for (i = 0; i < others.length; i++) {
+            await orientationAwareImage(others[i])
+        }
+    }
+
+    async function orientationAwareImage(position) {
+        var frame = $("#mphoto_" + position);
+        var url = base + "/" + images[position] + "-m.webp";
+        var img = frame.find("img");
+        const imageLoadPromise = new Promise(resolve => {
+            img.attr("src", url).on("load", function() {
+                var lwid = img.width();
+                var lheight = img.height();
+                if (isLandscape) {
+                    img.attr("height", height);
+                    img.attr("width", (lwid / lheight) * height);
+                } else {
+                    console.log("height", lheight);
+                    img.attr("width", width);
+                    img.attr("height", (lheight / lwid) * width);
+                }
+                resolve();
+            });
+        });
+        await imageLoadPromise;
+        return position;
+    };
+
 </script>
+
 {% endblock %}
-
-
