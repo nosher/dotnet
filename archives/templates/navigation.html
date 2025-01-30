@@ -1,94 +1,58 @@
-<script type="text/javascript">
-    // script to freeze the navigation at its bottom if on a very long
-    // page of content
-    window.addEventListener("load", function() {
-
-        var header = document.getElementById("header");
-        var footer = document.getElementById("footer");
-        var cmain = document.getElementById("cmain");
-        var nav = document.getElementById("navwrapper")
-
-        var windowHeight = window.innerHeight;
-        var isDesktop = window.innerWidth > 1000; // see nosher2.css for definition of mobile width
-        var headerHeight = header.offsetHeight;
-        var footerHeight = footer.offsetHeight + 40;
-        var navHeight = nav.offsetHeight;
-        var navWidth = nav.offsetWidth;
-        var lastY = 0;
-        var constrainedY = 0;
-        var navOffsetHeight = nav.offsetHeight - windowHeight;
-
-        // don't bother unless the content area is reasonably longer than the navigation
-        if (isDesktop && (cmain.offsetHeight > navHeight * 1.2)) {
-            window.addEventListener("scroll", (event) => {
-                var scrollY = window.scrollY;
-                var dY = scrollY - lastY;
-                constrainedY += dY;
-                var max = 0;
-                if (navHeight > windowHeight) {
-                    max = (navHeight - windowHeight + (footerHeight * 2));
-                } else {
-                    max = headerHeight;
-                }
-                constrainedY = Math.min(Math.max(constrainedY, 0), max)
-                nav.style.position = "fixed";
-                nav.style.width = navWidth + "px";
-                nav.style.top = (headerHeight - constrainedY) + "px";
-                lastY = scrollY;
-            });
-        }
-    }, false);
-</script>
- 
-
-<a name="navigation"></a>
-<div id="navwrapper">
-<ul>
-    <!-- home -->
-    <li><a href="/">Home</a></li>
-    <!-- photos -->
-    <li><a href="/images/">A life in photos</a>
-    {% if years %}
-        <p class="navlink">
-        {% for year in years %}<nobr>{% if year.hasNew %}<span class="inew">•</span>{% endif %}<a href="/images/{{ year.year }}">{{ year.year }}</a>{%if not forloop.last%}, {%endif%}</nobr>
-    {% endfor %}
-        <br /><span class="inew">•</span> denotes new albums</p>
-    {% endif %}
-    {% if groups %}
-        <p class="navlink">
-        {% for group in groups %}<a href="/images?title={{ group.title|urlencode }}&group={{ group.keys|urlencode }}">{{ group.title }}</a><br />
-    {% endfor %}
-        </p>
-    {% endif %}
-    </li>
-    <!-- computer adverts -->
-    <li><a href="/archives/computers/">A history of the microcomputer industry in 300 adverts</a>{% if companies %}
-    <p class="navlink">
-    {% for company in companies %}{% if company.company != "" %}{% if company.total == 1 %}{% if company.company|length < 30 %}
-    <nobr>{% endif %}<a href="/archives/computers/{{ company.company|get_first_advert }}">{{ company.company }}</a>{%if not forloop.last%},&nbsp;{%endif%}{% if company.company|length < 30 %}</nobr>{% endif %}{% else %}{% if company.company != "" %}{% if company.company|length < 30 %}
-    <nobr>{% endif %}<a href="/archives/computers/?type=source&value={{ company.company }}">{{ company.company }}</a>{%if not forloop.last%},&nbsp;{%endif%}{% if company.company|length < 30 %}</nobr>{% endif %}{% endif %}{% endif %}{% endif %}{% endfor %}</p>{% endif %}</li>
-    <!-- the AJO Archive -->
-    <li><a href="/content/ajo/">The Arnewood Jazz Orchestra Archive</a></li>
-    <!-- RAF Halton 69th Entry Archive -->
-    <li><a href="/content/raf69th">The RAF Halton 69th Entry Archive</a>{%if section == "raf69th" %}
-        <ul class="sublist">{% include "content/rafnav.html" %}</ul>{% endif %}
-    <!-- The Saxon Horse -->
-    <li><a href="/content/saxonhorse/">The Saxon Horse burial at Eriswell</a>{%if section == "saxonhorse" %}
-        <ul class="sublist">{% include "content/saxonnav.html" %}</ul>{% endif %}
-    <!-- Flint knapping Brandon -->
-    <li><a href="/content/brandonflint/">An 1887 history of flint knapping in Brandon</a></li>
-    <!-- Family recipes -->
-    <li><a href="/content/recipes/">Family recipes</a></li>
-    <!-- search -->
-    <li>
-    <form action="/search" method="get" class="navlink" title="Search nosher.net">
-        <label for="query" class="visuallyhidden">Search:</label>
-        <input id="query" type="text" value="{{ query }}" name="q" maxlength="100" class="stextnav" required />
-        {% if years %}<input id="type" type="hidden" value="photos" name="filter" />{% endif %}
-        {% if companies %}<input id="type" type="hidden" value="ads" name="filter" />{% endif %}
-        <button type="submit" class="sbutton">Search</button>
-    </form>
-    </li>
-</ul>
-</div>
-</div>
+    <a name="navigation"></a>
+        <div id="navwrapper">
+            <ul>
+                <!-- home -->
+                <li><a href="/">Home</a></li>
+                <!-- photos -->
+                <li><a href="/images/">A life in photos</a>
+                {% if years %}
+                    <p class="navlink">
+                    {% for year in years %}<nobr>{% if year.hasNew %}<span class="inew">•</span>{% endif %}<a href="/images/{{ year.year }}">{{ year.year }}</a>{%if not forloop.last%}, {%endif%}</nobr>
+                {% endfor %}
+                    <br /><span class="inew">•</span> denotes new albums</p>
+                {% endif %}
+                {% if groups %}
+                    <p class="navlink">
+                    {% for group in groups %}<a href="/images?title={{ group.title|urlencode }}&group={{ group.keys|urlencode }}">{{ group.title }}</a><br />
+                {% endfor %}
+                    </p>
+                {% endif %}
+                </li>
+                <!-- computer adverts -->
+                <li><a href="/archives/computers/">A history of the microcomputer industry in 300 adverts</a>{% if companies %}
+                <p class="navlink">
+                {% for company in companies %}{% if company.company != "" %}{% if company.total == 1 %}{% if company.company|length < 30 %}
+                <nobr>{% endif %}<a href="/archives/computers/{{ company.company|get_first_advert }}">{{ company.company }}</a>{%if not forloop.last%},&nbsp;{%endif%}{% if company.company|length < 30 %}</nobr>{% endif %}{% else %}{% if company.company != "" %}{% if company.company|length < 30 %}
+                <nobr>{% endif %}<a href="/archives/computers/?type=source&value={{ company.company }}">{{ company.company }}</a>{%if not forloop.last%},&nbsp;{%endif%}{% if company.company|length < 30 %}</nobr>{% endif %}{% endif %}{% endif %}{% endif %}{% endfor %}</p>{% endif %}</li>
+                <!-- the AJO Archive -->
+                <li><a href="/content/ajo/">The Arnewood Jazz Orchestra Archive</a></li>
+                <!-- RAF Halton 69th Entry Archive -->
+                <li><a href="/content/raf69th">The RAF Halton 69th Entry Archive</a>{%if section == "raf69th" %}
+                    <ul class="sublist">{% include "content/rafnav.html" %}</ul>{% endif %}
+                <!-- The Saxon Horse -->
+                <li><a href="/content/saxonhorse/">The Saxon Horse burial at Eriswell</a>{%if section == "saxonhorse" %}
+                    <ul class="sublist">{% include "content/saxonnav.html" %}</ul>{% endif %}
+                <!-- Flint knapping Brandon -->
+                <li><a href="/content/brandonflint/">An 1887 history of flint knapping in Brandon</a></li>
+                <!-- Family recipes -->
+                <li><a href="/content/recipes/">Family recipes</a></li>
+                <!-- search -->
+                <li>
+                    <form action="/search" method="get" class="navlink" title="Search nosher.net">
+                        <label for="query" class="visuallyhidden">Search:</label>
+                        <input id="query" type="text" value="{{ query }}" name="q" maxlength="100" class="stextnav" required />
+                        {% if years %}<input id="type" type="hidden" value="photos" name="filter" />{% endif %}
+                        {% if companies %}<input id="type" type="hidden" value="ads" name="filter" />{% endif %}
+                        <button type="submit" class="sbutton">Search</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+        <script>
+        // prevent space keypress in search box from bubbling up and triggering "next page"
+        $("#query").keydown(function(event) {
+            if (event.which == 32) { 
+                event.stopPropagation();
+            }
+        });
+        </script>

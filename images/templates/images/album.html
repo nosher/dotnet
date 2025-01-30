@@ -8,22 +8,29 @@
 <iframe src="https://open.spotify.com/embed/{{ spotify }}" class="music" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>{% endif %}
 {% if next or prev %}<p class="nextprev">{% if next %}<a href="/images/{{ next.path }}">next album: {{ next.title }}</a><br />{% endif %}{% if prev %}<a href="/images/{{ prev.path }}">previous album: {{ prev.title }}</a>{% endif %}</p>
 {% endif %}
+
+<!-- Global scope: Django to JS -->
 <script>
-  {% if next %}var nextAlbum = "{{ next.path }}";{% endif %}
-  {% if prev %}var prevAlbum = "{{ prev.path }}";{% endif %}
+    {% if next %}var nextAlbum = "{{ next.path }}";{% endif %}
+    {% if prev %}var prevAlbum = "{{ prev.path }}";{% endif %}
     var base = "{{ url }}";
     var imgCount = {{ images|length }};
+    var index = {{index}};
     var pos = 0;
-    var images = [];
-    var ids = [];
-    var captions = [];
-    var dimensions = {};
-{% for im in images %}
-    images[{{ forloop.counter|add:"-1" }}] = "{{ im.thumb }}";
-    ids[{{ forloop.counter|add:"-1" }}] = "{{ im.id }}";
-    captions[{{ forloop.counter|add:"-1" }}] = "{{ im.caption|safe }}"; {% endfor %}
-{% for im in dimensions %}
-    dimensions["{{ im.name }}"] = "{{ im.ratio }}"; {% endfor %}
+
+    var images = [
+        {% for im in images %}"{{ im.thumb }}", {% endfor %}
+    ];
+    var ids = [
+        {% for im in images %}"{{ im.id }}", {% endfor %}
+    ];
+    var captions = [
+        {% for im in images %}"{{ im.caption|safe }}",
+        {% endfor %}];
+    var dimensions = {
+        {% for im in dimensions %}"{{ im.name }}": "{{ im.ratio }}", {% endfor %}
+    }
+
 </script>
 
 <section class="thumbnails">
@@ -57,247 +64,18 @@
 <!-- Mobile photo viewer -->
 <div id="mobile_viewer">{% for im in images %}    
     <div class="mphoto" id="mphoto_{{ forloop.counter|add:"-1" }}">
-        <img src="" id="{{ im.id }}" height="{{ im.height }}"/>
+        <img src="" id="{{ im.id }}" height=""/>
         <p>{{ im.caption|safe }}</p>
     </div>{% endfor %}
 </div>
 
-</div><!-- end of class=advert block -->
+<!-- end of class=advert block -->
+</div>
 
-<script src="https://static.nosher.net/js/touchswipe.js"
-        integrity="sha256-ztqZnG9YzCVSrlndn420J5Tq0jopsi6M+F8raET12LM="
-        crossorigin="anonymous"></script>
+<!-- touch/swipe support -->
+<script src="/js/touchswipe.js"></script>
 
-<script>
-
-    var main = $('#fullsize');
-    var isLandscape = false;
-    var isMobile = false;
-    var width = height = 0;
-    var index = {{index}};
-    
-    window.addEventListener("load", imageSetter);
-    addSwipe();
-    addKeyListeners();
-
-    function imageSetter() {
-        width = $(window).width();
-        height = $(window).height();
-        isLandscape = width > height;
-        // see nosher2.css for media rules defining a mobile view
-        isMobile = width < 1000;
-        for (i = 0; i < imgCount; i++) {
-            var ratio = dimensions[ids[i]];
-            var iheight = Math.floor(width * ratio);
-            $("#" + ids[i]).height(iheight);
-        };
-        if (index > -1) {
-            setTimeout(showViewer(index), 1500);
-        };
-    }
-
-    function addSwipe() {
-        main.swipe( {
-             threshold: 75,
-             swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
-                if (direction == "right" 
-                        && $("#viewer").is(":visible") 
-                        && pos > 0) {
-                    showImage(--pos);
-                } else if (direction == "left" 
-                            && $("#viewer").is(":visible") 
-                            && pos < imgCount - 1) {
-                    showImage(++pos);
-                } 
-             }
-        });
-    }
-    
-    function addKeyListeners() {
-        $(window).keydown(function(event) {
-            if (event.which == 37) {
-                // cursor left
-                if ($("#viewer").is(":visible") && pos > 0) {
-                    goto(--pos, event);
-                } else if (prevAlbum !== undefined) {
-                    window.location.href = getUrl() + prevAlbum; 
-                }
-            } else if (event.which == 39 || event.which == 32) {
-                // cursor right or spacebar
-                if ($("#viewer").is(":visible") && pos < imgCount - 1) {
-                    goto(++pos, event);
-                } else if (nextAlbum !== undefined) {
-                    window.location.href = getUrl() + nextAlbum; 
-                }
-            } else if (event.which == 35) {
-                // end
-                goto(imgCount - 1, event);
-            } else if (event.which == 38) {
-                // cursor up
-                $("#main").animate({scrollTop: 0});
-            } else if (event.which == 40) {
-                // cursor down 
-                $("#main").animate({scrollTop: 9999});
-            } else if (event.which == 88) {
-                hideViewer();
-            } else {
-                console.log(event.which);
-            }
-        });
-    }
-
-    function getUrl() {
-        return window.location.protocol 
-                    + "//" + window.location.hostname 
-                    + (window.location.hostname != "nosher.net" ? ":8010" : "") 
-                    + "/images/"
-    }
-
-    function hideViewer() {
-        if (isMobile) {
-            $("#mobile_viewer").hide(300, function() {})
-        } else {
-            $("#viewer").hide(300, function() {
-                main.attr('src', '');
-            });
-    
-        }
-    }
-
-    function showViewer(pos) {
-        if (isMobile) {
-            $("#mobile_viewer").show(0);
-        } else {
-            $("#viewer").show(300);
-        }
-        showImage(pos);
-    }
-
-    function goto(pos, event) {
-        event.preventDefault();
-        showImage(pos);
-    }
-
-    function showImage(position) {
-        pos = position; 
-        console.log("showing " + pos);
-        if (isMobile) {
-            showMobileImage(position);
-        } else {
-            showDesktopImage(position);
-        }
-    }
-
-    function scrollImgToView(position) {
-        var el = document.getElementById(ids[position]);
-        el.scrollIntoView();
-        if (position < (imgCount - 1)) {
-            // show a bit of the previous image
-            window.scrollBy(0, -80);
-        }
-    }
-
-    function showDesktopImage(position) {
-        main.prop("title", images[pos] + ", {{year}}, " + captions[pos]);
-        $("#caption").html(captions[pos] + "<span class=\"closetext\" onclick='hideViewer();'> (X) </span>");
-        for (var i = 0; i < imgCount; i++) {
-            elem = document.getElementById((i + 1) + "-marker");
-            elem.className = "lolite";
-        }
-        elem = document.getElementById((pos + 1) + "-marker");
-        elem.className = "hilite";
-        var thumb = 74;
-        var half = $(window).width() / 2 - thumb;
-        var newpos = pos * thumb;
-        if (newpos > half) {
-            $("#wrapper").scrollLeft(pos * thumb - half - thumb / 4);
-        } else if (newpos < half) {
-            $("#wrapper").scrollLeft(0);
-        }
-        main.hide();
-        var imgUrl = base + "/" + images[pos] + "-m.webp";
-        main.attr("alt", "{{title}}, " + captions[pos]);
-        main.attr("src", imgUrl).on("load", function() {
-            
-            var inMemory = new Image();
-            inMemory.onload = function() {
-                width = this.width;
-                height = this.height;
-                if (height > 1200 || width > 1200) {
-                    // for extra-large images, scale down by half as these are intended as
-                    // hi-res images for high-density displays
-                    width = width / 2;
-                    height = height / 2;
-                }
-                if (width > $(window).width()) {
-                    // we're probably in a width-constrained situation
-                    dWidth = $(window).width() * 0.8;
-                    dHeight = dWidth * height / width; 
-                    main.css('max-width', dWidth + 'px')
-                    main.css('max-height', dHeight + 'px')
-                    console.log("dwidth ", dWidth)
-                } else {
-                    main.css('max-width', width + 'px')
-                    main.css('max-height', height + 'px')
-                    console.log("width ", width)
-                }
-                main.fadeIn(100);
-            };
-            inMemory.src = main.attr("src");
-        });
-    }
-
-    /*
-    *
-    * Asynchronous functions
-    *
-    */
-
-    async function showMobileImage(position) {
-        const pos = await orientationAwareImage(position);
-        scrollImgToView(position)
-        var others = [];
-        var next = position + 1;
-        var prev = position - 1;
-        // interleave remaining images, e.g. 4 5 3 6 2 7 1
-        while (next < imgCount || prev > -1) {
-            if (next < imgCount) {
-                others.push(next);
-            }
-            if (prev > -1) {
-                others.push(prev);
-            }
-            prev--;
-            next++;
-        }
-        for (i = 0; i < others.length; i++) {
-            await orientationAwareImage(others[i])
-        }
-    }
-
-    async function orientationAwareImage(position) {
-        var frame = $("#mphoto_" + position);
-        var url = base + "/" + images[position] + "-m.webp";
-        var img = frame.find("img");
-        const imageLoadPromise = new Promise(resolve => {
-            img.attr("src", url).on("load", function() {
-                var lwid = img.width();
-                var lheight = img.height();
-                if (isLandscape) {
-                    img.attr("height", height);
-                    img.attr("width", (lwid / lheight) * height);
-                } else {
-                    console.log("height", lheight);
-                    img.attr("width", width);
-                    img.attr("height", (lheight / lwid) * width);
-                }
-                resolve();
-            });
-        });
-        await imageLoadPromise;
-        return position;
-    };
-
-</script>
+<!-- image handling JS -->
+<script src="/js/imagehandler.js" ></script>
 
 {% endblock %}

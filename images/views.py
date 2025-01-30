@@ -59,14 +59,13 @@ def nojs(request):
         path = params.get("path")
     if "thumb" in params:
         thumb = int(params.get("thumb"))
-    (title, intro, images, mtime, dimensions, webp) = _getAlbumDetails("{}/{}".format(year, path))
+    (title, intro, images, mtime, dimensions) = _getAlbumDetails("{}/{}".format(year, path))
     img = images[thumb]
     context = {
         'year': year,
         'path': path,
         'title': title,
         'page_title': title,
-        'webp_source': webp,
         'album': "/images/{}/{}".format(year, path),
         'page_description': img["caption"],
         'page_image': "{}/{}/{}/{}/{}{}".format(WEBROOT, DOCROOT, year, path, img["thumb"], "-m.jpg"),
@@ -106,7 +105,7 @@ def album(request, album_year, album_path, index=-1):
                 prv = all_albums[i - 1]
             if i < len(all_albums) - 1:
                 nxt = all_albums[i + 1]
-    (title, intro, images, mtime, dimensions, webp) = _getAlbumDetails("{}/{}".format(album_year, album_path))
+    (title, intro, images, mtime, dimensions) = _getAlbumDetails("{}/{}".format(album_year, album_path))
     spotify = _getSpotifyDetails("{}/{}".format(album_year, album_path))
     fmt_date = datetime.datetime.fromtimestamp(mtime).strftime("%d %B %Y")
 
@@ -123,8 +122,6 @@ def album(request, album_year, album_path, index=-1):
         'mtime': fmt_date,
         'dimensions': dimensions,
         'staticServer': WEBROOT,
-        'accept_webp': "true",
-        'is_webp': webp,
         'years': _getYears(),
         'groups': _getGroups(),
         'index': index,
@@ -184,13 +181,9 @@ def _getAlbumDetails(album_path):
                     path = parts[0]
                     if path.find("/") < 0:
                         path = "{}/{}".format(album_path, parts[0])
-                    items.append({"thumb": path, "id": parts[0], "caption": parts[1].replace("\"","\'"), "height": 0})
+                    items.append({"thumb": path, "id": parts[0], "caption": parts[1].replace("\"","\'")})
         f1 = items[0]["thumb"]
-        if os.path.exists(os.path.join(ROOT, "{}-m.webp".format(f1))):
-            webp_source = "true"
-        else :
-            webp_source = "false"
-        return (title, intro, items, stats[ST_MTIME], dims, webp_source) 
+        return (title, intro, items, stats[ST_MTIME], dims) 
 
 
 def _getYears():
@@ -227,7 +220,7 @@ def api_latest(request):
     latest = PhotoAlbum.objects.order_by('-date_created')[:30]
     output = []
     for album in latest:
-        (title, intro, items, stats, dimensions, webp) = _getAlbumDetails(album.path)    
+        (title, intro, items, stats, dimensions) = _getAlbumDetails(album.path)    
         output.append("""{{"path":"{}", "title": "{}", "thumb": "{}"}}""".format(album.path, album.title.replace("\"", "'"), items[1]["thumb"]))
     context = {
         'body': """{{"latest": [{}]}}""".format(", ".join(output)),
@@ -253,7 +246,7 @@ def api_year(request, album_year):
     albums = PhotoAlbum.objects.filter(year=album_year).order_by('-path')
     output = []
     for album in albums:
-        (title, intro, items, stats, dimensions, webp) = _getAlbumDetails(album.path)    
+        (title, intro, items, stats, dimensions) = _getAlbumDetails(album.path)    
         output.append("""{{"path":"{}", "title":"{}", "thumb": "{}"}}""".format(album.path, album.title.replace("\n", "").replace("\"", "'"), items[1]["thumb"]))
     context = {
         'body': """{{"year": [{}]}}""".format(", ".join(output)),
@@ -264,7 +257,7 @@ def api_year(request, album_year):
 
 def api_album(request, album_year, album_path):
     
-    (title, intro, items, modified, dimensions, webp) = _getAlbumDetails(album_year + "/" + album_path)
+    (title, intro, items, modified, dimensions) = _getAlbumDetails(album_year + "/" + album_path)
     output = []
     for item in items:
         output.append("""{{"thumb": "{}", "caption": "{}"}}""".format(item["thumb"], item["caption"].replace("\"", "'")))
