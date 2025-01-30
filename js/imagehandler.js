@@ -1,16 +1,21 @@
+/*
+ * Javascript methods to support the image browser in mobile and desktop
+ *
+ *
+ */
 const MAIN = $('#fullsize');
 const DT_IMG_SIZE = 800; // the apparent width/height of desktop images
 
 var image_position = 0;
-var initialAspect = screen.orientation.type;
-var isLandscape = false;
-if (initialAspect.includes("landscape")) {
-    isLandscape = true;
-}
+var initialProps = getWindowProperties();
+var isLandscape = (screen.orientation.type.includes("landscape") ? true : false);
+var isMobile = ((initialProps.winwidth > initialProps.winheight) 
+    ? initialProps.winwidth 
+    : initialProps.winheight) < 1000 // see nosher2.css 
 
-//window.addEventListener("load", imageSetter);
+// Add event listeners
 screen.orientation.addEventListener("change", orient);
-addSwipe();
+addSwipeListeners();
 addKeyListeners();
 
 /*
@@ -19,10 +24,9 @@ addKeyListeners();
 function showViewer(pos) {
     // update image_position with requested image as 
     // this is accessed by the key listeners
-    imageSetter();
     image_position = pos; 
-    var props = getProps();
-    if (props.isMobile) {
+    imageSetter();
+    if (isMobile) {
         var mv = $("#mobile_viewer");
         if (mv && isLandscape) {
             mv.get(0).requestFullscreen("hide")
@@ -47,7 +51,7 @@ function showViewer(pos) {
 }
 
 function hideViewer() {
-    if (getProps().isMobile) {
+    if (isMobile) {
         $("#mobile_viewer").hide(300, function() {})
     } else {
         $("#viewer").hide(300, function() {
@@ -68,28 +72,23 @@ function orient() {
 }
 
 function showImage(position, landscape) {
-    var props = getProps();
     console.log("IMG: showing " + position);
-    if (props.isMobile) {
+    if (isMobile) {
         showMobileImages(position, landscape);
     } else {
         showDesktopImage(position);
     }
 }
 
-function getProps() {
-    var winwidth = window.innerWidth;
-    var winheight = window.innerHeight;
+function getWindowProperties() {
     return {
-        "winwidth": winwidth,
-        "winheight": winheight,
-        // see nosher2.css for media rules defining a mobile view
-        "isMobile": ((winwidth > winheight) ? winwidth : winheight) < 1000
+        "winwidth": window.innerWidth,
+        "winheight": window.innerHeight,
     }
 }
 
 function imageSetter() {
-    var props = getProps();
+    var props = getWindowProperties();
     /*
     *  Set the currently-empty image height and widths, if dimensions[] is available
     */
@@ -97,7 +96,7 @@ function imageSetter() {
         for (i = 0; i < imgCount; i++) {
             var iwidth = iheight = 0;
             var ratio = dimensions[ids[i]];
-            if (props.isMobile) {
+            if (isMobile) {
                 if (isLandscape) {
                     iheight = Math.floor(props.winheight * 0.9);
                     iwidth = Math.floor(iheight / ratio);
@@ -129,7 +128,7 @@ function imageSetter() {
     };
 }
 
-function addSwipe() {
+function addSwipeListeners() {
     MAIN.swipe( {
             threshold: 75,
             swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
@@ -286,7 +285,7 @@ async function asyncImageLoader(position) {
     var frame = $("#mphoto_" + position);
     var url = base + "/" + images[position] + "-m.webp";
     var img = frame.find("img");
-    var props = getProps();
+    var props = getWindowProperties();
     const imageLoadPromise = new Promise(resolve => {
         console.log("IMG ", url, " loading");
         img.attr("src", url).on("load", function() {
@@ -295,7 +294,7 @@ async function asyncImageLoader(position) {
                 var lwidth = this.naturalWidth;
                 var lheight = this.naturalHeight;
                 var ratio = lheight / lwidth;
-                if (props.isMobile) {
+                if (isMobile) {
                     // here, landscape relates to the display, not the image
                     if (isLandscape) {
                         iheight = Math.floor(props.winheight * 0.9);
