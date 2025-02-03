@@ -10,3 +10,5 @@ index/*
 start.sh
 constants.py
 settings_prod.py
+test/cypress/screenshots/*
+*.swp
