@@ -15,6 +15,12 @@ var isMobile = ((initialProps.winwidth > initialProps.winheight)
 
 // Add event listeners
 screen.orientation.addEventListener("change", orient);
+window.addEventListener("load", () => {
+    if (index > -1) {
+        setTimeout(showViewer(index), 1500);
+    };
+});
+
 addSwipeListeners();
 addKeyListeners();
 
@@ -122,9 +128,6 @@ function imageSetter() {
             img.style.height = iheight + "px";
             console.log("SET: ", iwidth, "x", iheight);
         }
-    };
-    if (index > -1) {
-        setTimeout(showViewer(index), 1500);
     };
 }
 
