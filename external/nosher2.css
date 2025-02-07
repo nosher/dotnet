@@ -508,6 +508,7 @@ main {
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     grid-gap: 20px;
     font-size: 80%;
+    color: var(--text)
 }
 
 #yearindex img {
