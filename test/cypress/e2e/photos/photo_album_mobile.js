@@ -9,7 +9,7 @@ describe('nosher.net photo album mobile', () => {
   })
   
   
-  it('Check desktop viewer and photo strip are hidden viewer mode', () => {
+  it('Check desktop viewer and photo strip are hidden in viewer mode', () => {
     cy.get('article.thumb').first().click()
     cy.get('#viewer').should('not.be.visible')
     cy.get('section#strip').should('not.be.visible')
@@ -22,7 +22,7 @@ describe('nosher.net photo album mobile', () => {
   })
 
 
-  it('Click fourth photo is in view after open viewer from fourth thumbnail', () => {
+  it('Check fourth photo is in view after open viewer from fourth thumbnail', () => {
     cy.get('article.thumb').eq(4).find('a').click()
     cy.get('#mobile_viewer').should('be.visible')
     cy.get("div#mphoto_4").then( $el => {
@@ -30,7 +30,7 @@ describe('nosher.net photo album mobile', () => {
       const rect = $el[0].getBoundingClientRect();
       expect( rect.top ).to.be.eq(0);
       expect( rect.bottom ).to.be.lessThan(bottom);
-  });
+    });
   })
 
 })

@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('nosher.net computer ads index', () => {
+describe('nosher.net computer advert', () => {
   
   beforeEach(() => {
     cy.visit('http://10.1.203.1:8010/archives/computers/acorn_sparkjet_percw_aug83')
@@ -60,12 +60,6 @@ describe('nosher.net computer ads index', () => {
   })
 
 
-  /*
-   *<p class="nav">
-        <a href="/archives/computers">adverts home</a> | <a href="/archives/computers/index">a-z index</a> | <a href="/archives/computers/links/">industry connections</a> | <a href="/archives/computers/timelines">timelines</a> | <a href="/archives/computers/years/">by year</a>  | <a href="pcn_1983-08-25_v1_no25_002">next Acorn advert</a> | <a href="comm_004-a">previous Acorn advert</a> | <a href="itcs_andromeda_percw_aug83">previous advert</a> | <a href="adve_020">next advert</a>
-
-    </p>
-  */
   it('Check inter-advert navlinks for non-first-or-last advert', () => {
     cy.get('p.nav').should('have.length', 1).should(($nav) => {
       if ($nav.find('a').length != 9 ) {

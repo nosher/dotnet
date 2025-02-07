@@ -135,8 +135,7 @@ describe('nosher.net photo album', () => {
     cy.get('div#caption').contains("A tree has fallen over")
   })
 
-
-
+  
   it('X closes viewer', () => {
     cy.get('article.thumb').first().click()
     cy.get('#viewer').should('be.visible')
