@@ -20,7 +20,6 @@ window.addEventListener("load", () => {
         setTimeout(showViewer(index), 1500);
     };
 });
-
 addSwipeListeners();
 addKeyListeners();
 
@@ -206,7 +205,7 @@ function scrollImgToView(position, landscape) {
 }
 
 function showDesktopImage(pos) {
-    MAIN.prop("title", images[pos] + ", {{year}}, " + captions[pos]);
+    MAIN.prop("title", captions[pos] + " (" + images[pos] + ")" );
     $("#caption").html(captions[pos] + "<span class=\"closetext\" onclick='hideViewer();'> (X) </span>");
     for (var i = 0; i < imgCount; i++) {
         elem = document.getElementById((i + 1) + "-marker");
@@ -222,9 +221,9 @@ function showDesktopImage(pos) {
     } else if (newpos < half) {
         $("#wrapper").scrollLeft(0);
     }
-    MAIN.hide();
     var imgUrl = base + "/" + images[pos] + "-m.webp";
-    MAIN.attr("alt", "{{title}}, " + captions[pos]);
+    MAIN.hide();
+    MAIN.attr("alt", captions[pos]);
     MAIN.attr("src", imgUrl).on("load", function() {
         
         var inMemory = new Image();
