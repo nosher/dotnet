@@ -9,6 +9,27 @@ describe('nosher.net photo album', () => {
   })
 
 
+  it('Click first photo and check img alt and title properties', () => {
+    cy.get('article.thumb').first().click()
+    cy.get('#viewer').should('be.visible')
+    cy.get('img#fullsize').should(($img) => {
+      expect($img.attr('alt')).contains("The moon rises over Chinner's field")
+      expect($img.prop('title')).contains("The moon rises over Chinner's field (2025/2025-01-19WalkAroundDebenham/imgp0076)")
+    })
+  })
+
+
+  it('Check photo opens in noJS mode', () => {
+    cy.get('article.thumb').first().find('a').invoke('removeAttr', 'onclick').click()
+    cy.url().should('include', 'nojs?year=2025&path=2025-01-19WalkAroundDebenham')
+    cy.get('div.advert').find('img').should(($img) => {
+      const alt = "The moon rises over Chinner's field, from A Pub Walk to the Lion, Debenham, Suffolk - 19th January 2025"
+      expect($img.attr('alt')).contains(alt)
+      expect($img.attr('title')).contains(alt)
+    })
+  })
+
+
   it('Check navmenu has links to photo years', () => {
     cy.get('p.navlink').should('have.length', 2).find('a').should(($link) => {
       expect($link.attr('href')).contains(/images/)
@@ -109,12 +130,6 @@ describe('nosher.net photo album', () => {
   })
 
 
-  it('Check photo opens in noJS mode', () => {
-    cy.get('article.thumb').first().find('a').invoke('removeAttr', 'onclick').click()
-    cy.url().should('include', 'nojs?year=2025&path=2025-01-19WalkAroundDebenham')
-  })
-
-
   it('Click on photo in photo strip', () => {
     cy.get('article.thumb').first().find('a').click()
     cy.get('#viewer').should('be.visible')
@@ -142,5 +157,6 @@ describe('nosher.net photo album', () => {
     cy.get('photoview').trigger('keydown', {keyCode: 88, force: true});
     cy.get('#viewer').should('not.be.visible')
   })
+
 
 })
