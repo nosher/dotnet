@@ -116,4 +116,48 @@ describe('nosher.net computer advert', () => {
     })
   })
 
+  /*
+   * The following relative links might change if the order of adverts changes, but
+   * as they're early they probably won't
+  */  
+  it('Check next advert link', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/acorn_firstadvert_praccomp_may79')
+    cy.get('p.nav').find('a').contains('next advert').then(($link) => {
+      const href = $link.prop('href')
+      cy.visit(href)
+      cy.url().should('contain', 'pcw_1980-06-00_002_msi')
+    })
+  })
+
+
+  it('Check previous advert link', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/pcw_1980-06-00_002_msi')
+    cy.get('p.nav').find('a').contains('previous advert').then(($link) => {
+      const href = $link.prop('href')
+      cy.visit(href)
+      cy.url().should('contain', 'acorn_firstadvert_praccomp_may79')
+    })
+  })
+
+
+  it('Check next Acorn advert link', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/acorn_firstadvert_praccomp_may79')
+    cy.get('p.nav').find('a').contains('next Acorn advert').then(($link) => {
+      const href = $link.prop('href')
+      cy.visit(href)
+      cy.url().should('contain', 'pcw_1979-09_022')
+    })
+  })
+
+
+  it('Check previous Acorn advert link', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/pcw_1979-09_022')
+    cy.get('p.nav').find('a').contains('previous Acorn advert').then(($link) => {
+      const href = $link.prop('href')
+      cy.visit(href)
+      cy.url().should('contain', 'acorn_firstadvert_praccomp_may79')
+    })
+  })
+
+
 })
