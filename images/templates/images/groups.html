@@ -1,15 +1,21 @@
 {% extends "base.html" %}
 
-{% if intro %}
-<div class="images_intro">{{intro|safe}}</div>
-{% endif %}
+
 {% block content %}
+<div class="advert">
   <h1>{{title}} photos</h1>
+  {% if intro %}
+  <div class="images_intro">
+    {% if image %}<img class="introimg" src="{{staticServer}}/images{{image}}" alt="{{title}}" />{% endif %}
+    {{intro|safe}}
+  </div><br />
+  {% endif %}
   <ul class="albums">
 {% for album in albums %}
     <li><a href="/images/{{ album.path }}/">{{ album.title|safe }}</a></li>
 {% endfor %}
   </ul>
+</div>
 {% endblock %}
 
 

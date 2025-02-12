@@ -2264,9 +2264,22 @@ diet- {
     width: 305px;
     margin: 0;
 } 
+img.introimg {
+    width: 300px; 
+    float: left; 
+    margin: 10px 12px 2px 0;
+}
 @media screen and (max-width: 1000px) { 
     .saxlogo {
-        width: 95%;
+        width: 98%;
         clear: left;
     }
+    img.introimg {
+        float: unset;
+        display: block;
+        width: 90% !important;
+        margin: 0 auto 12px auto;
+        clear: both !important;
+    }
 }
+

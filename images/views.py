@@ -21,6 +21,19 @@ def index(request):
     if "group" in params:
         keys = params.get("group").split(",")
         title = params.get("title")
+        ifile = ROOT + "/" + title.replace(" ", "") + ".txt"
+        image = itext = None
+        try:
+            with open(ifile) as fh:
+                lines = fh.readlines()
+                if lines[0].find("-m.webp") > -1:
+                    image = lines.pop(0).strip()
+                itext = ""
+                for l in lines:
+                    itext = itext + "<p>{}</p>".format(l.strip())
+        except: 
+            pass # no intro file
+    
         if len(keys) == 1:
             albums = PhotoAlbum.objects.filter(title__contains = keys[0]).order_by('-path')
         else:
@@ -32,6 +45,8 @@ def index(request):
             'years': _getYears(),
             'albums': albums,
             'title': title,
+            'image': image,
+            'intro': itext,
             'staticServer': WEBROOT,
             'feedback': EMAIL,
             'groups': _getGroups()
