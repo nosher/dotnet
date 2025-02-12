@@ -110,5 +110,18 @@ describe('nosher.net computer ads index', () => {
       cy.get('div.catindex').should('have.length', 1).find('p').eq(1).find('b').should('have.text', 'A')
     })
   })
-  
+ 
+ 
+  it('Check link to single-advert company goes straight to advert', () => {
+    cy.get('p.navlink').find('a').contains('Asda').click()
+    cy.get('section.advert').should('have.length', 1)
+  })
+
+
+  it('Check link to multi-advert company goes to a list', () => {
+    cy.get('p.navlink').find('a').contains('Amstrad').click()
+    cy.get('section.archives').should('have.length', 1)
+  })
+
+
 })

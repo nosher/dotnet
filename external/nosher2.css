@@ -1237,13 +1237,13 @@ archivedescription h3 {
     max-width: 800px;
 }
 
-.advert img, .content img {
+.advert img, .content > img {
     border: 1px solid #505050;
     margin: 0 0 22px 0;
     box-shadow: 3px 3px 6px var(--box_shadow);
     width: 95%;
 }
-.content img {
+.content > img {
     width: unset;
 }
 @media screen and (max-width: 1000px) {
@@ -2183,7 +2183,7 @@ diet- {
     color: #226622;
 }
 .recimg {
-    width: 30%;
+    width: 700px;
     margin: 18px 0 4px 0;
 }
 @media screen and (max-width: 1000px) { 
