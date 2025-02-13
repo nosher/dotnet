@@ -1,4 +1,5 @@
 import os
+import datetime
 
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -6,10 +7,7 @@ from django.http import Http404
 from django.db.models import Q
 from .models import PhotoAlbum
 from .models import PhotoAlbums
-
 from stat import *
-import datetime
-
 from ..constants import * 
 
 DOCROOT = "images"
@@ -21,7 +19,10 @@ def index(request):
     if "group" in params:
         keys = params.get("group").split(",")
         title = params.get("title")
-        ifile = ROOT + "/" + title.replace(" ", "") + ".txt"
+        ifile = ROOT + "/" + title \
+            .replace(" ", "") \
+            .replace("/", "") \
+            .replace(":", "") + ".txt"
         image = itext = None
         try:
             with open(ifile) as fh:
@@ -30,7 +31,9 @@ def index(request):
                     image = lines.pop(0).strip()
                 itext = ""
                 for l in lines:
-                    itext = itext + "<p>{}</p>".format(l.strip())
+                    l = l.strip()
+                    if l != "":
+                        itext = itext + "\n    <p>{}</p>".format(l)
         except: 
             pass # no intro file
     
