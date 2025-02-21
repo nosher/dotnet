@@ -37,5 +37,3 @@ function navscroll() {
         });
     }
 }
-
-window.addEventListener("load", navscroll, false);

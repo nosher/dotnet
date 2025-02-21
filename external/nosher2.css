@@ -121,7 +121,7 @@
         --hgradf: rgb(75, 123, 187);
         --hgradto: rgb(188, 203, 228);
     
-        --headers2: rgb(68, 108, 160);
+        --headers2: rgb(149, 174, 207);
         --quote: #bbb;
         --poem: #abe;
         --desc: #aaa;
@@ -614,7 +614,7 @@ ul.index li {
         text-align: center;
         width: 99%;
     }
-    .navlite a, .navlit a:visited {
+    .navlite a, .navlit a:visited, .navlite a nobr {
         margin: 2px;
         color: #000040;
     }
@@ -1146,7 +1146,7 @@ archivethumb {
 archivethumb img {
     width: 136px;
     display: inline;
-    margin: 0 !important
+    margin: 0
 }
 
 archivedescription {
@@ -1193,8 +1193,8 @@ archivedescription h3 {
         grid-template-rows: auto 8px;
         font-size: 80%;
     }
-    archivethumb {
-        margin: 4px 0 0 8px;
+    archivethumb img {
+        margin: 0 0 0 8px;
         width: 75px;
     }
     archivedescription .year {
@@ -1237,11 +1237,11 @@ archivedescription h3 {
     max-width: 800px;
 }
 
-.advert img, .content > img {
+.advert img.ad, .content img.ad {
     border: 1px solid #505050;
-    margin: 0 0 22px 0;
+    margin: 0;
     box-shadow: 3px 3px 6px var(--box_shadow);
-    width: 95%;
+    width: 100%;
 }
 .content > img {
     width: unset;
@@ -1262,7 +1262,6 @@ img.ad {
     margin: 0;
     box-shadow: none;
     width: 700px;
-    align: left;
     display: block;
 } 
 div.zoomer {
@@ -1329,7 +1328,7 @@ div.magicon {
     .advert {
         text-align: left;
     }
-    .advert img {
+    .advert img.ad {
         width: 95.2%;
         margin: 0 8px 0 8px;
         box-shadow: unset;
@@ -1817,6 +1816,7 @@ div.poem p {
     font-size: 1em;
     text-align: center !important;
     color: var(--poem);
+    margin: 0;
 }
 
 @media screen and (max-width: 1000px) {
@@ -2283,3 +2283,21 @@ img.introimg {
     }
 }
 
+.companylogo {
+    height: 100px;
+    max-width: 600px;
+}
+.companylogo_port {
+    width: 220px;
+}
+#sidebyside list h1 {
+    margin-top: 0;
+}
+@media screen and (max-width: 1000px) { 
+    .companylogo {
+        width: 99%;
+    }
+    #sidebyside>photo img {
+        width: 80px;
+    }
+}
