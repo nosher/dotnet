@@ -24,6 +24,7 @@ from PIL import Image
 from pytz import timezone
 
 ARCHIVES = "/archives/computers"
+ARCHIVEROOT = "/home/httpd/nosher.net/docs" + ARCHIVES
 EMAIL = "microhistory@nosher.net"
 
 
@@ -68,6 +69,7 @@ def get_year_only(raw_year):
 def get_first_image(adid):
     return adid.split(",")[0]
 
+
 def convert_values(item):
     """ 
     Convert occurances of [[123|1983]] to current value based
@@ -85,6 +87,7 @@ def convert_values(item):
             item[i] = item[i].replace("[[now]]", "{}".format(get_now("")))
     return item
 
+
 def convert_picture(item):
     """ 
     Convert occurances of [picture:img|text] to a nicely-formatted pictorial group with caption
@@ -98,6 +101,7 @@ def convert_picture(item):
                 target = """<div class="grid1"><img class="ctrimg" src="https://static.nosher.net/archives/computers/images/extras/{}" alt="{}" title="{}"><p class="desc">{}</p></div>""".format(bits[0], bits[1], bits[1], bits[1])
                 item[i] = item[i].replace(repl, target)
     return item
+
 
 def convert_extras(item):
     """
@@ -128,6 +132,7 @@ def convert_extras(item):
                 target = """<img src="https://static.nosher.net/archives/computers/images/extras/%s" style="width: %dpx"/>""" % (thing, wid - 5)
                 item[i] = item[i].replace(repl, """<span class="%s" style="width: %spx; float: %s">%s<br />%s</span>""" % (cls, wid, flot, target, desc))
     return item
+
 
 def convert_images(item):
     """
@@ -166,11 +171,13 @@ def convert_tags(item):
             updated.append(item[i])
     return updated 
 
+
 def convert_acronyms(item):
     for i in range(len(item)):
         for k, v in TLAS.items():
             item[i] = item[i].replace(k, v)
     return item 
+
 
 def convert_to_text(body):
           
@@ -187,6 +194,7 @@ def convert_to_text(body):
     raw_body = (raw_body[:char_limit] + ellipsis).strip()
     return raw_body
 
+
 @register.filter
 def get_first_advert(company):
     # get the first advert for a company - used primary as a shortcut to find the adid for companies
@@ -194,8 +202,10 @@ def get_first_advert(company):
     item = ArchiveItems.objects.filter(company=company)[0]
     return item.adid
 
+
 def soft_url(value):
     return value.replace("/","/​").replace("_", "_​") # replace "/ and _" with themselves and a zero-width space
+
 
 def convert_sources(item):
     g = 1
@@ -217,7 +227,6 @@ def convert_sources(item):
 
 
 def convert(value, year):
-
     try:
         now = date.today().year
         for i in range(year, now):
@@ -237,13 +246,13 @@ def convert(value, year):
         print(sys.exc_info()[0])
         return -1
 
+
 def catalogue(request, alpha = ""):
     companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
     catalogue = OrderedDict()
     if alpha is None or alpha == "":
         alpha = "A"
-    with open("/home/httpd/nosher.net/docs/archives/computers/catalogue.dat", encoding="utf-8") as fh:
-        key = ""
+    with open(ARCHIVEROOT + "/catalogue.dat", encoding="utf-8") as fh:
         blob = fh.readlines()
         for data in blob:
             data = data.replace("\n", "")
@@ -254,7 +263,6 @@ def catalogue(request, alpha = ""):
                 reflist = catalogue[first]
             reflist[iword] = refs.split(",")
             catalogue[first] = reflist
-                 
     context = {
         'title': "Index of adverts",
         'current': alpha,
@@ -272,10 +280,10 @@ def links(request):
     companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
     encoded = None
     index = None
-    with open("/home/httpd/nosher.net/docs/archives/computers/graphs/computers.svg", "rb") as fh:
+    with open(ARCHIVEROOT + "/graphs/computers.svg", "rb") as fh:
         svg = fh.read()
         encoded = base64.b64encode(svg)
-    with open("/home/httpd/nosher.net/docs/archives/computers/graphs/index.html") as ind:
+    with open(ARCHIVEROOT + "/graphs/index.html") as ind:
         index = ind.read()
 
     context = {
@@ -288,10 +296,11 @@ def links(request):
     }
     return render(request, 'computers/links.html', context)
 
+
 @xframe_options_sameorigin
-def svg(request):
+def svg(_):
     svg = None
-    with open("/home/httpd/nosher.net/docs/archives/computers/graphs/computers.svg", "rb") as fh:
+    with open(ARCHIVEROOT + "/graphs/computers.svg", "rb") as fh:
         svg = fh.read()
     return HttpResponse(svg, content_type="image/svg+xml")
 
@@ -304,7 +313,7 @@ def timelines(request):
     sort_param = ""
     sortkey = filterkey = title = ""
 
-    with open("/home/httpd/nosher.net/docs/archives/computers/timeline.dat") as fh:
+    with open(ARCHIVEROOT + "/timeline.dat") as fh:
         for l in [f.strip() for f in fh.readlines()]:
             if l[:1] != "#" and l.strip() != "":
                 parts = l.split("|")
@@ -396,7 +405,7 @@ def computer_index(request):
         title = page_title = "A history of the microcomputer industry in 300 adverts"
         section = "adverts"
         if offset == 0:
-            with open("/home/httpd/nosher.net/docs/archives/computers/intro.txt", encoding="utf-8") as fh:
+            with open(ARCHIVEROOT + "/intro.txt", encoding="utf-8") as fh:
                 intro = fh.read()
         else:
             intro = ""
@@ -450,19 +459,18 @@ def computer_index(request):
         'companies': companies,
         'feedback': EMAIL,
     }
-
     return render(request, 'computers/list.html', context)
 
 
 def computer_advert(request, advert):
     adid = advert.split(",")[0]
     if (adid[-4:] == ".txt"):
-        return computer_advert_text(request, advert, adid)
+        return computer_advert_text(request, adid)
     else:
-        return computer_advert_html(request, advert, adid)
+        return computer_advert_html(request, adid)
 
 
-def computer_advert_text(request, advert, adid):
+def computer_advert_text(request, adid):
 
     title = body = None
     path = os.path.join(ROOT, adid)
@@ -510,19 +518,20 @@ def computer_advert_text(request, advert, adid):
     return HttpResponse(response, content_type="text/plain; charset=UTF-8")
 
 
-def computer_advert_html(request, advert, adid):
+def computer_advert_html(request, adid):
     adid = adid.split(",")[0]
     items = ArchiveItems.objects.all().order_by('year')
-    item = ArchiveItems.objects.filter(adid__startswith=adid)[0]
-    related = ArchiveItems.objects.filter(company=item.company).order_by('year')
-    companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
+    item = ArchiveItems.objects.filter(adid__startswith = adid)[0]
+    company_name = item.company
+    related = ArchiveItems.objects.filter(company = company_name).order_by('year')
+    companies = ArchiveItems.objects.all().values('company').annotate(total = Count('company')).order_by('company')
     title = body = updated = None
     path = os.path.join(ROOT, "{}.txt".format(adid))
     imgpath = os.path.join(ROOT, "images", "{}-m.webp".format(adid))
     idx = request.GET.get("idx", "")
     stats = os.stat(path)
-    fmt_date = datetime.fromtimestamp(stats[ST_MTIME]).replace(tzinfo=timezone('UTC'))
-    mysql_date = item.date_created.replace(tzinfo=timezone('UTC'))
+    fmt_date = datetime.fromtimestamp(stats[ST_MTIME]).replace(tzinfo = timezone('UTC'))
+    mysql_date = item.date_created.replace(tzinfo = timezone('UTC'))
 
     # HACK: all source files got their dates reset to 18 June 2024 at some point, so 
     # ignore this if that's what the date is
@@ -606,6 +615,7 @@ def computer_advert_html(request, advert, adid):
         'prevany': prvany,
         'home': ARCHIVES,
         'title': title,
+        'logo': _get_logo(company_name),
         'body': body,
         'sources': sources,
         'mtime': updated,
@@ -622,6 +632,7 @@ def computer_filter_company(request, company):
 
 def computer_filter_model(request, model):
     return HttpResponse("Hello, world. You're at the computer archives filtered by model.")
+
 
 def computer_filter_years(request):
     records = ArchiveItems.objects.all().order_by('year')
@@ -648,8 +659,22 @@ def computer_filter_years(request):
     }
     return render(request, 'computers/years.html', context)
 
+
 def computer_filter_year(request, year):
     return HttpResponse("Hello, world. You're at the computer archives filtered by year.")
 
+
 def _get_page_image(img):
     return "{}/{}/images/{}".format(WEBROOT, DOCROOT, img)
+
+
+def _get_logo(name):
+    name = name.replace(" ", "").replace("-", "").replace("/", "")
+    path = ARCHIVEROOT + "/images/logos/{}.webp".format(name)
+    if os.path.isfile(path):
+        img = Image.open(path) 
+        width,height = img.size 
+        return {"img": WEBROOT + ARCHIVES + "/images/logos/{}.webp".format(name), "landscape": width / height > 1.4}
+    else:
+        return None
+

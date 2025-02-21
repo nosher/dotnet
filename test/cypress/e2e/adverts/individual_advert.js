@@ -82,9 +82,43 @@ describe('nosher.net computer advert', () => {
   })
 
 
+  it('Check company logo is present: portrait version', () => {
+    // should be the portrait variant
+    cy.get('div#sidebyside').should('have.length', 1).find('img').should('have.prop', 'src')
+      .and('include', 'images/logos/Acorn.webp')
+    cy.get('div#sidebyside').find('img.companylogo_port').should('have.prop', 'alt')
+      .and('include', 'Acorn company logo')
+  })
+
+
+  it('Check company logo is not preset', () => {
+    // the company ComX does not have an apparent logo
+    cy.visit('http://10.1.203.1:8010/archives/computers/pcw_1983-06_021_alsycomx35')
+    cy.get('div#sidebyside').should('have.length', 0)
+    cy.get('img.companylogo').should('have.length', 0)
+    cy.get('img.companylogo_port').should('have.length', 0)
+  })
+
+
+  it('Check company logo is present: landscape version', () => {
+    // should be the landscape variant
+    cy.visit('http://10.1.203.1:8010/archives/computers/comm_012')
+    cy.get('div#sidebyside').should('have.length', 0)
+    cy.get('img.companylogo').should('have.length', 1).should('have.prop', 'src')
+      .and('include', 'images/logos/Commodore.webp')
+    cy.get('img.companylogo').should('have.prop', 'alt')
+      .and('include', 'Commodore company logo')
+  })
+
+
   it('Check navmenu first link is Acorn', () => {
     cy.get('p.navlink').find('a').first().should('have.prop', 'href')
         .and('include', 'value=Acorn')
+  })
+
+
+  it('Check body contains correct title', () => {
+    cy.get('section.advert h1').contains("Acorn Advert")
   })
 
 
