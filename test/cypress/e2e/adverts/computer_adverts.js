@@ -56,7 +56,15 @@ describe('nosher.net computer ads index', () => {
   it('Check company-specific adverts all contains ads for specified company', () => {
     cy.get('p.navlink').first().find('a').first().invoke('text').then(($text) => {
       cy.get('p.navlink').first().find('a').first().click()
-      cy.get('archivedescription').find('h3').should('contain', $text)
+      cy.get('archivedescription').should('have.attr', 'data-company').should('contain', $text)
+    })
+  })
+
+
+  it('Check company-specific adverts do not show company name', () => {
+    cy.get('p.navlink').first().find('a').first().invoke('text').then(($text) => {
+      cy.get('p.navlink').first().find('a').first().click()
+      cy.get('archivedescription').find('h3').should('have.length', 0)
     })
   })
 
