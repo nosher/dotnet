@@ -13,6 +13,7 @@
     --hgradf: #B25785;
     --hgradto: #7c385a;
     --headers2: #7f5d21;
+    --headers4: #ae905d;
     --quote: #555;
     --poem: #668;
     --desc: #668;
@@ -39,6 +40,7 @@
         --hgradf: CanvasText;
         --hgradto: CanvasText;
         --headers2: #eee;
+        --headers4: #ddd;
         --quote: CanvasText;
         --poem: CanvasText;
         --desc: CanvasText;
@@ -120,8 +122,8 @@
         --headers: rgb(75, 123, 187);
         --hgradf: rgb(75, 123, 187);
         --hgradto: rgb(188, 203, 228);
-    
         --headers2: rgb(149, 174, 207);
+        --headers4: rgb(183, 203, 229);
         --quote: #bbb;
         --poem: #abe;
         --desc: #aaa;
@@ -170,10 +172,10 @@
         color: var(--text);
     }
     p.title, p.quote {
-        color: #888 !important;
+        color: #ddd !important;
     }
     .updated, .copy, .adthumb_dim {
-        color: #888 !important;
+        color: #ddd !important;
     }
     .extra, .extra_left, .extra > a, .extra > a:visited {
         background-color: var(--extra) !important;
@@ -438,14 +440,15 @@ main {
 /* Side-by-side layout: image and adjacent list */
 
 #sidebyside {
-    margin-top: 20px;
+    margin-top: 8px;
     display: grid;
-    grid-template-columns: 240px auto;
+    grid-template-columns: auto auto 1fr;
     grid-template-areas: "photo list"
 }
 
 #sidebyside>photo {
     grid-area: photo;
+    padding-right: 12px;
 }
 
 #sidebyside>list {
@@ -1158,7 +1161,7 @@ archivedescription {
 archivedescription .year {
     font-weight: bold;
     font-family: "charterregular", sans-serif;
-    color: #707070;
+    color: var(--headers4);
     margin: 0;
     font-size: 90%;
 }
@@ -2283,12 +2286,12 @@ img.introimg {
     }
 }
 
-.companylogo {
+img.companylogo {
     height: 100px;
     max-width: 600px;
 }
-.companylogo_port {
-    width: 220px;
+img.companylogo_port, #sidebyside photo > img.companylogo_port {
+    width: 120px;
 }
 #sidebyside list h1 {
     margin-top: 0;

@@ -2,7 +2,23 @@
 
 {% block content %}
 <div class="advert">
-<h1>{{ title }}</h1>
+{% if logo %} 
+      {% if logo.landscape %}
+      <img src="{{logo.img|safe}}" class="companylogo" alt="{{item.company}} company logo"/><br />
+      <h1>{{ title }}</h1>
+      {% else %}
+      <div id="sidebyside">
+        <photo>
+          <img src="{{logo.img|safe}}" class="companylogo_port" alt="{{item.company}} company logo"/>
+        </photo>
+        <list>
+          <h1>{{ title }}</h1><br />
+        </list>
+      </div>
+      {% endif %}
+    {% else %}
+    <h1>{{ title }}</h1>
+{% endif %}
 {% if intro %}
     {{ intro|safe }}
 {% endif %}
@@ -14,7 +30,7 @@
             <a href="{{ item.adid }}"><img src="{{ url }}/images/{{ item.adid }}-s.webp" alt="{{ item.company }} advert thumbnail" title="{{ item.company }} advert thumbnail" /></a>
         </archivethumb>
         <archivedescription>
-            <h3>{{ item.company }}</h3>
+            {% if isFiltered is False %}<h3>{{ item.company }}</h3>{% endif %}
             <h4 class="year">{{ item.year|get_year }}</h4>
             <a href="{{ item.adid }}"><p class="title">{{ titles|get_item:item.adid }}</p></a>
             <a href="{{ item.adid }}"><p class="summary">{{ summaries|get_item:item.adid }}</p></a>
