@@ -380,6 +380,7 @@ def computer_index(request):
     urlparams = []
     intro = ""
     companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
+    company_name = None
 
     # check for an offset
     if "offset" in params:
@@ -392,7 +393,8 @@ def computer_index(request):
             urlparams.append("value={}".format(value))
             # check for a company 
             if ptype == "source":
-                items = ArchiveItems.objects.filter(company=value).order_by('year')
+                company_name = value
+                items = ArchiveItems.objects.filter(company = company_name).order_by('year')
                 title = "{} adverts".format(value)
             # check for a year
             elif ptype == "year":
@@ -449,6 +451,8 @@ def computer_index(request):
         'titles': titles,
         'home': ARCHIVES,
         'intro': intro,
+        'isFiltered': (company_name is not None and company_name != ""),
+        'logo': _get_logo(company_name),
         'summaries': summaries,
         'items': selected,
         'page': page,
@@ -669,12 +673,11 @@ def _get_page_image(img):
 
 
 def _get_logo(name):
-    name = name.replace(" ", "").replace("-", "").replace("/", "")
-    path = ARCHIVEROOT + "/images/logos/{}.webp".format(name)
-    if os.path.isfile(path):
-        img = Image.open(path) 
-        width,height = img.size 
-        return {"img": WEBROOT + ARCHIVES + "/images/logos/{}.webp".format(name), "landscape": width / height > 1.4}
-    else:
-        return None
-
+    if name is not None and name != "":
+        name = name.replace(" ", "").replace("-", "").replace("/", "")
+        path = ARCHIVEROOT + "/images/logos/{}.webp".format(name)
+        if os.path.isfile(path):
+            img = Image.open(path) 
+            width,height = img.size 
+            return {"img": WEBROOT + ARCHIVES + "/images/logos/{}.webp".format(name), "landscape": width / height > 1.4}
+    return None

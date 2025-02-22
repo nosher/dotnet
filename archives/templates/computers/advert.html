@@ -65,6 +65,7 @@
   </script>
 
 <section class="advert">
+    
     {% if logo %} 
       {% if logo.landscape %}
       <img src="{{logo.img|safe}}" class="companylogo" alt="{{item.company}} company logo"/><br />
@@ -82,7 +83,6 @@
     {% else %}
     <h1>{{ item.company }} Advert - {{ item.year|get_year }}</h1>
     {% endif %}
-    
     <p class="nav">
         {% include "computers/navbar.html" %}
     </p>
