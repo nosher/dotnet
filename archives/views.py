@@ -17,6 +17,7 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from stat import *
 from datetime import datetime
 from datetime import date
+from datetime import timedelta
 from .models import ArchiveItems
 from ..constants import *
 from collections import OrderedDict
@@ -525,22 +526,23 @@ def computer_advert_text(request, adid):
 def computer_advert_html(request, adid):
     adid = adid.split(",")[0]
     items = ArchiveItems.objects.all().order_by('year')
-    item = ArchiveItems.objects.filter(adid__startswith = adid)[0]
+    companies = ArchiveItems.objects.all().values('company').annotate(total = Count('company')).order_by('company')
+    adverts = ArchiveItems.objects.filter(adid__startswith = adid)
+    item = None
+    if len(adverts) > 0:
+        item = adverts[0]
+    else:
+        return _get_null_advert(request, companies)
     company_name = item.company
     related = ArchiveItems.objects.filter(company = company_name).order_by('year')
-    companies = ArchiveItems.objects.all().values('company').annotate(total = Count('company')).order_by('company')
-    title = body = updated = None
+    title = body = None
     path = os.path.join(ROOT, "{}.txt".format(adid))
     imgpath = os.path.join(ROOT, "images", "{}-m.webp".format(adid))
     idx = request.GET.get("idx", "")
     stats = os.stat(path)
     fmt_date = datetime.fromtimestamp(stats[ST_MTIME]).replace(tzinfo = timezone('UTC'))
     mysql_date = item.date_created.replace(tzinfo = timezone('UTC'))
-
-    # HACK: all source files got their dates reset to 18 June 2024 at some point, so 
-    # ignore this if that's what the date is
-    if fmt_date.strftime("%d %B %Y") != "18 June 2024" and fmt_date > mysql_date:
-        updated =fmt_date.strftime("%d %B %Y") 
+    updated = _get_updated(fmt_date, mysql_date)
 
     # get image size
     im = Image.open(imgpath)
@@ -681,3 +683,54 @@ def _get_logo(name):
             width,height = img.size 
             return {"img": WEBROOT + ARCHIVES + "/images/logos/{}.webp".format(name), "landscape": width / height > 1.4}
     return None
+
+
+def _get_updated(fmt_date, mysql_date):
+    # HACK: all source files got their dates reset to 18 June 2024 at some point, so 
+    # ignore this if that's what the date is
+    if fmt_date.strftime("%d %B %Y") != "18 June 2024" and fmt_date > (mysql_date + timedelta(days = 1)):  
+        return fmt_date.strftime("%d %B %Y") 
+    return None
+
+
+def _get_null_advert(request, companies):
+    """
+    Used for testing and as a 404. Invoke the advert /archives/computers/foo(?yesterday|sameday|twoday|None)
+    """
+    params = request.GET
+    created = datetime.strptime('Jan 1 2025', '%b %d %Y').date()
+    item = {"source": "Out of Nowhere", "company": "404", "year": "2025-02-00", "date_created": created}
+    updated = _get_updated(created, created)
+    if "twoday" in params:
+        updated = _get_updated(created + timedelta(days = 2), created)
+    if "sameday" in params:
+        updated = _get_updated(created + timedelta(hours = 2), created)
+    if "yesterday" in params:
+        updated = _get_updated(created + timedelta(days = -2), created)
+
+    context = {
+        'url': "{}/{}".format(WEBROOT, DOCROOT),
+        'adid': "foo",
+        'page_image': _get_page_image("i404-m.webp"),
+        'width': 700,
+        'height': 920,
+        'aspect': 0.755,
+        'item': item,
+        'page_title': "404 Lost Advert",
+        'staticServer': WEBROOT,
+        'page_description': "A description for a lost advert",
+        'next': None,
+        'prev': None,
+        'nextany': None,
+        'prevany': None,
+        'home': ARCHIVES,
+        'title': "Lost Advert",
+        'logo': _get_logo("Commodore"),
+        'body': "<p>There's no advert here, sorry.</p>",
+        'sources': ["foo"],
+        'mtime': updated,
+        'companies': companies,
+        'related': [],
+        'feedback': EMAIL,
+    }
+    return render(request, 'computers/advert.html', context)
