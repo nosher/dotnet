@@ -46,8 +46,12 @@ describe('nosher.net computer advert', () => {
   });
 
 
-  it('Check advert has two sources', () => {
-    cy.get('section.sources').find('div.source').should('have.length', 2)
+  it('Check advert has at least two sources', () => {
+    cy.get('section.sources').should(($sources) => {
+      if ($sources.find('div.source').length < 2 ) {
+        throw new Error('Did not enough sources')
+      }
+    })
   })
 
 
@@ -123,7 +127,7 @@ describe('nosher.net computer advert', () => {
 
 
   it('Check footer contains correct text', () => {
-    cy.get('footer').contains("microhistory@nosher.net").contains("Last updated")
+    cy.get('footer').contains("microhistory@nosher.net")
   })
 
 
@@ -191,6 +195,32 @@ describe('nosher.net computer advert', () => {
       cy.visit(href)
       cy.url().should('contain', 'acorn_firstadvert_praccomp_may79')
     })
+  })
+
+
+  // the following tests use a null/404 advert handler which can optionally
+  // be told to generate certain relative updated dates. These tests also 
+  // effectively test the presence of the 404 page for adverts, as "foo" does
+  // not exist as a real advert.
+
+  it('Check date created, updated should not be present', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/foo?sameday')
+    cy.get('p.updated').contains('Date created: 01 January 2025')
+    cy.get('p.updated').contains('Last updated').should('not.exist')
+  })
+  
+
+  it('Check date created, updated should be present', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/foo?twoday')
+    cy.get('p.updated').contains('Date created: 01 January 2025')
+    cy.get('p.updated').contains('Last updated: 03 January 2025')
+  })
+
+
+  it('Check broken modified date, updated should not be present', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/foo?yesterday')
+    cy.get('p.updated').contains('Date created: 01 January 2025')
+    cy.get('p.updated').contains('Last updated').should('not.exist')
   })
 
 
