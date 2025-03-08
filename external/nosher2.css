@@ -116,7 +116,7 @@
         --link-hover: #555;
         --link: #ccc;
         --link_v: #bbb;
-        --nav-bg: #222;
+        --nav-bg: #393939;
         --navlink: #ccc;
         --sidebar-bg: #333;
         --headers: rgb(75, 123, 187);
@@ -1246,6 +1246,14 @@ archivedescription h3 {
     box-shadow: 3px 3px 6px var(--box_shadow);
     width: 100%;
 }
+.advert img.ad {
+    border: 0;
+    margin: 0;
+    box-shadow: none;
+    width: 700px;
+    display: block;
+}
+
 .content > img {
     width: unset;
 }
@@ -1260,13 +1268,7 @@ archivedescription h3 {
     color: var(--headers2);
 }
 
-img.ad {
-    border: 0;
-    margin: 0;
-    box-shadow: none;
-    width: 700px;
-    display: block;
-} 
+ 
 div.zoomer {
     border: 1px solid #505050;
     margin: 0 0 22px 0;
@@ -1284,9 +1286,10 @@ div.magicon {
 
 @media screen and (max-width: 1000px) {
         div.zoomer {
-            width: 94.5%;
+            width: 94%;
             padding: 0;
-            margin: 0 0 0 6px;
+            margin: 0 0 0 8px;
+            box-shadow: none;
         }
         img.ad {
             width: 100% !important;
@@ -1334,7 +1337,7 @@ div.magicon {
     .advert img.ad {
         width: 95.2%;
         margin: 0 8px 0 8px;
-        box-shadow: unset;
+        box-shadow: none;
         box-sizing: border-box;
     }
     .advert p {
@@ -1966,6 +1969,10 @@ div.bottom {
 .peoplelist a {
     text-decoration: underline;
 }
+.peoplelist div { 
+    color: var(--text);
+}
+
 
 @media screen and (max-width: 1000px) {
     .peoplelist {
@@ -2120,6 +2127,9 @@ article.ref li {
         margin: 22px 0 12px 8px;
         border-width: 0 0 0 4px;
         padding-left: 0;
+    }
+    blockquote.ref {
+        margin-left: 8px;
     }
     p.ref {
         padding: 0 0 0 4px;
@@ -2286,21 +2296,33 @@ img.introimg {
     }
 }
 
+div#clogo {
+    width: 90%;
+    overflow: hidden;
+    padding: 8px;
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    margin-bottom: 4px;
+}
+div#clogo h1 {
+    margin-top: 0;
+    width: auto;
+    padding: 0 0 0 8px;
+}
 img.companylogo {
     height: 100px;
     max-width: 600px;
 }
-img.companylogo_port, #sidebyside photo > img.companylogo_port {
+img.companylogo_port {
+    margin-top: 4px;
     width: 120px;
 }
-#sidebyside list h1 {
-    margin-top: 0;
-}
 @media screen and (max-width: 1000px) { 
-    .companylogo {
-        width: 99%;
-    }
-    #sidebyside>photo img {
+    img.companylogo_port {
         width: 80px;
+    }
+    .companylogo {
+        width: 50%;
+        margin: 8px 0 0 8px;
     }
 }
