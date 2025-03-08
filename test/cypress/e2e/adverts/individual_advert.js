@@ -86,11 +86,11 @@ describe('nosher.net computer advert', () => {
   })
 
 
-  it('Check company logo is present: portrait version', () => {
+  it('Check company logo is present: portrait version (logo and title side by side)', () => {
     // should be the portrait variant
-    cy.get('div#sidebyside').should('have.length', 1).find('img').should('have.prop', 'src')
+    cy.get('div#clogo').should('have.length', 1).find('img').should('have.prop', 'src')
       .and('include', 'images/logos/Acorn.webp')
-    cy.get('div#sidebyside').find('img.companylogo_port').should('have.prop', 'alt')
+    cy.get('div#clogo').find('img.companylogo_port').should('have.prop', 'alt')
       .and('include', 'Acorn company logo')
   })
 
