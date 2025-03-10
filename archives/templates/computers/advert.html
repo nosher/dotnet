@@ -66,31 +66,19 @@
 
 <section class="advert">
     
-{% if logo %} 
-  {% if logo.landscape %}
-    <img src="{{logo.img|safe}}" class="companylogo" alt="{{item.company}} company logo"/><br />
-    <h1>{{ item.company }} Advert - {{ item.year|get_year }}</h1>
-  {% else %}
-    <div id="clogo">
-      <img src="{{logo.img|safe}}" class="companylogo_port" alt="{{item.company}} company logo"/>
-      <h1>{{ item.company }} Advert - {{ item.year|get_year }}</h1>
-    </div>
-  {% endif %}
-{% else %}
-    <h1>{{ item.company }} Advert - {{ item.year|get_year }}</h1>
-{% endif %}
+    {% include "computers/logo.html" %}
 
     <p class="nav">
         {% include "computers/navbar.html" %}
     </p>
     <h2>From {%if item.source %}{{ item.source }}{% else %}{%if item.type == "channel" %}sales brochure{% else %}Source unknown{% endif %}{% endif %}</h2>
     <div class="zoomer">
-      <img src="{{ page_image }}" class="ad" style="aspect-ratio: {{ aspect }};" alt="{{ item.company }} Advert: {{ title|safe }}, from {{ item.source }}, {{ item.year|get_year }}" />
+      <img src="{{ page_image }}" class="ad" style="aspect-ratio: {{ aspect }};" alt="{{ item.company }} Advert: {{ advert_title|safe }}, from {{ item.source }}, {{ item.year|get_year }}" />
     </div>
     <div class="magicon"><button id="zoom" type="button">🔍 click to zoom</button></div>
     
     <br />  
-    <h3>{{ title|safe }}</h3>
+    <h3>{{ advert_title|safe }}</h3>
 
     <div class="liner">
     {{ body|safe }}

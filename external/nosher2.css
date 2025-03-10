@@ -2299,10 +2299,10 @@ img.introimg {
 div#clogo {
     width: 90%;
     overflow: hidden;
-    padding: 8px;
+    padding: 0;
     display: grid;
     grid-template-columns: auto auto 1fr;
-    margin-bottom: 4px;
+    margin-bottom: 12px;
 }
 div#clogo h1 {
     margin-top: 0;
@@ -2318,11 +2318,18 @@ img.companylogo_port {
     width: 120px;
 }
 @media screen and (max-width: 1000px) { 
+    div#clogo {
+        padding: 8px 8px 0 8px;
+    }
     img.companylogo_port {
         width: 80px;
     }
-    .companylogo {
-        width: 50%;
-        margin: 8px 0 0 8px;
+    img.companylogo {
+        width: 60%;
+        height: unset;
+        margin: 4px 0 0 8px;
+    }
+    h1.logo {
+        margin: 0;
     }
 }

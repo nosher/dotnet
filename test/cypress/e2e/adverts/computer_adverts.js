@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('nosher.net computer ads index', () => {
+describe('nosher.net computer adverts - index', () => {
   beforeEach(() => {
     cy.visit('http://10.1.203.1:8010/archives/computers/')
   })
@@ -104,7 +104,7 @@ describe('nosher.net computer ads index', () => {
       cy.get('section.archives').find('div#yearindex').find('a').first().then(($link) => {
         const href = $link.prop('href')
         cy.visit(href)
-        cy.get('h1').first().invoke('text').should('include', year)
+        cy.get('h1.logo').first().invoke('text').should('include', year)
       })
     })
   })
@@ -129,6 +129,21 @@ describe('nosher.net computer ads index', () => {
   it('Check link to multi-advert company goes to a list', () => {
     cy.get('p.navlink').find('a').contains('Amstrad').click()
     cy.get('section.archives').should('have.length', 1)
+  })
+
+
+  it('Check correct title is present in the Acorn adverts list', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/?type=source&value=Acorn')
+    cy.get('h1.logo').should('have.length', 1).should('have.text', 'Acorn adverts')
+  })
+
+
+  it('Check company logo is present in the Acorn adverts list', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/?type=source&value=Acorn')
+    cy.get('div#clogo').should('have.length', 1).find('img').should('have.prop', 'src')
+      .and('include', 'images/logos/Acorn.webp')
+    cy.get('div#clogo').find('img.companylogo_port').should('have.prop', 'alt')
+      .and('include', 'Acorn company logo')
   })
 
 

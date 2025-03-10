@@ -375,6 +375,7 @@ def computer_index(request):
     summaries = {}
     params = request.GET
     items = []
+    item = {}
     title = ""
     offset = 0
     page = pagination = 15
@@ -397,6 +398,7 @@ def computer_index(request):
                 company_name = value
                 items = ArchiveItems.objects.filter(company = company_name).order_by('year')
                 title = "{} adverts".format(value)
+                item["company"] = value
             # check for a year
             elif ptype == "year":
                 items = ArchiveItems.objects.filter(year__startswith=value).order_by('year')
@@ -445,6 +447,7 @@ def computer_index(request):
         'url': "{}/{}".format(WEBROOT, DOCROOT),
         'title': title,
         'section': section,
+        'item': item,
         'page_image': _get_page_image("{}-m.webp".format(items[0].adid)),
         'page_title': page_title,
         'page_description': re.sub("<.*?>","", intro),
@@ -620,7 +623,8 @@ def computer_advert_html(request, adid):
         'nextany': nxtany,
         'prevany': prvany,
         'home': ARCHIVES,
-        'title': title,
+        'title': "{} Advert - {}".format(item.company, get_year(item.year)),
+        'advert_title': title,
         'logo': _get_logo(company_name),
         'body': body,
         'sources': sources,
