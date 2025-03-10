@@ -2,23 +2,9 @@
 
 {% block content %}
 <div class="advert">
-{% if logo %} 
-      {% if logo.landscape %}
-      <img src="{{logo.img|safe}}" class="companylogo" alt="{{item.company}} company logo"/><br />
-      <h1>{{ title }}</h1>
-      {% else %}
-      <div id="sidebyside">
-        <photo>
-          <img src="{{logo.img|safe}}" class="companylogo_port" alt="{{item.company}} company logo"/>
-        </photo>
-        <list>
-          <h1>{{ title }}</h1><br />
-        </list>
-      </div>
-      {% endif %}
-    {% else %}
-    <h1>{{ title }}</h1>
-{% endif %}
+
+{% include "computers/logo.html" %}
+
 {% if intro %}
     {{ intro|safe }}
 {% endif %}

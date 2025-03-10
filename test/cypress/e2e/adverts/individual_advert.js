@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('nosher.net computer advert', () => {
+describe('nosher.net computer adverts - individual', () => {
   
   beforeEach(() => {
     cy.visit('http://10.1.203.1:8010/archives/computers/acorn_sparkjet_percw_aug83')

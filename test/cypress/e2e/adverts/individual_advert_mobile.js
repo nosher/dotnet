@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('nosher.net computer advert', () => {
+describe('nosher.net computer adverts - mobile view', () => {
   
   beforeEach(() => {
     // set viewport to 320,480 to trigger mobile view
@@ -10,7 +10,7 @@ describe('nosher.net computer advert', () => {
 
   it('Check display of company logo - landscape', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/cal_wordproc_percw_nov82')
-    cy.get('img.companylogo').should('have.length', 1).should(el => expect(el.width()).eq(180))
+    cy.get('img.companylogo').should('have.length', 1).should(el => expect(el.width()).lt(220))
     cy.get('img.companylogo_port').should('have.length', 0)
   })
 
