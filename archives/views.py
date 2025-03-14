@@ -104,6 +104,34 @@ def convert_picture(item):
     return item
 
 
+def convert_links(item):
+    """
+    Convert occurances of [=adid|text], [@company] or [@company|text] to an HTML link
+    """
+    for i in range(len(item)):
+        for type in ["=", "@"]:
+            groups = re.findall("\[{}(?P<ext>.*?)\]".format(type), item[i], re.S|re.MULTILINE)
+            if not groups is None:
+                for ext in groups:
+                    repl = "[{}{}]".format(type, ext)
+                    bits = ext.split("|")
+                    if len(bits) > 1:
+                        url = bits[0]
+                        text = bits[1]
+                    else:
+                        text = url = bits[0]
+                    if type == "=":
+                        link = url
+                    else:
+                        adverts = ArchiveItems.objects.filter(company = url)
+                        if len(adverts) == 1:
+                            link = adverts[0].adid
+                        else:    
+                            link = "{}?type=source&value={}".format(ARCHIVES, url)
+                    item[i] = item[i].replace(repl, """<a data-link="{}" href="{}">{}</a>""".format(url, link, text))
+    return item
+
+
 def convert_extras(item):
     """
     Convert occurances of [extra: xxx} to a footnote with a [n] reference.
@@ -573,6 +601,7 @@ def computer_advert_html(request, adid):
     body = convert_acronyms(body)
     body = convert_extras(body)
     body = convert_picture(body)
+    body = convert_links(body)
     body = convert_images(body)
     (body, sources) = convert_sources(body)
     body = "".join(body)

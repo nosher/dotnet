@@ -5,7 +5,7 @@ describe('nosher.net computer adverts - individual', () => {
   beforeEach(() => {
     cy.visit('http://10.1.203.1:8010/archives/computers/acorn_sparkjet_percw_aug83')
   })
-
+ 
 
   it('Check display of advert sidebar', () => {
     cy.get('sidebar')
@@ -198,7 +198,7 @@ describe('nosher.net computer adverts - individual', () => {
   })
 
 
-  // the following tests use a null/404 advert handler which can optionally
+  // the following three tests use a null/404 advert handler which can optionally
   // be told to generate certain relative updated dates. These tests also 
   // effectively test the presence of the 404 page for adverts, as "foo" does
   // not exist as a real advert.
@@ -223,5 +223,27 @@ describe('nosher.net computer adverts - individual', () => {
     cy.get('p.updated').contains('Last updated').should('not.exist')
   })
 
+
+  it('Check wiki-style links have been created', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/comp_today_1981-09_042')
+    cy.get('a[data-link]').should(($links) => {
+      if ($links.length == 0 ) {
+        throw new Error('Did not find any wiki-style links')
+      }
+    })
+    cy.get(`a[data-link="adve_024"]`).first().then(function($link) {
+      cy.wrap($link).should('have.text', 'the Atom')
+        .should('have.attr', "href").and('include', 'adve_024')
+    })
+    cy.get(`a[data-link="Sinclair"]`).first().then(function($link) {
+      cy.wrap($link).should('have.text', 'Sinclair')
+      .should('have.attr', "href").and('include', '/archives/computers?type=source&value=Sinclair')
+    })
+    cy.get(`a[data-link="https://www.computinghistory.org.uk/det/4236/The-Mighty-Micro"]`).first().then(function($link) {
+      cy.wrap($link).should('have.text', 'The Mighty Micro')
+      .should('have.attr', "href").and('include', 'https://www.computinghistory.org.uk/det/4236/The-Mighty-Micro')
+    })
+  })
+  
 
 })
