@@ -97,7 +97,7 @@
     {% for source in sources %}
         <a name="{{ forloop.counter }}"></a>
         <div class="source">
-            <div class="sourcepos">{{ forloop.counter }}</div><div class="sourcetext">{{ source|safe }}</div>
+            <div class="sourcepos">{{ forloop.counter }}. </div><div class="sourcetext">{{ source|safe }}</div>
         </div>{% endfor %}    
   </section>
 {% endif %}

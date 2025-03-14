@@ -85,7 +85,7 @@
     {
         color: var(--text);
     }
-    p.title, p.quote {
+    p.title, blockquote.quote, p.quote {
         color: Highlight !important;
     }
     .updated, .copy, .adthumb_dim {
@@ -171,7 +171,7 @@
     {
         color: var(--text);
     }
-    p.title, p.quote {
+    p.title {
         color: #ddd !important;
     }
     .updated, .copy, .adthumb_dim {
@@ -1413,8 +1413,8 @@ p.navlink a span {
 
 .source {
     display: grid;
-    grid-template-columns: 24px auto;
-    grid-template-areas: "sourcepos sourcetext"
+    grid-template-columns: 38px 1fr auto;
+    grid-template-areas: "sourcepos null sourcetext"
 }
 
 sup.src a {
@@ -1422,8 +1422,9 @@ sup.src a {
 }
 
 .sourcepos {
-    color: var(--link);
+    color: var(--link_v);
     grid-area: sourcepos;
+    padding-right: 8px;
 }
 
 .sourcetext, .sourcetext a {
@@ -1776,12 +1777,12 @@ audio {
     font-style: italic;
 }
 
-p.quote, p.small_quote {
+blockquote.quote, p.quote, p.small_quote {
     font-size: 1.3em;
     font-style: italic;
     margin: 1em 3em 1em 3em;
     text-align: center !important;
-    color: #668;
+    color: var(--text);
 }
 p.small_quote {
     font-size: 1.05em;
@@ -1835,16 +1836,16 @@ div.poem p {
     }
 }
 
-p.quote:after, p.small_quote:after {
+blockquote.quote:after, p.quote:after, p.small_quote:after {
     padding-top: 0.8em;
     border-bottom: 1px solid #ddd;
     content: "";
     display: block;
-    margin: 0 auto;
+    margin: 2px auto;
     width: 60%;
 }
 
-p.quote:before, p.small_quote:before {
+blockquote.quote:before, p.quote:before, p.small_quote:before {
     border-top: 1px solid #ddd;
     padding-top: 0.8em;
     margin-top: 0.5em;
@@ -2101,7 +2102,7 @@ span.inew {
     color: #d22;
 }
 
-article.ref, blockquote.ref  {
+article.ref, blockquote.ref {
     box-sizing: border-box;
     padding: 0 0 0 12px;
     border-style: solid;
