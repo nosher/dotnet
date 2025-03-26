@@ -566,6 +566,9 @@ def computer_advert_html(request, adid):
         return _get_null_advert(request, companies)
     company_name = item.company
     related = ArchiveItems.objects.filter(company = company_name).order_by('year')
+    ad_year = item.year[0:4]
+    more_year = ArchiveItems.objects.filter(year__startswith = ad_year)
+    moreyear = ad_year if len(more_year) > 1 else None
     title = body = None
     path = os.path.join(ROOT, "{}.txt".format(adid))
     imgpath = os.path.join(ROOT, "images", "{}-m.webp".format(adid))
@@ -647,6 +650,7 @@ def computer_advert_html(request, adid):
         'page_title': page_title,
         'staticServer': WEBROOT,
         'page_description': raw_body,
+        'moreyear': moreyear,
         'next': nxt,
         'prev': prv,
         'nextany': nxtany,
