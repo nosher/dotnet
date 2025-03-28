@@ -5,7 +5,7 @@ describe('nosher.net computer adverts - individual', () => {
   beforeEach(() => {
     cy.visit('http://10.1.203.1:8010/archives/computers/acorn_sparkjet_percw_aug83')
   })
- 
+  
   
   it('Check more from 1980 link is present', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/adve_001')
@@ -262,4 +262,22 @@ describe('nosher.net computer adverts - individual', () => {
   })
   
 
+  it('Check pcw_1982-12_020a id works (substring of older-style adid pcw_1982-12_020a,pcw_1982-12_020b)', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/pcw_1982-12_020a')
+    cy.get('section.advert').find('h3').eq(0).contains('Victor 9000 - The All-Conquering Business System')
+  })
+  
+
+  it('Check byte_1978-08 id works (does not load byte_1978-08_019 instead)', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/byte_1978-08')
+    cy.get('section.advert').find('h3').eq(0).contains('Announcing the IMSAI VDP-40 - Microcomputer System Solution')
+  })
+  
+
+  it('Check old-style adids still work', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/pcw_1980-01_045,pcw_1979-10_053')
+    cy.get('section.advert').find('h3').eq(0).contains('Buy Nascom 2 Now and get a free 16K RAM board')
+  })
+  
+  
 })
