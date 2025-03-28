@@ -6,6 +6,8 @@ import base64
 
 from django.db.models import Count
 from django.db.models.functions import Substr
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import Http404
@@ -507,7 +509,7 @@ def computer_advert(request, advert):
 
 def computer_advert_text(request, adid):
 
-    title = body = None
+    body = None
     path = os.path.join(ROOT, adid)
     idx = request.GET.get("idx", "")
 
@@ -554,23 +556,22 @@ def computer_advert_text(request, adid):
 
 
 def computer_advert_html(request, adid):
-    adid = adid.split(",")[0]
+    advert_id = adid.split(",")[0]
     items = ArchiveItems.objects.all().order_by('year')
     companies = ArchiveItems.objects.all().values('company').annotate(total = Count('company')).order_by('company')
-    adverts = ArchiveItems.objects.filter(adid = adid)
-    item = None
-    if len(adverts) > 0:
-        item = adverts[0]
-    else:
+    try:
+        item = ArchiveItems.objects.get(Q(adid__startswith = (advert_id + ",")) | Q(adid = advert_id))
+    except ObjectDoesNotExist:
         return _get_null_advert(request, companies)
+    
     company_name = item.company
     related = ArchiveItems.objects.filter(company = company_name).order_by('year')
     ad_year = item.year[0:4]
     more_year = ArchiveItems.objects.filter(year__startswith = ad_year)
     moreyear = ad_year if len(more_year) > 1 else None
     title = body = None
-    path = os.path.join(ROOT, "{}.txt".format(adid))
-    imgpath = os.path.join(ROOT, "images", "{}-m.webp".format(adid))
+    path = os.path.join(ROOT, "{}.txt".format(advert_id))
+    imgpath = os.path.join(ROOT, "images", "{}-m.webp".format(advert_id))
     idx = request.GET.get("idx", "")
     stats = os.stat(path)
     fmt_date = datetime.fromtimestamp(stats[ST_MTIME]).replace(tzinfo = timezone('UTC'))
@@ -640,8 +641,8 @@ def computer_advert_html(request, adid):
 
     context = {
         'url': "{}/{}".format(WEBROOT, DOCROOT),
-        'adid': adid,
-        'page_image': _get_page_image("{}-m.webp".format(adid)),
+        'adid': advert_id,
+        'page_image': _get_page_image("{}-m.webp".format(advert_id)),
         'width': imgw,
         'height': imgh,
         'aspect': (imgw / imgh),
