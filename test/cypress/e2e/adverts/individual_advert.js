@@ -6,6 +6,15 @@ describe('nosher.net computer adverts - individual', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/acorn_sparkjet_percw_aug83')
   })
  
+  
+  it('Check more from 1980 link is present', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/adve_001')
+    cy.get('p.nav').find('a').contains('more from 1980')
+      .should('have.length', 1)
+      .should('have.attr', 'href')
+      .and('include','/archives/computers/?type=year&value=1980')
+  })
+
 
   it('Check display of advert sidebar', () => {
     cy.get('sidebar')
@@ -64,23 +73,23 @@ describe('nosher.net computer adverts - individual', () => {
   })
 
 
-  it('Check inter-advert navlinks for non-first-or-last advert', () => {
-    cy.get('p.nav').should('have.length', 1).should(($nav) => {
-      if ($nav.find('a').length != 9 ) {
+  it('Check advert navlinks for non-terminal advert (should have next and prev Acorn ads)', () => {
+    cy.get('p.nav').eq(0).should(($nav) => {
+      if ($nav.find('a').length != 10 ) {
         throw new Error('Incorrect number of inter-adverts navlinks')
       }
     })
   })
   
 
-  it('Check inter-advert navlinks for first advert', () => {
+  it('Check thumbnail navlinks for first advert', () => {
     cy.get('div.adthumb').first().find('a').then(function ($a) {
       const href = $a.prop('href')
       cy.visit(href)
     })
     cy.get('p.nav').should('have.length', 1).should(($nav) => {
-      if ($nav.find('a').length != 8 ) {
-        throw new Error('Incorrect number navlinks (should not have previous advert link)')
+      if ($nav.find('a').length != 9 ) {
+        throw new Error('Incorrect number navlinks (should not have previous Acorn advert link)')
       }
     })
   })
@@ -154,17 +163,23 @@ describe('nosher.net computer adverts - individual', () => {
     })
   })
 
+
   /*
-   * The following relative links might change if the order of adverts changes, but
-   * as they're early they probably won't
+   * The following relative links might change if the order of adverts changes
   */  
-  it('Check next advert link', () => {
+  it('Check next advert link for first advert', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/acorn_firstadvert_praccomp_may79')
     cy.get('p.nav').find('a').contains('next advert').then(($link) => {
       const href = $link.prop('href')
       cy.visit(href)
       cy.url().should('contain', 'pcw_1980-06-00_002_msi')
     })
+  })
+
+
+  it('Check last Acorn advert does not have next Acorn link', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/micro_user_1989-08_001')
+    cy.get('p.nav').find('a').contains('next Acorn advert').should('not.exist')
   })
 
 
@@ -180,6 +195,7 @@ describe('nosher.net computer adverts - individual', () => {
 
   it('Check next Acorn advert link', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/acorn_firstadvert_praccomp_may79')
+    cy.get('p.nav').find('a').contains('previous Acorn advert').should('not.exist')
     cy.get('p.nav').find('a').contains('next Acorn advert').then(($link) => {
       const href = $link.prop('href')
       cy.visit(href)
