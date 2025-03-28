@@ -5,6 +5,29 @@ describe('nosher.net computer adverts - index', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/')
   })
 
+
+  it('Displays 15 adverts from the year 1980', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/?type=year&value=1980')
+    cy.get('archiveitem')
+      .should('have.length', 15)
+      .each(($item) => {
+        cy.wrap($item).children('archivedescription').find('h4').should('contain', "1980")
+    })
+  })
+
+
+  it('More adverts for the year 1980 link is present', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/?type=year&value=1980')
+    cy.get('p.nav').find('a').eq(5).should('contain.text', '1980 adverts')
+  })
+
+
+  it('Displays no adverts for the year 1880 (page should still work)', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/?type=year&value=1880')
+    cy.get('archiveitem').should('have.length', 0)
+  })
+
+
   it('Displays fifteen advert items by default', () => {
     cy.get('archiveitem')
       .should('have.length', 15)
@@ -17,6 +40,7 @@ describe('nosher.net computer adverts - index', () => {
         cy.wrap($item).children('archivedescription').find('h4').should('have.length', 1)
     })
   })
+
 
   it('Displays an advert when first item in list is clicked', () => {
     cy.get('archiveitem').first().find('archivethumb').click()

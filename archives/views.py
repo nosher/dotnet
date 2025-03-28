@@ -476,7 +476,6 @@ def computer_index(request):
         'title': title,
         'section': section,
         'item': item,
-        'page_image': _get_page_image("{}-m.webp".format(items[0].adid)),
         'page_title': page_title,
         'page_description': re.sub("<.*?>","", intro),
         'staticServer': WEBROOT,
@@ -558,7 +557,7 @@ def computer_advert_html(request, adid):
     adid = adid.split(",")[0]
     items = ArchiveItems.objects.all().order_by('year')
     companies = ArchiveItems.objects.all().values('company').annotate(total = Count('company')).order_by('company')
-    adverts = ArchiveItems.objects.filter(adid__startswith = adid)
+    adverts = ArchiveItems.objects.filter(adid = adid)
     item = None
     if len(adverts) > 0:
         item = adverts[0]
