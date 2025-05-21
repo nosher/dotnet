@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="album">
-<h1>{{album.title}}</h1>
+<h1>{{title}}</h1>
 <p class="intro">{{intro|safe}}</p>
 {% if spotify %}<p><b>Soundtrack for this album:</b></p>
 <iframe src="https://open.spotify.com/embed/{{ spotify }}" class="music" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>{% endif %}
@@ -36,7 +36,7 @@
 <section class="thumbnails">
 {% for im in images %}
     <article class="thumb">
-	    <a onclick="showViewer({{ forloop.counter|add:'-1' }}); return false;" href="/images/nojs?year={{ year }}&path={{ path }}&thumb={{ forloop.counter|add:'-1' }}">
+	    <a onclick="showViewer({{ forloop.counter|add:'-1' }}); return false;" href="/images/nojs?year={{ im.year }}&path={{ im.path }}&thumb={{ im.pos }}">
             <img src="{{ url }}/{{ im.thumb }}-s.webp" alt="{{ im.caption|safe }}, {{ title }}" />
             <p>{{ im.caption|safe }}</p>
         </a>

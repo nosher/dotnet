@@ -163,6 +163,9 @@ function addKeyListeners() {
             } else if (nextAlbum !== undefined) {
                 window.location.href = getUrl() + nextAlbum; 
             }
+        } else if (event.which == 67 && event.altKey == true) {
+            // alt+C - used to quick-copy 
+            window.alert(images[image_position] + "\t" + captions[image_position]);
         } else if (event.which == 35) {
             // end
             goto(imgCount - 1, event);
@@ -180,6 +183,7 @@ function addKeyListeners() {
         }
     });
 }
+
 
 function getUrl() {
     return window.location.protocol 

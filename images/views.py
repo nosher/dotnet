@@ -108,6 +108,36 @@ def year(request, album_year):
     return render(request, 'images/year.html', context)
 
 
+def best(request, best):
+    (title, intro, images, mtime, dimensions) = _getAlbumDetails("best", details = best + ".txt", dimensions = best + "_dimensions.txt")
+    fmt_date = datetime.datetime.fromtimestamp(mtime).strftime("%d %B %Y")
+    year = datetime.datetime.fromtimestamp(mtime).strftime("%Y")
+    context = {
+        'path': best,
+        'year': "best",
+        'album': album,
+        'title': title + " - " + fmt_date,
+        'page_title': title,
+        'intro': intro,
+        'page_description': intro,
+        # 'page_image': "{}/{}/{}/{}/{}{}".format(WEBROOT, DOCROOT,album_year,  album_path, images[0]["thumb"], "-m.jpg"),
+        'images': images,
+        'mtime': fmt_date,
+        'dimensions': dimensions,
+        'staticServer': WEBROOT,
+        'years': _getYears(),
+        'groups': _getGroups(),
+        'index': 0,
+        'spotify': "",
+        'next': None,
+        'prev': None,
+        'feedback': EMAIL,
+        'url': "{}/{}".format(WEBROOT, DOCROOT),
+        'page_url': "{}/{}/{}/{}".format("https://nosher.net", DOCROOT, year, "best")
+    }
+    return render(request, 'images/album.html', context)
+
+
 def album(request, album_year, album_path, index=-1):
     try:
         album = PhotoAlbum.objects.get(path="{}/{}".format(album_year, album_path))
@@ -135,7 +165,7 @@ def album(request, album_year, album_path, index=-1):
         'page_title': title,
         'intro': intro,
         'page_description': intro,
-        'page_image': "{}/{}/{}/{}/{}{}".format(WEBROOT, DOCROOT,album_year,  album_path, images[0]["thumb"], "-m.jpg"),
+        # 'page_image': "{}/{}/{}/{}/{}{}".format(WEBROOT, DOCROOT,album_year,  album_path, images[0]["thumb"], "-m.jpg"),
         'images': images,
         'mtime': fmt_date,
         'dimensions': dimensions,
@@ -164,9 +194,9 @@ def _getSpotifyDetails(album_path):
         return None
 
 
-def _getAlbumDetails(album_path):
-    path = os.path.join(ROOT, album_path, "details.txt")
-    dimensions = os.path.join(ROOT, album_path, "dimensions.txt")
+def _getAlbumDetails(album_path, details = "details.txt", dimensions = "dimensions.txt"):
+    path = os.path.join(ROOT, album_path, details)
+    dimensions = os.path.join(ROOT, album_path, dimensions)
     dims = [] 
 
     # get image dimensions, if available
@@ -185,6 +215,7 @@ def _getAlbumDetails(album_path):
         title = ""
         intro = ""
         stats = os.stat(path)
+        img_pos = 0
         for line in fh.readlines():
             if not line[0:1] == "#":
                 line = line.replace("\n", "")
@@ -198,8 +229,24 @@ def _getAlbumDetails(album_path):
                 else:
                     path = parts[0]
                     if path.find("/") < 0:
-                        path = "{}/{}".format(album_path, parts[0])
-                    items.append({"thumb": path, "id": parts[0], "caption": parts[1].replace("\"","\'")})
+                        id = parts[0]
+                        path = "{}/{}".format(album_path, id)
+                        img_path = album_path.split("/")[1]
+                        img_year = album_path.split("/")[0]
+                        ipos = img_pos
+                    else:
+                        (path, ipos) = parts[0].split(":")
+                        img_path = path.split("/")[1]
+                        id = path.split("/")[2]
+                        img_year = path.split("/")[0]
+                    items.append({  "thumb": path, \
+                                    "id": id, \
+                                    "caption": parts[1].replace("\"","\'"), \
+                                    "path": img_path, \
+                                    "year": img_year, \
+                                    "pos": ipos
+                                    })
+                    img_pos += 1
         f1 = items[0]["thumb"]
         return (title, intro, items, stats[ST_MTIME], dims) 
 
