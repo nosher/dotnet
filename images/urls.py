@@ -11,7 +11,8 @@ urlpatterns = [
     
     path('', views.index, name='images'),
     path('nojs', views.nojs, name='nojs'),
-    path('best/<str:best>', views.best, name='best'),
+    path('best/', views.best_of_index, name='best_of_index'),
+    path('best/<str:best_of>', views.best_of, name='best_of'),
     path('<str:album_year>', views.year, name='year'),
     path('<str:album_year>/', views.year, name='year'),
     path('<str:album_year>/<str:album_path>', views.album, name='album'),

@@ -27,6 +27,9 @@
     var captions = [
         {% for im in images %}"{{ im.caption|safe }}",
         {% endfor %}];
+    var subCaptions = [
+        {% for im in images %}"{{ im.subcaption|safe }}",
+        {% endfor %}];
     var dimensions = {
         {% for im in dimensions %}"{{ im.name }}": "{{ im.ratio }}", {% endfor %}
     }
@@ -39,6 +42,8 @@
 	    <a onclick="showViewer({{ forloop.counter|add:'-1' }}); return false;" href="/images/nojs?year={{ im.year }}&path={{ im.path }}&thumb={{ im.pos }}">
             <img src="{{ url }}/{{ im.thumb }}-s.webp" alt="{{ im.caption|safe }}, {{ title }}" />
             <p>{{ im.caption|safe }}</p>
+            {% if im.subcaption %}
+            <p class="subcaption">From: {{ im.subcaption|safe }}</p>{% endif %}
         </a>
     </article>{% endfor %}
 </section>

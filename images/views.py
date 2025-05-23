@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import Http404
 from django.db.models import Q
+from django.contrib.humanize.templatetags.humanize import ordinal
 from .models import PhotoAlbum
 from .models import PhotoAlbums
 from stat import *
@@ -77,7 +78,7 @@ def nojs(request):
         path = params.get("path")
     if "thumb" in params:
         thumb = int(params.get("thumb"))
-    (title, intro, images, mtime, dimensions) = _getAlbumDetails("{}/{}".format(year, path))
+    (title, _, images, _, _) = _getAlbumDetails("{}/{}".format(year, path))
     img = images[thumb]
     context = {
         'year': year,
@@ -102,38 +103,68 @@ def year(request, album_year):
         'years': _getYears(),
         'staticServer': WEBROOT,
         'groups': _getGroups(),
-            'feedback': EMAIL,
+        'feedback': EMAIL,
         'intro': _getTextForAlbum(os.path.join(ROOT, album_year))
     }
     return render(request, 'images/year.html', context)
 
 
-def best(request, best):
-    (title, intro, images, mtime, dimensions) = _getAlbumDetails("best", details = best + ".txt", dimensions = best + "_dimensions.txt")
-    fmt_date = datetime.datetime.fromtimestamp(mtime).strftime("%d %B %Y")
-    year = datetime.datetime.fromtimestamp(mtime).strftime("%Y")
+def best_of_index(request):
+    albums = []
+    path = ROOT + "/best/"
+    for _, _, filenames in os.walk(path):
+        for f in filenames:
+            if f.find(".txt") > -1:
+                stats = os.stat(path + f)
+                is_new = stats[ST_MTIME] > datetime.datetime.timestamp(
+                    datetime.datetime.now() - datetime.timedelta(days = 60)
+                )
+                with open(path + f) as fh:
+                    title = fh.readline()
+                    alb = {"category": f.strip().replace(".txt", ""), 
+                           "title": title.split("\t")[1],
+                           "is_new": is_new,
+                           }
+                    albums.append(alb)
     context = {
-        'path': best,
+        'staticServer': WEBROOT,
+        'feedback': EMAIL,
+        'albums': albums,
+        'years': _getYears(),
+        'groups': _getGroups(),
+        'intro': "foo"
+    }
+    return render(request, 'images/best_of.html', context)
+
+
+def best_of(request, best_of):
+    try:
+        (title, intro, images, mtime, dimensions) = _getAlbumDetails("best", details = best_of + ".txt", dimensions = best_of + "_dimensions.txt")
+    except:
+        raise Http404("Best-of category does not exist")
+    
+    fmt_date = _get_ordinal_date(mtime)
+    context = {
+        'path': best_of,
         'year': "best",
         'album': album,
-        'title': title + " - " + fmt_date,
+        'title': "Best of: {} - {}".format(title, fmt_date),
         'page_title': title,
         'intro': intro,
         'page_description': intro,
-        # 'page_image': "{}/{}/{}/{}/{}{}".format(WEBROOT, DOCROOT,album_year,  album_path, images[0]["thumb"], "-m.jpg"),
         'images': images,
         'mtime': fmt_date,
         'dimensions': dimensions,
         'staticServer': WEBROOT,
         'years': _getYears(),
         'groups': _getGroups(),
-        'index': 0,
+        'index': -1,
         'spotify': "",
         'next': None,
         'prev': None,
         'feedback': EMAIL,
         'url': "{}/{}".format(WEBROOT, DOCROOT),
-        'page_url': "{}/{}/{}/{}".format("https://nosher.net", DOCROOT, year, "best")
+        'page_url': "{}/{}/{}/{}".format("https://nosher.net", DOCROOT, "best", best_of)
     }
     return render(request, 'images/album.html', context)
 
@@ -165,7 +196,6 @@ def album(request, album_year, album_path, index=-1):
         'page_title': title,
         'intro': intro,
         'page_description': intro,
-        # 'page_image': "{}/{}/{}/{}/{}{}".format(WEBROOT, DOCROOT,album_year,  album_path, images[0]["thumb"], "-m.jpg"),
         'images': images,
         'mtime': fmt_date,
         'dimensions': dimensions,
@@ -181,6 +211,12 @@ def album(request, album_year, album_path, index=-1):
         'page_url': "{}/{}/{}/{}".format("https://nosher.net", DOCROOT, album_year, album_path)
     }
     return render(request, 'images/album.html', context)
+
+
+def _get_ordinal_date(mtime):
+    dom = ordinal(datetime.datetime.fromtimestamp(mtime).strftime("%d"))
+    rest = datetime.datetime.fromtimestamp(mtime).strftime("%B %Y")
+    return "{} {}".format(dom, rest)
 
 
 def _getSpotifyDetails(album_path):
@@ -230,6 +266,7 @@ def _getAlbumDetails(album_path, details = "details.txt", dimensions = "dimensio
                     path = parts[0]
                     if path.find("/") < 0:
                         id = parts[0]
+                        caption = [parts[1].replace("\"","\'"), ""]
                         path = "{}/{}".format(album_path, id)
                         img_path = album_path.split("/")[1]
                         img_year = album_path.split("/")[0]
@@ -239,15 +276,16 @@ def _getAlbumDetails(album_path, details = "details.txt", dimensions = "dimensio
                         img_path = path.split("/")[1]
                         id = path.split("/")[2]
                         img_year = path.split("/")[0]
+                        caption = parts[1].replace("\"","\'").split("|")
                     items.append({  "thumb": path, \
                                     "id": id, \
-                                    "caption": parts[1].replace("\"","\'"), \
+                                    "caption": caption[0], \
+                                    "subcaption": caption[1], \
                                     "path": img_path, \
                                     "year": img_year, \
                                     "pos": ipos
                                     })
                     img_pos += 1
-        f1 = items[0]["thumb"]
         return (title, intro, items, stats[ST_MTIME], dims) 
 
 

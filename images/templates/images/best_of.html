@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% if intro %}
+<div class="images_intro">{{intro|safe}}</div>
+{% endif %}
+{% block content %}
+  <h1>The best of nosher.net</h1>
+  <ul class="albums">
+{% for album in albums %}
+    <li>{% if album.is_new %}<span class="new">New</span>{% endif %}<a href="{{ album.category }}">{{ album.title|safe }}</a></li>
+{% endfor %}
+  </ul>
+{% endblock %}
