@@ -153,16 +153,19 @@ function addKeyListeners() {
             // cursor left
             if ($("#viewer").is(":visible") && image_position > 0) {
                 goto(--image_position, event);
-            } else if (prevAlbum !== undefined) {
+            } else if ("prevAlbum" in window && prevAlbum !== undefined) {
                 window.location.href = getUrl() + prevAlbum; 
             }
         } else if (event.which == 39 || event.which == 32) {
             // cursor right or spacebar
             if ($("#viewer").is(":visible") && image_position < imgCount - 1) {
                 goto(++image_position, event);
-            } else if (nextAlbum !== undefined) {
+            } else if ("nextAlbum" in window && nextAlbum !== undefined) {
                 window.location.href = getUrl() + nextAlbum; 
             }
+        } else if (event.which == 67 && event.altKey == true) {
+            // alt+C - used to quick-copy 
+            window.alert(images[image_position] + "\t" + captions[image_position]);
         } else if (event.which == 35) {
             // end
             goto(imgCount - 1, event);
@@ -180,6 +183,7 @@ function addKeyListeners() {
         }
     });
 }
+
 
 function getUrl() {
     return window.location.protocol 

@@ -924,6 +924,10 @@ ul.albums li {
 #caption a:link, #caption a {
     color: #808080;
 }
+article.thumb p.subcaption {
+    font-size: 60%;
+    color: var(--desc);
+}
 
 photoview {
     grid-area: photoview;
