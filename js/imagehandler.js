@@ -125,6 +125,7 @@ function imageSetter() {
             }
             img.style.width = iwidth + "px";
             img.style.height = iheight + "px";
+            img.dataset.dimensions = "true";
             console.log("SET: ", iwidth, "x", iheight);
         }
     };
@@ -149,37 +150,48 @@ function addSwipeListeners() {
 
 function addKeyListeners() {
     $(window).keydown(function(event) {
-        if (event.which == 37) {
-            // cursor left
-            if ($("#viewer").is(":visible") && image_position > 0) {
-                goto(--image_position, event);
-            } else if ("prevAlbum" in window && prevAlbum !== undefined) {
-                window.location.href = getUrl() + prevAlbum; 
-            }
-        } else if (event.which == 39 || event.which == 32) {
-            // cursor right or spacebar
-            if ($("#viewer").is(":visible") && image_position < imgCount - 1) {
-                goto(++image_position, event);
-            } else if ("nextAlbum" in window && nextAlbum !== undefined) {
-                window.location.href = getUrl() + nextAlbum; 
-            }
-        } else if (event.which == 67 && event.altKey == true) {
-            // alt+C - used to quick-copy 
-            window.alert(images[image_position] + "\t" + captions[image_position]);
-        } else if (event.which == 35) {
-            // end
-            goto(imgCount - 1, event);
-        } else if (event.which == 38) {
-            // cursor up
-            MAIN.animate({scrollTop: 0});
-        } else if (event.which == 40) {
-            // cursor down 
-            MAIN.animate({scrollTop: 9999});
-        } else if (event.which == 88) {
-            // X keypress
-            hideViewer();
-        } else {
-            console.log(event.which);
+        switch (event.which) {
+              case 37:
+                // cursor left
+                if ($("#viewer").is(":visible") && image_position > 0) {
+                    goto(--image_position, event);
+                } else if ("prevAlbum" in window && prevAlbum !== undefined) {
+                    window.location.href = getUrl() + prevAlbum; 
+                }
+                break;
+            case 39:
+            case 32:
+                // cursor right or spacebar
+                if ($("#viewer").is(":visible") && image_position < imgCount - 1) {
+                    goto(++image_position, event);
+                } else if ("nextAlbum" in window && nextAlbum !== undefined) {
+                    window.location.href = getUrl() + nextAlbum; 
+                }
+                break;
+            case 67:
+                if (event.altKey == true) {
+                    // alt+C - used to quick-copy 
+                    window.alert(images[image_position] + "\t" + captions[image_position]);
+                }
+                break;
+            case 35:
+                // end
+                goto(imgCount - 1, event);
+                break;
+            case 38:
+                // cursor up
+                MAIN.animate({scrollTop: 0});
+                break;
+            case 40:
+                // cursor down 
+                MAIN.animate({scrollTop: 9999});
+                break;
+            case 88:
+                // X keypress
+                hideViewer();
+                break;
+            default:
+                console.log(event.which);
         }
     });
 }
@@ -322,6 +334,7 @@ async function asyncImageLoader(position) {
                 console.log("SET NATURAL W/H: ", iwidth, iheight);
                 this.height = iheight;
                 this.width = iwidth;
+                this.dataset.dimensions = "false";
             }
             console.log("IMG ", "loaded");
             resolve();
