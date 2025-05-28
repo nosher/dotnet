@@ -33,4 +33,38 @@ describe('nosher.net photo album mobile', () => {
     });
   })
 
+
+  it('Click first photo to open viewer and check height has been set', () => {
+    cy.get('article.thumb').first().click()
+    cy.get('#mobile_viewer').should('be.visible')
+    cy.get('img#imgp0076').invoke('height').should('gt', 0)
+    cy.get('img#imgp0076').invoke('width').should('gt', 0)
+    // this album has a dimensions file, so images should be set to sizes
+    // which reflect their aspect ratio and the window width
+    cy.get('img#imgp0076').invoke('attr', 'data-dimensions').should('eq', 'true')
+  })
+
+
+  it('Click first photo to open viewer and check height has been set from natural dimensions', () => {
+    // this album has no dimensions, so images should be set to their natural dimensions
+    cy.visit('http://10.1.203.1:8010/images/2003/2003-12-18ATripToPlymouth/')
+    cy.get('article.thumb').first().click()
+    cy.get('#mobile_viewer').should('be.visible')
+    cy.get('img#dcp_7477').invoke('height').should('gt', 0)
+    cy.get('img#dcp_7477').invoke('width').should('gt', 0)
+    cy.get('img#dcp_7477').invoke('attr', 'data-dimensions').should('eq', 'false')
+  })
+
+
+  it('Click first photo to open viewer and check height has been set from dimensions', () => {
+    // check a "best of" album, which has virtual images from other albums, that CSS height has been
+    // set via the graffiti_dimensions.txt file
+    cy.visit('http://10.1.203.1:8010/images/best/graffiti')
+    cy.get('article.thumb').first().click()
+    cy.get('#mobile_viewer').should('be.visible')
+    cy.get('img#2024-05-29SuttonHooShip_imgp2533').invoke('height').should('gt', 0)
+    cy.get('img#2024-05-29SuttonHooShip_imgp2533').invoke('width').should('gt', 0)
+    cy.get('img#2024-05-29SuttonHooShip_imgp2533').invoke('attr', 'data-dimensions').should('eq', 'true')
+  })
+
 })

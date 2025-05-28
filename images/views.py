@@ -273,9 +273,10 @@ def _getAlbumDetails(album_path, details = "details.txt", dimensions = "dimensio
                         ipos = img_pos
                     else:
                         (path, ipos) = parts[0].split(":")
-                        img_path = path.split("/")[1]
-                        id = path.split("/")[2]
-                        img_year = path.split("/")[0]
+                        pparts = path.split("/")
+                        img_path = pparts[1]
+                        id = "{}_{}".format(pparts[1], pparts[2])
+                        img_year = pparts[0]
                         caption = parts[1].replace("\"","\'").split("|")
                     items.append({  "thumb": path, \
                                     "id": id, \

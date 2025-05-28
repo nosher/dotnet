@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+
+import os
+import sys
+import subprocess
+
+ROOT = "/home/httpd/nosher.net/docs/images"
+
+class Dimensions:
+
+    def __init__(self, path):
+        self.path = path
+
+    def process(self):
+        cwd = os.getcwd()
+        if self.path != "":
+            details_path = os.path.join(cwd, self.path + ".txt")
+            dimensions_path = os.path.join(cwd, self.path + "_dimensions.txt")
+        else:
+            details_path = os.path.join(cwd, "details.txt")
+            dimensions_path = os.path.join(cwd, "dimensions.txt")
+        with open(details_path, "r") as fh:
+                with open(dimensions_path, "w") as OUT:
+                    for line in fh.readlines():
+                        (key, _) = line.split("\t")
+                        fpath = ""
+                        key = key.split(":")[0]
+                        if key != "intro" and key != "title" and key != "locn":
+                            if key.find("/") > -1:
+                                # full path image
+                                fpath = "{}/{}".format(ROOT, key)
+                                pparts = key.split("/")
+                                id = "{}_{}".format(pparts[1], pparts[2])
+                            else:
+                                # local image
+                                id = key
+                                if self.path and self.path != ".":
+                                    fpath = "{}/{}".format(path, key)
+                                else:
+                                    fpath = "{}/{}".format(cwd, key)
+                        img = "{}-m.webp".format(fpath)
+                        process = subprocess.Popen(
+                            ['identify', img], 
+                        stdout = subprocess.PIPE, stderr=subprocess.PIPE)
+                        stdout, _ = process.communicate()
+                        details = stdout.split(" ")
+                        if len(details) > 2:
+                            (width, height) = details[2].split("x")
+                            OUT.write("{}\t{}\n".format(id, float(height)/float(width)))
+
+
+if __name__ == "__main__":
+
+    args = sys.argv	
+    path = ""
+    if len(args) > 1:
+        path = args[1].replace(".txt", "")
+    Dimensions(path).process()
