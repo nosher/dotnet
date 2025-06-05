@@ -926,7 +926,7 @@ ul.albums li {
 }
 #subcaption {
     font-size: 60%;
-    color: var(--poem);
+    color: var(--extrasub);
 }
 #caption a:link, #caption a {
     color: #808080;
@@ -942,7 +942,6 @@ article.thumb p.subcaption {
     }
     #subcaption {
         font-size: 75%;
-        color: var(--poem);
     }
 }
 
