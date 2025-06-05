@@ -114,18 +114,21 @@ def best_of_index(request):
     path = ROOT + "/best/"
     for _, _, filenames in os.walk(path):
         for f in filenames:
-            if f.find(".txt") > -1:
-                stats = os.stat(path + f)
-                is_new = stats[ST_MTIME] > datetime.datetime.timestamp(
-                    datetime.datetime.now() - datetime.timedelta(days = 60)
-                )
-                with open(path + f) as fh:
-                    title = fh.readline()
-                    alb = {"category": f.strip().replace(".txt", ""), 
-                           "title": title.split("\t")[1],
-                           "is_new": is_new,
-                           }
-                    albums.append(alb)
+            if f.find(".txt") > -1 and f.find("_dimensions") < 0:
+                # found a non-dimensions file, but check that there is
+                # also a generated dimensions file
+                if os.path.isfile(path + f.replace(".txt", "_dimensions.txt")):
+                    stats = os.stat(path + f)
+                    is_new = stats[ST_MTIME] > datetime.datetime.timestamp(
+                        datetime.datetime.now() - datetime.timedelta(days = 60)
+                    )
+                    with open(path + f) as fh:
+                        title = fh.readline()
+                        alb = {"category": f.strip().replace(".txt", ""), 
+                            "title": title.split("\t")[1],
+                            "is_new": is_new,
+                            }
+                        albums.append(alb)
     context = {
         'staticServer': WEBROOT,
         'feedback': EMAIL,
@@ -141,7 +144,7 @@ def best_of(request, best_of):
     try:
         (title, intro, images, mtime, dimensions) = _getAlbumDetails("best", details = best_of + ".txt", dimensions = best_of + "_dimensions.txt")
     except:
-        raise Http404("Best-of category does not exist")
+        raise Http404("Best-of category ({}) does not exist".format(best_of))
     
     fmt_date = _get_ordinal_date(mtime)
     context = {
@@ -320,11 +323,12 @@ def _getGroups():
         return group_list
     return None
 
+
 def api_latest(request):
     latest = PhotoAlbum.objects.order_by('-date_created')[:30]
     output = []
     for album in latest:
-        (title, intro, items, stats, dimensions) = _getAlbumDetails(album.path)    
+        (_, _, items, _, _) = _getAlbumDetails(album.path)    
         output.append("""{{"path":"{}", "title": "{}", "thumb": "{}"}}""".format(album.path, album.title.replace("\"", "'"), items[1]["thumb"]))
     context = {
         'body': """{{"latest": [{}]}}""".format(", ".join(output)),
@@ -332,6 +336,7 @@ def api_latest(request):
     }
     response = render(request, 'images/api.html', context, content_type="text/plain; charset=UTF-8")
     return HttpResponse(response, content_type="text/plain; charset=UTF-8")
+
 
 def api_years(request):
     years = _getYears()
@@ -346,11 +351,12 @@ def api_years(request):
     response = render(request, 'images/api.html', context, content_type="text/plain; charset=UTF-8")
     return HttpResponse(response, content_type="text/plain; charset=UTF-8")
 
+
 def api_year(request, album_year):
     albums = PhotoAlbum.objects.filter(year=album_year).order_by('-path')
     output = []
     for album in albums:
-        (title, intro, items, stats, dimensions) = _getAlbumDetails(album.path)    
+        (_, _, items, _, _) = _getAlbumDetails(album.path)    
         output.append("""{{"path":"{}", "title":"{}", "thumb": "{}"}}""".format(album.path, album.title.replace("\n", "").replace("\"", "'"), items[1]["thumb"]))
     context = {
         'body': """{{"year": [{}]}}""".format(", ".join(output)),
@@ -359,9 +365,10 @@ def api_year(request, album_year):
     response = render(request, 'images/api.html', context, content_type="text/plain; charset=UTF-8")
     return HttpResponse(response, content_type="text/plain; charset=UTF-8")
 
+
 def api_album(request, album_year, album_path):
     
-    (title, intro, items, modified, dimensions) = _getAlbumDetails(album_year + "/" + album_path)
+    (title, intro, items, modified, _) = _getAlbumDetails(album_year + "/" + album_path)
     output = []
     for item in items:
         output.append("""{{"thumb": "{}", "caption": "{}"}}""".format(item["thumb"], item["caption"].replace("\"", "'")))

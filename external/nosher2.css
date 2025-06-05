@@ -20,6 +20,7 @@
     --pad: 8px;
     --inset: 12px;
     --extra: #ccc;
+    --extrasub: #aaa;
     --extra_text: #444;
     --box_shadow: #222;
     --adlink: #aa0000;
@@ -47,6 +48,7 @@
         --poem: CanvasText;
         --desc: CanvasText;
         --extra: CanvasText;
+        --extrasub: CanvasText;
         --extra_text: Canvas;
         --box_shadow: #444;
         --pad: 8px;
@@ -131,7 +133,8 @@
         --quote: #bbb;
         --poem: #abe;
         --desc: #aaa;
-        --extra: #444;
+        --extra: #666;
+        --extrasub: #444;
         --extra_text: #eee;
         --box_shadow: #333;
         --pad: 8px;
@@ -913,20 +916,33 @@ ul.albums li {
     }
 }
 
-#caption {
-    width: 90%;
+
+#caption, #subcaption {
+    width: 700px;
     margin: 0 auto 8px auto;
     font-size: 70%;
-    color: #bbbbbb;
+    color: var(--extra);
     text-align: center;
 }
-
+#subcaption {
+    font-size: 60%;
+    color: var(--extrasub);
+}
 #caption a:link, #caption a {
     color: #808080;
 }
 article.thumb p.subcaption {
     font-size: 60%;
     color: var(--desc);
+}
+
+@media screen and (max-width: 1000px) {
+    #caption, #subcaption {
+        width: 90%;
+    }
+    #subcaption {
+        font-size: 75%;
+    }
 }
 
 photoview {
