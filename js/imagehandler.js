@@ -159,8 +159,8 @@ function addKeyListeners() {
                     window.location.href = getUrl() + prevAlbum; 
                 }
                 break;
-            case 39:
             case 32:
+            case 39:
                 // cursor right or spacebar
                 if ($("#viewer").is(":visible") && image_position < imgCount - 1) {
                     goto(++image_position, event);
@@ -169,8 +169,9 @@ function addKeyListeners() {
                 }
                 break;
             case 67:
+                // C keypress
                 if (event.altKey == true) {
-                    // alt+C - used to quick-copy 
+                    // alt+C - used to quick-copy the img id and caption
                     window.alert(images[image_position] + "\t" + captions[image_position]);
                 }
                 break;
@@ -223,6 +224,9 @@ function scrollImgToView(position, landscape) {
 function showDesktopImage(pos) {
     MAIN.prop("title", captions[pos] + " (" + images[pos] + ")" );
     $("#caption").html(captions[pos] + "<span class=\"closetext\" onclick='hideViewer();'> (X) </span>");
+    if (subCaptions[pos]) {
+        $("#subcaption").html("From: " + subCaptions[pos]);
+    }
     for (var i = 0; i < imgCount; i++) {
         elem = document.getElementById((i + 1) + "-marker");
         elem.className = "lolite";

@@ -56,7 +56,10 @@
         <photoview>
             <img id="fullsize" src="" draggable="true" />
         </photoview>
-        <capregion><div id="caption">{{images.0.caption|safe}}</div></capregion>
+        <capregion>
+            <div id="caption">{{images.0.caption|safe}}</div>
+            {% if images.0.subcaption %}<div id="subcaption">{{images.0.subcaption|safe}}</div>{% endif %}
+        </capregion>
         <photoclose><img src="{{ staticServer }}/graphics/close.webp" onclick='hideViewer();' /></photoclose>
     </div>
     <div id="wrapper">
@@ -70,7 +73,7 @@
 <div id="mobile_viewer">{% for im in images %}    
     <div class="mphoto" id="mphoto_{{ forloop.counter|add:"-1" }}">
         <img src="" id="{{ im.id }}" height=""/>
-        <p>{{ im.caption|safe }}</p>
+        <p id="caption">{{ im.caption|safe }}{% if images.0.subcaption %}<br /><span id="subcaption">{{images.0.subcaption|safe}}{% endif %}</span></p>
     </div>{% endfor %}
 </div>
 
