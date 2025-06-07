@@ -25,6 +25,8 @@
     --box_shadow: #222;
     --adlink: #aa0000;
     --imgborder: #ddd;
+    --caption: #eee;
+    --subcaption: #aaa;
 }
 
 @media (forced-colors: active) {
@@ -55,6 +57,8 @@
         --inset: 12px;
         --adlink: #aa0000;
         --imgborder: #eee;
+        --caption: #eee;
+        --subcaption: #aaa;
     }
     .homegriditem {
         background-color: #323232 !important;
@@ -141,6 +145,8 @@
         --inset: 12px;
         --adlink: #ffaaaa;
         --imgborder: #eee;
+        --caption: #eee;
+        --subcaption: #aaa;
     }
     body {
         background-image: unset !important;
@@ -921,15 +927,18 @@ ul.albums li {
     width: 700px;
     margin: 0 auto 8px auto;
     font-size: 70%;
-    color: var(--extra);
+    color: var(--caption);
     text-align: center;
 }
 #subcaption {
     font-size: 60%;
-    color: var(--extrasub);
+    color: var(--subcaption);
 }
 #caption a:link, #caption a {
     color: #808080;
+}
+#subcaption a:link, #subcaption a {
+    color: var(--subcaption);
 }
 article.thumb p.subcaption {
     font-size: 60%;

@@ -225,7 +225,9 @@ function showDesktopImage(pos) {
     MAIN.prop("title", captions[pos] + " (" + images[pos] + ")" );
     $("#caption").html(captions[pos] + "<span class=\"closetext\" onclick='hideViewer();'> (X) </span>");
     if (subCaptions[pos]) {
-        $("#subcaption").html("From: " + subCaptions[pos]);
+        var paths = images[pos].split("/");
+        url = paths[0] + "/" + paths[1]
+        $("#subcaption").html("<a href='/images/" + url + "'>From: " + subCaptions[pos] + "</a>");
     }
     for (var i = 0; i < imgCount; i++) {
         elem = document.getElementById((i + 1) + "-marker");
