@@ -113,7 +113,7 @@ describe('nosher.net best of photo albums', () => {
   it('Click first photo to open viewer then click "goto" link', () => {
     cy.get('article.thumb').first().click()
     cy.get('#viewer').should('be.visible')
-    cy.get('div#subcaption').parent().click()
+    cy.get('div#subcaption').click()
     cy.url().should('include', '/2024/2024-05-29SuttonHooShip')
   })
 

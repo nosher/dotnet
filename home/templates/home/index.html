@@ -9,18 +9,16 @@
         <link rel="shortcut icon" href="https://static.nosher.net/images/nn.png" />
         {% block script %}{% endblock %}
     </head>
-    <body>
+    <body class="home">
         <section id="home">
             <header>nosher.net</header>
             <content>
                 <main>
                 <section id="sidebyside">
                     <photo>
-                        <div class="minigrid">
+                        <div id="minigrid">
                         {% for album in this_month %}
-                            <a href="/images/{{album.1}}">
-                                <img style="width: 50px; margin: 0px !important;" src="{{ staticServer }}/images/{{ album.0 }}" alt=""/>
-                            </a>
+                            <a href="/images/{{album.1}}"><img class="hthumb" src="{{ staticServer }}/images/{{ album.0 }}" alt=""/></a>
                         {% endfor %}
                         </div>
                     </photo>
