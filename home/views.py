@@ -33,8 +33,8 @@ def index(request):
     
     now = datetime.now()
     clip = now.strftime("-%m-")
-    this_month = PhotoAlbum.objects.filter(path__contains=clip, year__gt=2014)[:30]
-    latest_albums = PhotoAlbum.objects.order_by('-date_created')[:6]
+    this_month = PhotoAlbum.objects.filter(path__contains=clip, year__gt=2014)[:24]
+    latest_albums = PhotoAlbum.objects.order_by('-date_created')[:8]
     this_day = []
     for latest in this_month:
         path = latest.path

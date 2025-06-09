@@ -1,6 +1,7 @@
 @charset "utf-8";
 :root {
-    --main: #fff;
+    --main: #fafafa;
+    --main_home: #e0e0e0;
     --text: #222;
     --header: #416788;
     --link-hover: #c3cce0;
@@ -33,6 +34,7 @@
     :root {
         forced-color-adjust: none;
         --main: Canvas;
+        --main_home: Canvas;
         --text: CanvasText;
         --header: #666;
         --link-hover: #555;
@@ -121,6 +123,7 @@
     :root {
         forced-color-adjust: none;
         --main: #111;
+        --main_home: #222;
         --text: #eee;
         --header: #444;
         --link-hover: #555;
@@ -225,6 +228,9 @@
 
 body, main, content {
     background-color: var(--main);
+}
+body.home {
+    background-color: var(--main_home);
 }
 
 a {
@@ -331,7 +337,6 @@ body {
     min-height: 100vh;
     margin: 0;
     padding: 0;
-    background-image: url("https://static.nosher.net/graphics/bg4.webp");
     overflow-x: hidden;
 }
 
@@ -431,12 +436,24 @@ body {
 /* Main section */
 
 main {
-    padding: 16px 16px 0 20px;
+    background-image: url("https://static.nosher.net/graphics/bg4.webp");
+    padding: 16px 16px 6px 20px;
     grid-area: content;
+}
+@media (prefers-color-scheme: dark) {
+    main {
+        background-image: unset;
+    }
+}
+@media (forced-colors: active) {
+    main {
+        background-image: unset;
+    }
 }
 
 @media screen and (max-width: 1000px) {
     main {
+        background-image: unset;
         padding: 0;
     }
     main p {
@@ -471,21 +488,15 @@ main {
 }
 
 #sidebyside>list h1 {
-    margin-top: 8px;
+    margin: -8px 0 4px 0;
+
 }
 
 #sidebyside>photo img {
     width: 220px;
     margin: 6px 8px 8px 0;
 }
-.minigrid {
-    grid-template-columns: 50px 50px 50px 50px;
-    padding-top: 15px;
-}
-.thismonth {
-    font-size: 80%;
-    margin: 0;
-}
+
 @media screen and (max-width: 1000px) {
     #sidebyside {
         margin: 0;
@@ -511,14 +522,46 @@ main {
         margin: 0 12px 12px 0;
     }
     #sidebyside>list h1, #sidebyside>list h3 {
-        margin: 0;
+        margin: 4px 0 0 0 ;
         padding: var(--pad) 0 var(--pad) 4px;
     }
+    #sidebyside>photo {
+        padding-right: 0;
+    }
+    
     #sidebyside>photo img {
         width: 100px;
         margin: 6px 0 2px 0;
         padding: 0;
     }
+}
+
+#minigrid {
+    display: grid;
+    grid-template-columns: repeat(4, 60px);
+    grid-template-rows: repeat(5, 60px);
+    column-gap: 2px;
+    row-gap: 2px;
+    overflow: hidden;
+}
+#minigrid > a > img.hthumb {
+    display: block;
+    object-fit: cover;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+@media screen and (max-width: 1000px) {
+    #minigrid {
+        grid-template-columns: repeat(6, 16%);
+        grid-template-rows: repeat(3, 25%);
+    
+    }
+}
+
+.thismonth {
+    font-size: 80%;
+    margin: 0;
 }
 
 #yearindex {
@@ -1183,8 +1226,9 @@ archivethumb {
 
 archivethumb img {
     width: 136px;
-    display: inline;
-    margin: 0;
+    display: block;
+    object-fit: cover;
+    margin: 2px 0 0 0;
     border: 2px solid var(--imgborder);
 }
 
@@ -1228,13 +1272,17 @@ archivedescription h3 {
 
 @media screen and (max-width: 1000px) {
     archiveitem {
-        grid-template-columns: 80px auto;
+        grid-template-columns: 1fr 3fr;
         grid-template-rows: auto 8px;
         font-size: 80%;
     }
+    archivethumb {
+        margin-top: 0;
+        width: unset;
+    }
     archivethumb img {
-        margin: 0 0 0 8px;
-        width: 75px;
+        width: 80%;
+        margin: 2px 0 0 8px;
     }
     archivedescription .year {
         margin: 0 !important;
@@ -1682,6 +1730,13 @@ audio {
     margin: auto;
 }
 
+.homelist {
+    margin: 4px 0 0 0;
+}
+.homelist li {
+    margin-left: -18px;
+}
+
 .legend {
     display: grid;
     grid-template-columns: auto auto;
@@ -1729,6 +1784,13 @@ audio {
 }
 
 @media screen and (max-width: 1000px) {
+    .grid1 {
+        margin: 20px 0 20px 0;
+        width: 100%;
+        justify-items: center;
+        grid-template-columns: 1fr 30fr 1fr;
+        grid-template-areas: ". ctrimg ." ". desc .";
+    }
     .grid2 {
         width: 95%;
         margin-bottom: 12px;
@@ -1771,6 +1833,7 @@ audio {
     }
     .grid1 p:before, p.sidedesc:before {
         padding-top: 0.6em;
+        margin-top: 0.4em;
     }
     .grid1 p:after, .sep:after, p.sidedesc:after {
         padding-top: 0.6em;
