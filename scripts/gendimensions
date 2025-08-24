@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -43,7 +43,7 @@ class Dimensions:
                             ['identify', img], 
                         stdout = subprocess.PIPE, stderr=subprocess.PIPE)
                         stdout, _ = process.communicate()
-                        details = stdout.split(" ")
+                        details = str(stdout).split(" ")
                         if len(details) > 2:
                             (width, height) = details[2].split("x")
                             OUT.write("{}\t{}\n".format(id, float(height)/float(width)))

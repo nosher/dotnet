@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Adverts by processor(s)</h1>
+<p class="nav">{% include "computers/navbar.html" %}</p>
+<section class="archives">
+  {% for bit in bits %}
+  <h3>{{bit}}-bit CPUs</h3>
+  <ul>
+    {% for cpu in cpus %}
+      {% if cpu.bits == bit %}
+      <li>
+        <p><a href="/archives/computers/cpus/{{cpu.cpu}}">{{cpu.disp}}</a>{% if cpu.sub%} - {{cpu.sub}} {%endif%} ({{cpu.count}} advert{%if cpu.count > 1%}s{%endif%})
+        </p>
+      </li>
+      {%endif%}
+    {% endfor %}
+  </ul>
+  {%endfor%}
+</section>
+<p class="nav">{% include "computers/navbar.html" %}</p>
+{% endblock %}

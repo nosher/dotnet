@@ -673,6 +673,10 @@ def computer_filter_company(request, company):
     return HttpResponse("Hello, world. You're at the computer archives filtered by company.")
 
 
+def computer_filter_models(request, model):
+    return HttpResponse("Hello, world. You're at the computer archives filtered by models.")
+
+
 def computer_filter_model(request, model):
     return HttpResponse("Hello, world. You're at the computer archives filtered by model.")
 
@@ -705,6 +709,69 @@ def computer_filter_years(request):
 
 def computer_filter_year(request, year):
     return HttpResponse("Hello, world. You're at the computer archives filtered by year.")
+
+
+def computer_filter_cpus(request):
+    records = ArchiveItems.objects.exclude(cpu__isnull = True).exclude(cpu__exact = "").values("cpu").annotate(count=Count("cpu")).order_by('-count', 'cpu')
+    display = []
+    for r in records:
+        text = ""
+        sub = ""
+        bits = ""
+        opts = r["cpu"].split(",")
+        if len(opts) > 1:
+            c1 = CPUS[opts[0].strip()]
+            c2 = CPUS[opts[1].strip()]
+            text = "{} and {}".format(c1["name"], c2["name"])
+            sub = ""
+            bits = c2["bits"] if int(c2["bits"]) > int(c1["bits"]) else c1["bits"]
+        else:
+            info = CPUS[opts[0]]
+            text = "{}".format(info["name"])
+            mem = int(pow(2, int(info["add"]))/1024)
+            memd = str(mem) + "K" if mem < 1024 else str(int(mem/1024)) + "M"
+            sub = "{} bit address ({} memory max)". format(info["add"], memd)
+            bits = info["bits"]
+            if "note" in info and info["note"]:
+                sub = sub + ", {}".format(info["note"])
+        display.append({"cpu": r["cpu"], "count": r["count"], "bits": bits, "disp": text, "sub": sub})
+    bits = []
+    for c in CPUS:
+        cpu = CPUS[c]
+        if not cpu["bits"] in bits:
+            bits.append(cpu["bits"])
+    display.sort(key = lambda x: x['disp'])
+    context = {
+        'cpus': display,
+        'bits': bits,
+        'staticServer': WEBROOT,
+        'home': ARCHIVES,
+        'url': "{}/{}".format(WEBROOT, DOCROOT),
+        'feedback': EMAIL,
+    }
+    return render(request, 'computers/cpus.html', context)
+
+
+def computer_filter_cpu(request, cpu):
+    records = ArchiveItems.objects.filter(cpu = cpu).order_by('year')
+    cpus = cpu.split(",")
+    title = ""
+    if len(cpus) > 1:
+        c1 = CPUS[cpus[0].strip()]["name"]
+        c2 = CPUS[cpus[1].strip()]["name"]
+        title = "{} and {}".format(c1, c2)
+    else:
+        info = CPUS[cpus[0].strip()]
+        title = "{}".format(info["name"])
+    context = {
+        'ads': records,
+        'title': title,
+        'staticServer': WEBROOT,
+        'home': ARCHIVES,
+        'url': "{}/{}".format(WEBROOT, DOCROOT),
+        'feedback': EMAIL,
+    }
+    return render(request, 'computers/cpu.html', context)
 
 
 def _get_page_image(img):
