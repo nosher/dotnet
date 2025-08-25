@@ -6,6 +6,68 @@ describe('nosher.net computer adverts - index', () => {
   })
 
 
+  it('By CPU link is present', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/?type=year&value=1980')
+    cy.get('p.nav').find('a').eq(5).should('contain.text', 'by CPU')
+  })
+
+
+  it('Adverts by CPU', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/cpus/')
+    cy.get('section.archives').find('h3').first().should('contain.text', '8-bit CPUs')
+  })
+
+
+  it('Adverts by CPU - first 8-bit link', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/cpus/')
+    cy.get('section.archives').find('li').first().find('a').then(($link) => {
+      const href = $link.prop('href')
+      cy.visit(href)
+      cy.url().should('contain', '/archives/computers/cpus/Capricorn')
+      cy.get('main#cmain').find('h1').first().should('contain.text', "3 adverts that feature the Hewlett-Packard Capricorn")
+    })
+  })
+
+
+  it('Adverts by CPU - single-advert 8-bit link', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/cpus/LH5801')
+    cy.get('main#cmain').find('h1').first().should('contain.text', "1 advert that features the Sharp LH5801")
+  })
+
+
+  it('Adverts by CPU - first 8-bit link text is correct', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/cpus/')
+    cy.get('section.archives').find('li').first().find('p').first().should('contain.text', '16 bit address (64K memory max), proprietary HP CPU')
+  })
+
+
+  it('Adverts by CPU - check thumbnail image is present', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/cpus/Capricorn')
+    cy.get('section.archives').find('a').first().find('img').should('have.length', 1).should('have.prop', 'src')
+      .and('include', 'hp85_pcw_nov80-s.webp')
+  })
+
+
+  it('Adverts by CPU - check 70+ thumbnail images are present for 6502', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/cpus/6502')
+    cy.get('section.archives').find('div#yearindex').find('img').should(($images) => {
+      if ($images.length < 50 ) {
+        throw new Error('Not enough thumbnails')
+      }
+    })
+  })
+
+
+  it('Adverts by CPU - visit the first 8-bit link', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/cpus/Capricorn')
+    cy.get('section.archives').find('a').first().then(($link) => {
+      const href = $link.prop('href')
+      cy.visit(href)
+      cy.url().should('contain', '/archives/computers/hp85_pcw_nov80')
+    })
+  })
+
+
   it('Displays 15 adverts from the year 1980', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/?type=year&value=1980')
     cy.get('archiveitem')
@@ -18,7 +80,7 @@ describe('nosher.net computer adverts - index', () => {
 
   it('More adverts for the year 1980 link is present', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/?type=year&value=1980')
-    cy.get('p.nav').find('a').eq(5).should('contain.text', '1980 adverts')
+    cy.get('p.nav').find('a').eq(6).should('contain.text', '1980 adverts')
   })
 
 

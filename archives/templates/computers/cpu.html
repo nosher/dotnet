@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ads.count}} advert{% if ads.count > 1%}s{%endif%} that feature{%if ads.count == 1%}s{%endif%} the {{title}}</h1>
+<p class="nav">{% include "computers/navbar.html" %}</p>
+<section class="archives">
+      <div id="yearindex">
+      {% for ad in ads %}
+          <div>
+          <a href="/archives/computers/{{ad.getPrimary}}"><img src="{{url}}/images/{{ad.adid|get_first_image}}-s.webp" /></a><br />
+          {{ad.getTitle}}
+          </div>
+      {% endfor %}
+      </div>
+</section>
+<br/>
+<p class="nav">{% include "computers/navbar.html" %}</p>
+{% endblock %}

@@ -75,7 +75,7 @@ describe('nosher.net computer adverts - individual', () => {
 
   it('Check advert navlinks for non-terminal advert (should have next and prev Acorn ads)', () => {
     cy.get('p.nav').eq(0).should(($nav) => {
-      if ($nav.find('a').length != 10 ) {
+      if ($nav.find('a').length != 11 ) {
         throw new Error('Incorrect number of inter-adverts navlinks')
       }
     })
@@ -88,7 +88,7 @@ describe('nosher.net computer adverts - individual', () => {
       cy.visit(href)
     })
     cy.get('p.nav').should('have.length', 1).should(($nav) => {
-      if ($nav.find('a').length != 9 ) {
+      if ($nav.find('a').length != 10 ) {
         throw new Error('Incorrect number navlinks (should not have previous Acorn advert link)')
       }
     })
@@ -172,7 +172,7 @@ describe('nosher.net computer adverts - individual', () => {
     cy.get('p.nav').find('a').contains('next advert').then(($link) => {
       const href = $link.prop('href')
       cy.visit(href)
-      cy.url().should('contain', 'pcw_1980-06-00_002_msi')
+      cy.url().should('contain', 'pertec_attache_prac_may1979')
     })
   })
 
@@ -184,7 +184,7 @@ describe('nosher.net computer adverts - individual', () => {
 
 
   it('Check previous advert link', () => {
-    cy.visit('http://10.1.203.1:8010/archives/computers/pcw_1980-06-00_002_msi')
+    cy.visit('http://10.1.203.1:8010/archives/computers/pertec_attache_prac_may1979')
     cy.get('p.nav').find('a').contains('previous advert').then(($link) => {
       const href = $link.prop('href')
       cy.visit(href)

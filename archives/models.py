@@ -11,6 +11,7 @@ class ArchiveItems(models.Model):
     type = models.CharField(max_length=60)
     source = models.CharField(max_length=90)
     model = models.CharField(max_length=45)
+    cpu = models.CharField(max_length=45)
     date_created = models.DateTimeField(django.utils.timezone.now)
 
     class Meta:
