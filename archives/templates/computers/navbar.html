@@ -3,7 +3,12 @@
 <a href="{{ home }}/links/">industry connections</a> | 
 <a href="{{ home }}/timelines">timelines</a> | 
 <a href="{{ home }}/years/">by year</a> |
+<a href="{{ home }}/models/">by model</a> |
 <a href="{{ home }}/cpus/">by CPU</a> 
+
+{% if prevany %} | <a href="{{ prevany.adid }}">previous advert</a>{% endif %}
+{% if nextany %} | <a href="{{ nextany.adid }}">next advert</a>{% endif %}
+
 {% if moreyear %} | <a href="/archives/computers/?type=year&value={{ moreyear }}">more from {{ moreyear }}</a>{% endif %}
 {% if page %}
     {% if next %} | <a href="{{ next }}">next {{ next_count }} {{ section }}</a>{% endif %}
@@ -12,5 +17,3 @@
     {% if next %} | <a href="{{ next.adid }}">next {{ item.company }} advert</a>{% endif %}
     {% if prev %} | <a href="{{ prev.adid }}">previous {{ item.company }} advert</a>{% endif %}
 {% endif %}
-{% if prevany %} | <a href="{{ prevany.adid }}">previous advert</a>{% endif %}
-{% if nextany %} | <a href="{{ nextany.adid }}">next advert</a>{% endif %}
