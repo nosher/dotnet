@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Adverts by model(s)</h1>
+<p class="nav">{% include "computers/navbar.html" %}</p>
+
+<section class="archives">
+  <p>Models of computer or peripheral, grouped by company name. Note that some model names 
+  have been merged for convenience, for example TI-99/4 and TI-99/4A, whilst some have been 
+  split where they are know by multiple distinct names, e.g. Atari's VCS which became the 2600. 
+  Also note that some adverts contain products from other companies, so for instance you will 
+  see the BBC Micro appear under Torch, as well as Acorn.</p>
+  <p>Jump to: {% for first, data in models.items %}<a href="#{{first}}">{{ first }}</a> {% endfor %}</p>
+  <hr />
+  {% for first, data in models.items %}
+    <a name="{{ first }}"></a>
+    <div class="models">
+      {% for company, models in data.items %}
+        <div><h4>{{company}}</h4>
+        {% for m in models %}
+          <a href="/archives/computers/model/{{m|encodeslash}}">{{m}}</a>{% if forloop.last%}{% else %}, {% endif %}
+        {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+    <hr />
+  {% endfor %}
+
+</section>
+<p class="nav">{% include "computers/navbar.html" %}</p>
+{% endblock %}

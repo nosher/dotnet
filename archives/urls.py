@@ -11,10 +11,10 @@ urlpatterns = [
     path('computers/links/', views.links, name='links'),
     path('computers/years/', views.computer_filter_years, name='year'),
     path('computers/years/<str:year>', views.computer_filter_year, name='year'),
+    path('computers/models/', views.computer_filter_models, name='models'),
+    path('computers/model/<str:model>', views.computer_filter_model, name='model'),
     path('computers/<str:advert>', views.computer_advert, name='advert'),
     path('computers/companies/<str:company>', views.computer_filter_company, name='company'),
     path('computers/cpus/', views.computer_filter_cpus, name='cpus'),
     path('computers/cpus/<str:cpu>', views.computer_filter_cpu, name='cpu'),
-    path('computers/models/', views.computer_filter_models, name='models'),
-    path('computers/models/<str:model>', views.computer_filter_model, name='model'),
 ]
