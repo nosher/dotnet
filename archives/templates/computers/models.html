@@ -6,8 +6,10 @@
 
 <section class="archives">
   <p>Models of computer or peripheral, grouped by company name. Note that some model names 
-  have been merged for convenience, for example TI-99/4 and TI-99/4A. Also note that some adverts contain micros of other companies, 
-  so for instance you will see the BBC Micro appear under Torch, as well as Acorn.</p>
+  have been merged for convenience, for example TI-99/4 and TI-99/4A, whilst some have been 
+  split where they are know by multiple names, e.g. Atari's 2600, a.k.a. VCS. Also note that 
+  some adverts contain products from other companies, so for instance you will see the BBC 
+  Micro appear under Torch, as well as Acorn.</p>
   <p>Jump to: {% for first, data in models.items %}<a href="#{{first}}">{{ first }}</a> {% endfor %}</p>
   <hr />
   {% for first, data in models.items %}
@@ -16,7 +18,7 @@
       {% for company, models in data.items %}
         <div><h4>{{company}}</h4>
         {% for m in models %}
-          <a href="/archives/computers/model/{{m}}?company={{company}}">{{m}}</a>{% if forloop.last%}{% else %}, {% endif %}
+          <a href="/archives/computers/model/{{m|encodeslash}}">{{m}}</a>{% if forloop.last%}{% else %}, {% endif %}
         {% endfor %}
         </div>
       {% endfor %}

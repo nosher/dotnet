@@ -75,7 +75,7 @@ describe('nosher.net computer adverts - individual', () => {
 
   it('Check advert navlinks for non-terminal advert (should have next and prev Acorn ads)', () => {
     cy.get('p.nav').eq(0).should(($nav) => {
-      if ($nav.find('a').length != 11 ) {
+      if ($nav.find('a').length != 12 ) {
         throw new Error('Incorrect number of inter-adverts navlinks')
       }
     })
@@ -88,7 +88,7 @@ describe('nosher.net computer adverts - individual', () => {
       cy.visit(href)
     })
     cy.get('p.nav').should('have.length', 1).should(($nav) => {
-      if ($nav.find('a').length != 10 ) {
+      if ($nav.find('a').length != 11 ) {
         throw new Error('Incorrect number navlinks (should not have previous Acorn advert link)')
       }
     })

@@ -2440,3 +2440,38 @@ img.companylogo_port {
 .advert a:visited[data-link], .advert a[data-link] {
     color: var(--adlink); 
  }
+
+.models {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2em;
+    color: var(--text);
+}
+.models div h4 {
+    color: var(--headers4);
+    font-weight: bold;
+    margin: 0 0 8px 0;
+    padding: 0;
+}
+
+.cpu a {
+    color: var(--link);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+}
+span.count {
+    color: var(--headers);
+}
+span.cpusub {
+    font-size: 90%;
+}
+section.archives hr {
+    margin: 30px 0 30px 0;
+    border-color: var(--subcaption);
+    background-color: var(--subcaption);
+}
+@media screen and (max-width: 1000px) { 
+    .models {
+        margin: 8px;
+    }
+}

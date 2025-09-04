@@ -80,9 +80,21 @@ def get_first_image(adid):
 
 
 @register.filter
+def encodeslash(url):
+    """
+    used to convert model names with a slash, e.g. DB 8/1 or CP/M, to something that doesn't look like a 
+    URL boundary. Unfortunately, urlencode doesn't work because Django decodes the URL before it
+    passes it through the urlconf pattern matcher, hence we get /computers/model/CP/M
+    """
+    return url.replace("/", "|")
+
+
+@register.filter
 def get_first_advert(company):
-    # get the first advert for a company - used primary as a shortcut to find the adid for companies
-    # which have only a single advert, so we show that instead of a company list
+    """
+    get the first advert for a company - used primary as a shortcut to find the adid for companies
+    which have only a single advert, so we show that instead of a company list
+    """
     item = ArchiveItems.objects.filter(company=company)[0]
     return item.adid
 

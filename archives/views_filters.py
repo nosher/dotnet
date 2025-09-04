@@ -56,11 +56,12 @@ def computer_filter_models(request):
 
 def computer_filter_model(request, model):
     params = request.GET
+    model = model.replace("|", "/") # see views_template_filters::encodeslash for why this is here
     company = params.get("company")
     companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
     records = ArchiveItems.objects.filter(
-            (Q(model__contains = model + ",") | Q(model__contains = "," + model) | Q(model = model)) & Q(company = company)
-        ).order_by('year')
+                (Q(model__contains = model + ",") | Q(model__contains = "," + model) | Q(model = model))
+              ).order_by('year')
     if len(records) == 1:
         return redirect("/archives/computers/{}".format(records[0].adid))
     else:    
@@ -162,15 +163,19 @@ def computer_filter_cpu(request, cpu):
     else:
         info = CPUS[cpus[0].strip()]
         title = "{}".format(info["name"])
-    context = {
-        'ads': records,
-        'title': title,
-        'staticServer': WEBROOT,
-        'home': ARCHIVES,
-        'url': "{}/{}".format(WEBROOT, DOCROOT),
-        'companies': companies,
-        'feedback': EMAIL,
-    }
-    return render(request, 'computers/cpu.html', context)
+
+    if len(records) == 1:
+        return redirect("/archives/computers/{}".format(records[0].adid))
+    else:    
+        context = {
+            'ads': records,
+            'title': title,
+            'staticServer': WEBROOT,
+            'home': ARCHIVES,
+            'url': "{}/{}".format(WEBROOT, DOCROOT),
+            'companies': companies,
+            'feedback': EMAIL,
+        }
+        return render(request, 'computers/cpu.html', context)
 
 
