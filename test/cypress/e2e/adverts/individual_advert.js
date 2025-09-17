@@ -247,14 +247,22 @@ describe('nosher.net computer adverts - individual', () => {
         throw new Error('Did not find any wiki-style links')
       }
     })
-    cy.get(`a[data-link="adve_024"]`).first().then(function($link) {
+    // link to a list of adverts featuring a particular model
+    cy.get(`a[data-link="Atom"]`).first().then(function($link) {
       cy.wrap($link).should('have.text', 'the Atom')
-        .should('have.attr', "href").and('include', 'adve_024')
+        .should('have.attr', "href").and('include', '/archives/computers/model/Atom')
     })
+    // link to an individual advert
+    cy.get(`a[data-link="personal_comp_world_1982-07_002a"]`).first().then(function($link) {
+      cy.wrap($link).should('have.text', 'NewBrain')
+        .should('have.attr', "href").and('include', 'personal_comp_world_1982-07_002a')
+    })
+    // link to a company
     cy.get(`a[data-link="Sinclair"]`).first().then(function($link) {
       cy.wrap($link).should('have.text', 'Sinclair')
       .should('have.attr', "href").and('include', '/archives/computers?type=source&value=Sinclair')
     })
+    // link to an external source
     cy.get(`a[data-link="https://www.computinghistory.org.uk/det/4236/The-Mighty-Micro"]`).first().then(function($link) {
       cy.wrap($link).should('have.text', 'The Mighty Micro')
       .should('have.attr', "href").and('include', 'https://www.computinghistory.org.uk/det/4236/The-Mighty-Micro')

@@ -86,8 +86,16 @@ class Sitemap():
                 last_mod = self._get_lastmod("archives/computers/" + page + ".txt"),
                 images = [self.STATIC_ROOT_URL + "archives/computers/images/" + page + "-m.webp"]
             )) 
+        self.urlset.appendChild(self.createUrlNode(
+            uri = self.ROOT_URL + "archives/computers/cpus/",
+            last_mod = datetime.now().replace(tzinfo=timezone('UTC')).strftime("%Y-%m-%d")
+        )) 
+        self.urlset.appendChild(self.createUrlNode(
+            uri = self.ROOT_URL + "archives/computers/models/",
+            last_mod = datetime.now().replace(tzinfo=timezone('UTC')).strftime("%Y-%m-%d")
+        )) 
 
-        # AJO, Saxon Horse, Brandon Flint
+        # AJO
         self._get_content_files("ajo")
 
         # Saxon Horse
@@ -99,7 +107,7 @@ class Sitemap():
         # RAF Halton archive
         self._get_content_files("raf69th")
                
-        # RAF Halton archive
+        # Family recipes
         self._get_content_files("recipes")
 
         # write out XML
