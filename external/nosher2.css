@@ -1761,6 +1761,15 @@ audio {
     padding: 4px;
 }
 
+.grid0 {
+    width: 99%;
+    margin: 8px 0 16px 0;
+}
+.grid0 img {
+    width: 98%;
+    margin: 0 auto 0 auto;
+}
+
 .grid1 {
     margin: 40px 0 40px 0;
     display: grid;
@@ -1962,6 +1971,15 @@ blockquote.quote:before, p.quote:before, p.small_quote:before {
     grid-template-columns: 33% 34% 33%;
     grid-gap: 10px;
 }
+.grid3 img {
+    width: 90%;
+}
+.single {
+    width: 98%;
+}
+.single img {
+    width: 90%;
+}
 
 .side {
     margin: 40px 0 20px 0;
@@ -2027,6 +2045,7 @@ blockquote.quote:before, p.quote:before, p.small_quote:before {
 
 .smallside img {
     margin-top: 6px;
+    width: 100%;
 }
 
 .smallside img.unset {
