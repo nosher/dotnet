@@ -65,10 +65,25 @@ def computer_filter_model(request, model):
     if len(records) == 1:
         return redirect("/archives/computers/{}".format(records[0].adid))
     else:    
+        company = records[0].company
+        same = True
+        for i in range(1, len(records)):
+            if records[i].company != company:
+                same = False
+                continue
+        # a hack for now - there are a few "model" names that shouldn't be preceded with "the"
+        INDEFINITES = ["CompuServe", "Micronet 800", "Prestel", "MS-DOS", "Multiplan", "MSX", "VisiCalc"]
+        if not same or model in INDEFINITES:
+            title = model
+        elif model[0:len(company)] == company:
+            title = "the {}".format(model)
+        else:
+            title = "the {} {}".format(company, model)
+
         context = { 
-            'company': company,
             'model': model,
             'ads': records,
+            'title': title,
             'staticServer': WEBROOT,
             'home': ARCHIVES,
             'url': "{}/{}".format(WEBROOT, DOCROOT),
