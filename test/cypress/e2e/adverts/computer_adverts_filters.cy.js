@@ -3,6 +3,31 @@
 describe('nosher.net computer adverts - by filters', () => {
 
 
+  it('Adverts by Models title is correct for multiple companies', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/model/Apple%20Clones')
+    cy.get('main#cmain').find('h1').eq(0).should('contain.text', 'Adverts featuring Apple Clones')
+  })
+  
+
+  it('Adverts by Models title is correct when model also contains company name', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/model/ACT|Apricot%20Portable')
+    cy.get('main#cmain').find('h1').eq(0).should('contain.text', 'Adverts featuring the ACT/Apricot Portable')
+  })
+
+
+  it('Adverts by Models title is correct when model does not contain company name', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/model/CPC%20464')
+    cy.get('main#cmain').find('h1').eq(0).should('contain.text', 'Adverts featuring the Amstrad CPC 464')
+  })
+
+
+  it('Adverts by Models title is correct when model is not a definite article', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/model/MS-DOS')
+    // e.g. should not say 'featuring the MS-DOS'
+    cy.get('main#cmain').find('h1').eq(0).should('contain.text', 'Adverts featuring MS-DOS')
+  })
+
+
   it('Adverts by Models link is present', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/')
     cy.get('p.nav').find('a').eq(5).should('contain.text', 'by model')
