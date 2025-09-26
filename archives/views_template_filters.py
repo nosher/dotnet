@@ -211,6 +211,24 @@ def convert_images(item):
     return item
 
 
+def create_toc(item):
+    toc_count = 0
+    updated = []
+    toc = []
+    for i in range(len(item)):
+        line = item[i].strip()
+        if line[0:4] == "<h3>":
+            title = line.replace("<h3>", "").replace("</h3>", "")
+            toc.append("""<a href="#toc{}">{}</a>""".format(toc_count, title))
+            updated.append("""<a name="toc{}" ></a>{}""".format(toc_count, line))
+            toc_count += 1
+        else:
+            updated.append(line)
+    if len(toc) > 0:
+        updated.insert(0, """<div class="toc"><span class="contents">Contents:</span>{}</div>""".format(" • ".join(toc)))
+    return updated
+
+
 def convert_tags(item):
     updated = []
     for i in range(len(item)):
