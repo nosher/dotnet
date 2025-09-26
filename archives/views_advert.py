@@ -252,6 +252,7 @@ def computer_advert_html(request, adid):
     body = convert_picture(body)
     body = convert_links(body)
     body = convert_images(body)
+    body = create_toc(body)
     (body, sources) = convert_sources(body)
     body = "".join(body)
     body = body.replace("{{staticServer}}", WEBROOT)

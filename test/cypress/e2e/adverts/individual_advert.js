@@ -5,7 +5,38 @@ describe('nosher.net computer adverts - individual', () => {
   beforeEach(() => {
     cy.visit('http://10.1.203.1:8010/archives/computers/acorn_sparkjet_percw_aug83')
   })
+
   
+  it('Check table of contents where present', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/comp_today_1981-09_042')
+    cy.get('div.liner').find('div.toc').should('have.length', 1)
+    if(cy.get('div.toc').find('a').length < 0) {
+      throw new Error('No entries found in table of contents')
+    }
+    cy.get('div.toc').find('a').each(($el, index, _) => {
+        cy.wrap($el).should('have.attr', 'href')
+        .and('include','#toc' + index)
+    })
+  })
+
+
+  it('Check table of contents link text', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/comp_today_1981-09_042')
+    cy.get('div.toc').find('a').first().contains('Newbury drops the ball')
+    cy.get('div.toc').find('a').eq(1).contains('The controversy begins')
+
+  })
+
+
+  it('Check table of contents target anchors', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/comp_today_1981-09_042')
+    cy.get('div.toc').find('a').each(($el, index, _) => {
+        cy.wrap($el).should('have.attr', 'href')
+        .and('include','#toc' + index)
+        cy.get('a[name="toc' + index + '"]').should('have.length', 1)
+    })
+  })
+
   
   it('Check more from 1980 link is present', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/adve_001')
