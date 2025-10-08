@@ -134,10 +134,10 @@ def convert_picture(item):
 
 def convert_links(item):
     """
-    Convert occurances of [=adid|text], [@company], [@company|text] or [#model|text] to an HTML link
+    Convert occurances of [=adid|text], [@company|text], [#model|text] or [!CPU|text] to an HTML link
     """
     for i in range(len(item)):
-        for type in ["=", "@", "#"]:
+        for type in ["=", "@", "#", "!"]:
             groups = re.findall("\[{}(?P<ext>.*?)\]".format(type), item[i], re.S|re.MULTILINE)
             if not groups is None:
                 for ext in groups:
@@ -152,13 +152,15 @@ def convert_links(item):
                         link = url
                     elif type == "#":
                         link = "/archives/computers/model/" + url
+                    elif type == "!":
+                        link = "/archives/computers/cpus/" + url
                     else:
                         adverts = ArchiveItems.objects.filter(company = url)
                         if len(adverts) == 1:
                             link = adverts[0].adid
                         else:    
                             link = "{}?type=source&value={}".format(ARCHIVES, url)
-                    item[i] = item[i].replace(repl, """<a data-link="{}" href="{}">{}</a>""".format(url, link, text))
+                    item[i] = item[i].replace(repl, """<a data-link="{}" href="{}">{}</a>""".format(url.replace(" ", "_"), link, text))
     return item
 
 
