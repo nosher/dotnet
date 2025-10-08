@@ -3,6 +3,44 @@
 describe('nosher.net computer adverts - by filters', () => {
 
 
+  it('CPU links in advert work as expected', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/altair_popelec_aug75')
+    // test when CPU and text are the same
+    cy.get('div.liner').find('a[data-link="8080"').eq(0).should('contain.text', '8080').then(($link) => {
+      const href = $link.prop('href')
+      cy.visit(href)
+      cy.url().should('contain', '/archives/computers/cpus/8080')
+    })
+
+    //test when CPU and text are different
+    cy.visit('http://10.1.203.1:8010/archives/computers/altair_popelec_aug75')
+    cy.get('div.liner').find('a[data-link="Z80"').eq(0).should('contain.text', 'Zilog Z80').then(($link) => {
+      const href = $link.prop('href')
+      cy.visit(href)
+      cy.url().should('contain', '/archives/computers/cpus/Z80')
+    })
+  })
+
+
+  //<a data-link="Processor Technology" href="/archives/computers?type=source&value=Processor Technology">Processor Technology</a>
+  it('Company links in advert work as expected', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/altair_popelec_aug75')
+    // test when company goes to multiple adverts
+    cy.get('div.liner').find('a[data-link="Processor_Technology"').eq(0).should('contain.text', 'Processor Technology').then(($link) => {
+      const href = $link.prop('href')
+      cy.visit(href)
+      cy.url().should('contain', '/archives/computers/?type=source&value=Processor')
+    })
+    cy.visit('http://10.1.203.1:8010/archives/computers/altair_popelec_aug75')
+    // test when company goes to single advert
+    cy.get('div.liner').find('a[data-link="Polymorphic"').eq(0).should('contain.text', 'Polymorphic').then(($link) => {
+      const href = $link.prop('href')
+      cy.visit(href)
+      cy.url().should('contain', '/archives/computers/polymorphic88_byte_jul77')
+    })
+  })
+
+
   it('Adverts by Models title is correct for multiple companies', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/model/Apple%20Clones')
     cy.get('main#cmain').find('h1').eq(0).should('contain.text', 'Adverts featuring Apple Clones')
