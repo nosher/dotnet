@@ -7,6 +7,33 @@ describe('nosher.net computer adverts - individual', () => {
   })
 
   
+  it('Test right cursor moves to next advert', () => {
+    // start with the first advert (NCR Visible Record)
+    cy.visit('http://10.1.203.1:8010/archives/computers/ads_010')
+    cy.get('div.zoomer').trigger('keydown', {keyCode: 39, force: true});
+    // should now be on the Bendix advert
+    cy.url().should('include', '/archives/computers/ads_015')    
+  })
+
+
+  it('Test left cursor on first advert goes nowhere', () => {
+    // start with the first advert (NCR Visible Record)
+    cy.visit('http://10.1.203.1:8010/archives/computers/ads_010')
+    cy.get('div.zoomer').trigger('keydown', {keyCode: 37, force: true});
+    // should still be on the NCR advert
+    cy.url().should('include', '/archives/computers/ads_010')    
+  })
+
+
+  it('Test left cursor on second advert goes back to first', () => {
+    // start with the second advert (Bendix)
+    cy.visit('http://10.1.203.1:8010/archives/computers/ads_015')
+    cy.get('div.zoomer').trigger('keydown', {keyCode: 37, force: true});
+    // should now be on the NCR advert
+    cy.url().should('include', '/archives/computers/ads_010')    
+  })
+
+
   it('Check table of contents where present', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/comp_today_1981-09_042')
     cy.get('div.liner').find('div.toc').should('have.length', 1)

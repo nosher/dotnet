@@ -1,68 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <script>
-    function disableForMobile(x) {
-        if (x.matches) { 
-           $("#zoom").hide();
-        } 
-    }
-    $(document).ready(function() {
-        
-        var media = window.matchMedia("(max-width: 840px)")
-        disableForMobile(media);
-        $('html, body').animate({
-            scrollTop: ($('.hilite').first().top)
-        },500);
-    });
-    $(window).on("load", function() {
-      var doZoom = false;
-      var zoomer = $(".zoomer");
-      var magicon = $(".magicon");
-      var height = zoomer.height();
-      var zimg = zoomer.children("img");
-      var offset = zimg.offset()
-      var naturalWidth = zimg.get(0).naturalWidth;
-      var naturalHeight = zimg.get(0).naturalHeight;
-      if (naturalWidth > 1200) {
-        $(".magicon").show();
-        $(".magicon").on("click", function() {
-            doZoom = !doZoom;
-            if (doZoom) {
-                $(this).children("button").html("Turn off zoom");
-            } else {
-                $(this).children("button").html("🔍 Click to zoom");
-
-            }
-        });
-        zoomer.on("mouseover", function() {
-          if (doZoom) {
-                  console.log(zimg.get(0).naturalWidth);   
-                  zimg.width(naturalWidth);
-                  zimg.height(naturalHeight);
-                  zoomer.height(height);
-                  zoomer.css('cursor','zoom-in');
-                  console.log(zimg.width());   
-                  zoomer.on("mousemove", function(event) {
-                    if (doZoom) {
-                        var newx = event.pageX - offset.left;
-                        var newy = event.pageY - offset.top;
-                        zimg.offset({left: offset.left - newx, top: offset.top - newy});
-                    } 
-                  });
-
-          }
-        });
-        zoomer.on("mouseout", function() {
-          if (doZoom) {
-                  zimg.width(700);
-                  zimg.height(naturalHeight/2);
-                  zimg.offset(offset);
-          }
-        });
-      }
-    });
-  </script>
 
 <section class="advert">
     
@@ -102,7 +40,15 @@
   </section>
 {% endif %}
 
-<p class="copy">Text and otherwise-uncredited photos &copy; nosher.net {{ ""|get_now }}. Dollar/GBP conversions, where used, assume $1.50 to £1. "Now" prices are calculated dynamically using average RPI per year.</p>
+  <p class="copy">Text and otherwise-uncredited photos &copy; nosher.net {{ ""|get_now }}. Dollar/GBP conversions, where used, assume $1.50 to £1. "Now" prices are calculated dynamically using average RPI per year.</p>
+
+  <!-- advert-specific JS -->
+  <script>
+      var next = "{{ nextany.adid }}";
+      var prev = "{{ prevany.adid }}";
+  </script>
+  <script src="/js/adverthandler.js" ></script>
+
 {% endblock %}
 
 {%block sidebar %}
@@ -123,3 +69,4 @@
     </div>
   {% endif %}
 {% endblock %}
+
