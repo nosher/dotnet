@@ -2,6 +2,7 @@
 :root {
     --main: #fafafa;
     --main_home: #e0e0e0;
+    --toc: #dedede;
     --text: #222;
     --header: #416788;
     --link-hover: #c3cce0;
@@ -35,6 +36,7 @@
         forced-color-adjust: none;
         --main: Canvas;
         --main_home: Canvas;
+        --toc: Canvas;
         --text: CanvasText;
         --header: #666;
         --link-hover: #555;
@@ -124,6 +126,7 @@
         forced-color-adjust: none;
         --main: #111;
         --main_home: #222;
+        --toc: #333;
         --text: #eee;
         --header: #444;
         --link-hover: #555;
@@ -1410,6 +1413,7 @@ div.magicon {
 .origins {
     font-weight: 300;
     background-color: #c4d6db;
+    color: #222;
     padding: 12px;
     font-family: Arial, sans-serif;
 }
@@ -2493,4 +2497,21 @@ section.archives hr {
     .models {
         margin: 8px;
     }
+}
+
+div.toc {
+    border: 1px solid var(--text);
+    background: var(--toc);
+    margin: 12px 0 12px 0;
+    padding: 8px 16px 16px 16px;
+    color: var(--subcaption);
+}
+div.toc span.contents {
+    display: block;   
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: var(--text);
+}
+div.toc a, div.toc a:visited, div.toc a:link {
+    color: var(--text);
 }
