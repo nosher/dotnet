@@ -10,11 +10,11 @@ from stat import *
 from .models import ArchiveItems
 from ..constants import *
 from collections import OrderedDict
+from .views_utils import _get_null_advert
 
 ARCHIVES = "/archives/computers"
 ARCHIVEROOT = "/home/httpd/nosher.net/docs" + ARCHIVES
 EMAIL = "microhistory@nosher.net"
-
 
 def computer_filter_company(request, company):
     return HttpResponse("Hello, world. You're at the computer archives filtered by company.")
@@ -56,13 +56,30 @@ def computer_filter_models(request):
 
 def computer_filter_model(request, model):
     params = request.GET
+    intro = get_file(model)
     model = model.replace("|", "/") # see views_template_filters::encodeslash for why this is here
     company = params.get("company")
     companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
     records = ArchiveItems.objects.filter(
                 (Q(model__contains = model + ",") | Q(model__contains = "," + model) | Q(model = model))
               ).order_by('year')
-    if len(records) == 1:
+    
+    if model == "test" or model == "testintro":
+        context = { 
+            'model': "test",
+            'ads': [],
+            'title': "test",
+            'intro': "" if model == "test" else "introduction",
+            'staticServer': WEBROOT,
+            'home': ARCHIVES,
+            'url': "{}/{}".format(WEBROOT, DOCROOT),
+            'companies': companies,
+            'feedback': EMAIL,
+        }
+        return render(request, 'computers/model.html', context)
+    elif len(records) == 0:
+        return _get_null_advert(request, companies)
+    elif len(records) == 1:
         return redirect("/archives/computers/{}".format(records[0].adid))
     else:    
         company = records[0].company
@@ -79,11 +96,11 @@ def computer_filter_model(request, model):
             title = "the {}".format(model)
         else:
             title = "the {} {}".format(company, model)
-
         context = { 
             'model': model,
             'ads': records,
             'title': title,
+            'intro': intro,
             'staticServer': WEBROOT,
             'home': ARCHIVES,
             'url': "{}/{}".format(WEBROOT, DOCROOT),
@@ -171,6 +188,10 @@ def computer_filter_cpu(request, cpu):
     records = ArchiveItems.objects.filter(cpu = cpu).order_by('year')
     cpus = cpu.split(",")
     title = ""
+    intro = get_file(cpu)
+    if not cpus[0] in CPUS.keys():
+        return _get_null_advert(request, companies)
+    
     if len(cpus) > 1:
         c1 = CPUS[cpus[0].strip()]["name"]
         c2 = CPUS[cpus[1].strip()]["name"]
@@ -179,12 +200,14 @@ def computer_filter_cpu(request, cpu):
         info = CPUS[cpus[0].strip()]
         title = "{}".format(info["name"])
 
+    intro = get_file(cpu)
     if len(records) == 1:
         return redirect("/archives/computers/{}".format(records[0].adid))
     else:    
         context = {
             'ads': records,
             'title': title,
+            'intro': intro,
             'staticServer': WEBROOT,
             'home': ARCHIVES,
             'url': "{}/{}".format(WEBROOT, DOCROOT),
@@ -194,3 +217,10 @@ def computer_filter_cpu(request, cpu):
         return render(request, 'computers/cpu.html', context)
 
 
+def get_file(name):
+    try:
+        with open("{}/intros/{}.txt".format(ARCHIVEROOT, name)) as fh:
+            intro = fh.readlines()
+            return '\n'.join(f"<p>{line.strip()}</p>" for line in intro)
+    except FileNotFoundError:
+        return None

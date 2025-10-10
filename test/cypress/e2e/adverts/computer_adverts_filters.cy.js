@@ -3,26 +3,6 @@
 describe('nosher.net computer adverts - by filters', () => {
 
 
-  it('CPU links in advert work as expected', () => {
-    cy.visit('http://10.1.203.1:8010/archives/computers/altair_popelec_aug75')
-    // test when CPU and text are the same
-    cy.get('div.liner').find('a[data-link="8080"').eq(0).should('contain.text', '8080').then(($link) => {
-      const href = $link.prop('href')
-      cy.visit(href)
-      cy.url().should('contain', '/archives/computers/cpus/8080')
-    })
-
-    //test when CPU and text are different
-    cy.visit('http://10.1.203.1:8010/archives/computers/altair_popelec_aug75')
-    cy.get('div.liner').find('a[data-link="Z80"').eq(0).should('contain.text', 'Zilog Z80').then(($link) => {
-      const href = $link.prop('href')
-      cy.visit(href)
-      cy.url().should('contain', '/archives/computers/cpus/Z80')
-    })
-  })
-
-
-  //<a data-link="Processor Technology" href="/archives/computers?type=source&value=Processor Technology">Processor Technology</a>
   it('Company links in advert work as expected', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/altair_popelec_aug75')
     // test when company goes to multiple adverts
@@ -139,6 +119,24 @@ describe('nosher.net computer adverts - by filters', () => {
   })
 
 
+    it('Missing or invalid model lands on 404 page', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/model/xyz')
+    cy.get('section.advert').find('h1.logo').eq(0).should('contain.text', 'Missing Content')
+  })
+
+
+  it('Adverts by Model with text intro', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/model/testintro')
+    cy.get('section.archives').find('div.intro').should('have.length', 1).should('contain.text', "introduction")
+  })
+
+
+  it('Adverts by Model with no text intro', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/model/test')
+    cy.get('section.archives').find('div.intro').should('have.length', 0)
+  })
+
+
   it('By CPU link is present', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/?type=year&value=1980')
     cy.get('p.nav').find('a').eq(6).should('contain.text', 'by CPU')
@@ -200,6 +198,30 @@ describe('nosher.net computer adverts - by filters', () => {
     })
   })
 
+
+    it('Missing or invalid CPU lands on 404 page', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/cpus/xyz')
+    cy.get('section.advert').find('h1.logo').eq(0).should('contain.text', 'Missing Content')
+  })
+
+
+  it('CPU links in advert work as expected', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/altair_popelec_aug75')
+    // test when CPU and text are the same
+    cy.get('div.liner').find('a[data-link="8080"').eq(0).should('contain.text', '8080').then(($link) => {
+      const href = $link.prop('href')
+      cy.visit(href)
+      cy.url().should('contain', '/archives/computers/cpus/8080')
+    })
+
+    //test when CPU and text are different
+    cy.visit('http://10.1.203.1:8010/archives/computers/altair_popelec_aug75')
+    cy.get('div.liner').find('a[data-link="Z80"').eq(0).should('contain.text', 'Zilog Z80').then(($link) => {
+      const href = $link.prop('href')
+      cy.visit(href)
+      cy.url().should('contain', '/archives/computers/cpus/Z80')
+    })
+  })
 
   
 })
