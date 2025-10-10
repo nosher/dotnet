@@ -4,6 +4,9 @@
 <h1>{{ads.count}} advert{% if ads.count > 1%}s{%endif%} that feature{%if ads.count == 1%}s{%endif%} the {{title}}</h1>
 <p class="nav">{% include "computers/navbar.html" %}</p>
 <section class="archives">
+      {% if intro %}
+      <div class="intro">{{ intro|safe }}</div>
+      {% endif %}
       <div id="yearindex">
       {% for ad in ads %}
           <div>
