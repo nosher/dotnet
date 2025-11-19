@@ -32,6 +32,18 @@ class ArchiveItems(models.Model):
     def setHasNew(self, hasNew):
         self.__hasNew = hasNew
 
+    def getSummaryTitle(self):
+        return self.__summaryTitle
+
+    def setSummaryTitle(self, title):
+        self.__summaryTitle = title
+
+    def getSummary(self):
+        return self.__summary
+
+    def setSummary(self, summary):
+        self.__summary = summary
+
     def getPrimary(self):
         return self.adid.split(",")[0]
 
@@ -43,5 +55,7 @@ class ArchiveItems(models.Model):
 
     count = property(getCount, setCount)
     hasNew = property(getHasNew, setHasNew)
+    summaryTitle = property(getSummaryTitle, setSummaryTitle)
+    summary = property(getSummary, setSummary)
     isNew = property(isRecentArchive)
 

@@ -22,29 +22,18 @@ ARCHIVEROOT = "/home/httpd/nosher.net/docs" + ARCHIVES
 EMAIL = "microhistory@nosher.net"
 
 def convert_to_text(body):
-          
     char_limit = 180 
     body = list(filter(lambda s: s[0] is not "-", body))
     # convert acronyms and values
     raw_body = " ".join(convert_values(convert_acronyms(body))).replace("\n", "")
     # remove wiki-like tags
-    raw_body = re.sub("\[.*?\]", "", raw_body)
+    raw_body = re.sub("\[source:.*?\]", "", raw_body)
     # remove HTML
     raw_body = re.sub("<.*?>", "", raw_body)
-    # limit to 300 chars
+    # trim to the char limit
     ellipsis = "..." if len(raw_body) > char_limit else ""
     raw_body = (raw_body[:char_limit] + ellipsis).strip()
     return raw_body
-
-
-@register.filter
-def get_item(dictionary, key):
-    item = "".join(convert_values([dictionary.get(key)]))
-    item = re.sub(CLEANER, "", item)
-    if len(item) < CHARS:
-        return item
-    else:
-        return item[0:CHARS] + "..."
 
 
 @register.filter
@@ -132,7 +121,7 @@ def convert_picture(item):
     return item
 
 
-def convert_links(item):
+def convert_links(item, withLink = True):
     """
     Convert occurances of [=adid|text], [@company|text], [#model|text] or [!CPU|text] to an HTML link
     """
@@ -148,6 +137,7 @@ def convert_links(item):
                         text = bits[1]
                     else:
                         text = url = bits[0]
+
                     if type == "=":
                         link = url
                     elif type == "#":
@@ -160,7 +150,10 @@ def convert_links(item):
                             link = adverts[0].adid
                         else:    
                             link = "{}?type=source&value={}".format(ARCHIVES, url)
-                    item[i] = item[i].replace(repl, """<a data-link="{}" href="{}">{}</a>""".format(url.replace(" ", "_"), link, text))
+                    if withLink:
+                        item[i] = item[i].replace(repl, """<a data-link="{}" href="{}">{}</a>""".format(url.replace(" ", "_"), link, text))
+                    else:
+                        item[i] = item[i].replace(repl, text)
     return item
 
 

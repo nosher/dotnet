@@ -18,8 +18,10 @@
         <archivedescription data-company="{{ item.company }}">
             {% if isFiltered is False %}<h3>{{ item.company }}</h3>{% endif %}
             <h4 class="year">{{ item.year|get_year }}</h4>
-            <a href="{{ item.adid }}"><p class="title">{{ titles|get_item:item.adid }}</p></a>
-            <a href="{{ item.adid }}"><p class="summary">{{ summaries|get_item:item.adid }}</p></a>
+            <a href="{{ item.adid }}">
+                <p class="title">{{ item.summaryTitle }}</p>
+                <p class="summary">{{ item.summary }}</p>
+            </a>
         </archivedescription>
     </archiveitem>
 {% endfor %}

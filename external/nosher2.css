@@ -333,9 +333,8 @@ p {
 body {
     font-family: "charterregular", "Georgia", "Times New Roman", serif;
     text-rendering: optimizeLegibility;
-    font-weight: 300;
     width: 100vw;
-    font-size: 21px;
+    font-size: 15pt;
     color: #333;
     min-height: 100vh;
     margin: 0;
@@ -847,6 +846,7 @@ article.thumb img {
 
 .intro {
     margin: 0 0 12px 0;
+    padding: 0 0 12px 0;
 }
 
 .images_intro {
@@ -1220,10 +1220,11 @@ archiveitem {
     grid-template-areas: "archivethumb archivedescription" " . . ";
 }
 
+
 archivethumb {
     grid-area: archivethumb;
     width: 136px;
-    margin: 7px 0 0 0;
+    margin: 2px 0 0 0;
     padding: 0%;
 }
 
@@ -1239,6 +1240,11 @@ archivedescription {
     grid-area: archivedescription;
     padding: 0 2em 0 1em;
     margin: 0;
+    height: 100%;
+    display: block;
+    /*mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    overflow-y: hidden;*/
+    overflow-y: hidden;
 }
 
 archivedescription .year {
@@ -1396,6 +1402,7 @@ div.magicon {
 
 .adlist li {
     margin-bottom: 24px;
+    line-height: 1.6;
 }
 
 .nav a:link, .navbottom a:link, .nav a:visited, .navbottom a:visited, archivedescription a:link > *, archivedescription a:visited > * {
