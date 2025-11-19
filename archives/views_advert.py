@@ -26,8 +26,6 @@ ARCHIVEROOT = "/home/httpd/nosher.net/docs" + ARCHIVES
 EMAIL = "microhistory@nosher.net"
 
 def computer_index(request):
-    titles = {}
-    summaries = {}
     params = request.GET
     items = []
     item = {}
@@ -83,10 +81,11 @@ def computer_index(request):
         # remove any multi-advert reference
         adid = adid.split(",")[0]
         i.adid = adid
+        # read the advert contents and get the title and summary
         with open(os.path.join(ROOT, "{}.txt".format(adid)), encoding="utf-8") as fh:
             lines = fh.readlines()
-            titles[adid] = lines[0]
-            summaries[adid] = convert_to_text(lines[1:])
+            i.summaryTitle = lines[0]
+            i.summary = convert_to_text(convert_links(lines[1:], False))
  
     # determine next and previous 
     nextparams = []
@@ -106,12 +105,10 @@ def computer_index(request):
         'page_title': page_title,
         'page_description': re.sub("<.*?>","", intro),
         'staticServer': WEBROOT,
-        'titles': titles,
         'home': ARCHIVES,
         'intro': intro,
         'isFiltered': (company_name is not None and company_name != ""),
         'logo': _get_logo(company_name),
-        'summaries': summaries,
         'items': selected,
         'page': page,
         'next': "?" + "&".join(nextparams) if len(nextparams) > 0 else None,

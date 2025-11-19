@@ -1,11 +1,18 @@
 /// <reference types="cypress" />
 
 describe('nosher.net computer adverts - index', () => {
+  
   beforeEach(() => {
     cy.visit('http://10.1.203.1:8010/archives/computers/')
   })
 
+
+  it('First Commodore advert does not have "-origin" in text', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/?type=source&value=Commodore')
+    cy.get('archiveitem').first().find('p.summary').should('not.contain', '-origin')
+  })
   
+
   it('Displays 15 adverts from the year 1980', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/?type=year&value=1980')
     cy.get('archiveitem')
@@ -35,7 +42,7 @@ describe('nosher.net computer adverts - index', () => {
         cy.wrap($item).children('archivethumb').should('have.length', 1)
         cy.wrap($item).children('archivethumb').find('a').should('have.length', 1).should('have.attr', 'href')
         cy.wrap($item).children('archivedescription').should('have.length', 1)
-        cy.wrap($item).children('archivedescription').find('a').should('have.length', 2)
+        cy.wrap($item).children('archivedescription').find('a').should('have.length', 1)
         cy.wrap($item).children('archivedescription').find('h3').should('have.length', 1)
         cy.wrap($item).children('archivedescription').find('h4').should('have.length', 1)
     })
