@@ -54,6 +54,7 @@
 
 {%block sidebar %}
   {% if related and related|length > 1 %}
+    <h4 class="title_sidebar">More adverts from {{ item.company }}:</h4>
     <div class="twogrid">
       {% for rel in related %}
         {% if rel.adid == item.adid %}

@@ -7,6 +7,18 @@ describe('nosher.net computer adverts - individual', () => {
   })
 
   
+  it('Test sidebar has title', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/camb_z88_percw_apr87')
+    cy.get('h4.title_sidebar').should('have.length', 1).contains('More adverts from Cambridge Computer:')
+  })
+  
+
+  it('Test sidebar has no title when only one advert', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/pcn_1985-01-12_002')
+    cy.get('sidebar').find('hv.title_sidebar').should('have.length', 0)
+  })
+
+
   it('Test right cursor moves to next advert', () => {
     // start with the first advert (NCR Visible Record)
     cy.visit('http://10.1.203.1:8010/archives/computers/ads_010')

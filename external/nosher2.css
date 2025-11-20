@@ -694,6 +694,12 @@ sidebar {
     padding: 0;
     width: 240px;
 }
+h4.title_sidebar {
+    margin: 8px 0 4px 10px;
+    color: var(--text);
+    font-size: 1.1em;
+    font-family: 'Roboto-Light', sans-serif;
+}
 
 .adthumb, .adthumb_dim {
     text-align: center;
@@ -1232,15 +1238,13 @@ archivethumb img {
     width: 136px;
     display: block;
     object-fit: cover;
-    margin: 2px 0 0 0;
+    margin: 3px 0 0 0;
     border: 2px solid var(--imgborder);
 }
 
 archivedescription {
     grid-area: archivedescription;
     padding: 0 2em 0 1em;
-    margin: 0;
-    height: 100%;
     display: block;
     /*mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
     overflow-y: hidden;*/
@@ -1268,7 +1272,7 @@ archivedescription .summary {
 }
 
 archivedescription h3 {
-    margin: 4px 0 0 0 !important;
+    margin: 0 !important;
     padding: 0;
 }
 
@@ -2522,3 +2526,9 @@ div.toc span.contents {
 div.toc a, div.toc a:visited, div.toc a:link {
     color: var(--text);
 }
+@media screen and (max-width: 1000px) { 
+    div.toc {
+        margin: 12px 0 12px 8px;
+    }
+}
+
