@@ -20,6 +20,60 @@ describe('nosher.net computer adverts - by filters', () => {
     })
   })
 
+  
+  it('Adverts by Models contains Sort by Model link', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/models/')
+    cy.get('section.archives').find('a[data-id="sorted"').should('contain.text', 'sorted by model name').then(($link) => {
+        const href = $link.prop('href')
+        cy.visit(href)
+        cy.url().should('contain', '/archives/computers/models/sorted')
+      })
+    }
+  )
+
+
+  it('Adverts by Models sorted contains internal jump links', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/models/sorted')
+    cy.get('section.archives').find('p.jump').find('a').should('have.length', 27) // a-z plus '0-9'
+    }
+  )
+
+
+  it('Adverts by Models sorted contains enough groups', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/models/sorted')
+    cy.get('section.archives').find('div.sortmods').should('have.length', 27) // a-z plus '0-9'
+    }
+  )
+
+
+  it('Adverts by Models sorted first group contains enough links', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/models/sorted')
+    cy.get('section.archives').find('div.sortmods').eq(0).should(($group) => {
+        if ($group.find('a').length < 10) {
+          throw new Error('Did not find enough links to models')
+        }
+      })
+    }
+  )
+
+
+  it('Adverts by Models jump link contains correct title', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/models/sorted')
+    cy.get('section.archives').find('a[name="Z"').next().should('contain.text', 'Z')
+    }
+  )
+
+
+  it('Adverts by Models sorted first group first link goes to valid page', () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/models/sorted')
+    cy.get('section.archives').find('div.sortmods').eq(0).find('a').then(($link) => {
+        const href = $link.prop('href')
+        cy.visit(href)
+        cy.url().should('contain', '/archives/computers/tandy_1000ex_praccomp_apr87')
+      })
+    }
+  )
+
 
   it('Adverts by Models title is correct for multiple companies', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/model/Apple%20Clones')
@@ -52,9 +106,10 @@ describe('nosher.net computer adverts - by filters', () => {
   })
   
 
-  it('Adverts by Models has 26 jump-to links ', () => {
+  it('Adverts by Models has 27 jump-to links ', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/models/')
-    cy.get('section.archives').find('p').eq(1).find('a').should('have.length', 26)
+    // 26 A-Z links plus one for view-by-sorted
+    cy.get('section.archives').find('p').eq(1).find('a').should('have.length', 27)
   })
   
 
