@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Adverts by model - sorted alphabetically</h1>
+<p class="nav">{% include "computers/navbar.html" %}</p>
+
+<section class="archives">
+  <p>A list of the {{ total }} models of computer, peripheral or service (e.g. Prestel) in the collection, sorted alphabetically. Note that some model names 
+  have been merged for convenience, for example TI-99/4 and TI-99/4A, whilst some have been 
+  split where they are known by multiple distinct names, e.g. Atari's VCS which later on became 
+  known as the Atari 2600.</p>
+  <p class="jump">Jump to: {% for first, data in models.items %}<a href="#{{first}}">{{ first }}</a> {% endfor %}</p>
+  <hr />
+  {% for first, data in models.items %}
+    <a name="{{ first }}"></a><h3>{{ first }}</h3>
+    <div class="sortmods">
+      {% for model in data %}
+        <a href="/archives/computers/model/{{model|encodeslash}}">{{model}}</a>{% if forloop.last%}{% else %}, {% endif %}
+      {% endfor %}
+    </div>
+    <hr />
+  {% endfor %}
+</section>
+<p class="nav">{% include "computers/navbar.html" %}</p>
+{% endblock %}

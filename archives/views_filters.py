@@ -10,6 +10,7 @@ from stat import *
 from .models import ArchiveItems
 from ..constants import *
 from collections import OrderedDict
+from collections import defaultdict
 from .views_utils import _get_null_advert
 
 ARCHIVES = "/archives/computers"
@@ -23,6 +24,7 @@ def computer_filter_company(request, company):
 def computer_filter_models(request):
     companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
     records = ArchiveItems.objects.exclude(model__isnull = True).exclude(model__exact = "").values("company","model").annotate(count=Count("cpu")).order_by('company', 'model')
+    total = ArchiveItems.objects.exclude(model__isnull = True).exclude(model__exact = "").values("model").distinct().count()
     models = {}
     for r in records:
         company = r["company"]
@@ -44,6 +46,7 @@ def computer_filter_models(request):
 
     dict(sorted(models.items()))
     context = { 
+        'total': total,
         'models': models,
         'staticServer': WEBROOT,
         'home': ARCHIVES,
@@ -52,6 +55,36 @@ def computer_filter_models(request):
         'feedback': EMAIL,
     }
     return render(request, 'computers/models.html', context)
+
+
+def computer_filter_models_sorted(request):
+    companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
+    records = ArchiveItems.objects.exclude(model__isnull = True).exclude(model__exact = "").values("model").order_by('model')
+    total = ArchiveItems.objects.exclude(model__isnull = True).exclude(model__exact = "").values("model").distinct().count()
+    models = defaultdict(list)
+    for r in records:
+        mlist = r["model"].split(",")
+        for model in mlist:
+            first = model[0:1].upper()
+            if first in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]:
+                first = "0-9"
+            existing = models[first]
+            if not model in existing:
+                existing.append(model)
+            existing.sort()
+            models[first] = existing
+    sortmodels = dict(sorted(models.items(), key=lambda item: item[0]))
+
+    context = { 
+        'total': total,
+        'models': sortmodels,
+        'staticServer': WEBROOT,
+        'home': ARCHIVES,
+        'url': "{}/{}".format(WEBROOT, DOCROOT),
+        'companies': companies,
+        'feedback': EMAIL,
+    }
+    return render(request, 'computers/models_sorted.html', context)
 
 
 def computer_filter_model(request, model):

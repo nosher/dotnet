@@ -5,11 +5,11 @@
 <p class="nav">{% include "computers/navbar.html" %}</p>
 
 <section class="archives">
-  <p>Models of computer or peripheral, grouped by company name. Note that some model names 
+  <p>A list of the {{ total }} models of computer, peripheral or service in the collection, grouped by company name. Note that some model names 
   have been merged for convenience, for example TI-99/4 and TI-99/4A, whilst some have been 
   split where they are known by multiple distinct names, e.g. Atari's VCS which later on became 
   known as the Atari 2600.</p>
-  <p>Jump to: {% for first, data in models.items %}<a href="#{{first}}">{{ first }}</a> {% endfor %}</p>
+  <p>Jump to: {% for first, data in models.items %}<a href="#{{first}}">{{ first }}</a> {% endfor %}, or view <a data-id="sorted" href="/archives/computers/models/sorted">sorted by model name</a>.</p>
   <hr />
   {% for first, data in models.items %}
     <a name="{{ first }}"></a>
