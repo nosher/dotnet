@@ -62,7 +62,7 @@ describe('nosher.net computer adverts - individual', () => {
   it('Check table of contents link text', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/comp_today_1981-09_042')
     cy.get('div.toc').find('a').first().contains('Newbury drops the ball')
-    cy.get('div.toc').find('a').eq(1).contains('The controversy begins')
+    cy.get('div.toc').find('a').eq(2).contains('The controversy begins')
 
   })
 

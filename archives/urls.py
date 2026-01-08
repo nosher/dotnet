@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path('computers/', views.computer_index, name='computers'),
     path('computers/timelines', views.timelines, name='timelines'),
+    path('computers/index/list', views.list, name='list'),
     path('computers/index', views.catalogue, name='catalogue'),
     path('computers/index/<str:alpha>', views.catalogue, name='catalogue'),
     path('computers/links/computers.svg', views.svg, name='svg'),

@@ -17,6 +17,7 @@ ARCHIVES = "/archives/computers"
 ARCHIVEROOT = "/home/httpd/nosher.net/docs" + ARCHIVES
 EMAIL = "microhistory@nosher.net"
 
+
 def computer_filter_company(request, company):
     return HttpResponse("Hello, world. You're at the computer archives filtered by company.")
 
@@ -248,6 +249,35 @@ def computer_filter_cpu(request, cpu):
             'feedback': EMAIL,
         }
         return render(request, 'computers/cpu.html', context)
+
+
+def catalogue(request, alpha = ""):
+    companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
+    catalogue = OrderedDict()
+    if alpha is None or alpha == "":
+        alpha = "A"
+    with open(ARCHIVEROOT + "/catalogue_{}.dat".format(alpha), encoding="utf-8") as fh:
+        blob = fh.readlines()
+        for data in blob:
+            data = data.replace("\n", "")
+            (iword, refs) = data.split("\t")
+            first = iword[0:1].upper()
+            reflist = OrderedDict() 
+            if first in catalogue:
+                reflist = catalogue[first]
+            reflist[iword] = refs.split(",")
+            catalogue[first] = reflist
+    context = {
+        'title': "Index of adverts",
+        'current': alpha,
+        'staticServer': WEBROOT,
+        'home': ARCHIVES,
+        'alphas': list("1468ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+        'companies': companies,
+        'catalogue': catalogue[alpha],
+        'feedback': EMAIL,
+    }
+    return render(request, 'computers/catalogue.html', context)
 
 
 def get_file(name):
