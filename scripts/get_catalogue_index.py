@@ -41,7 +41,8 @@ for f in files:
                 lines = fh.readlines()
                 text = " ".join(lines) 
                 text = text.replace("\n", " . ")
-               
+                uniques = []
+
                 # strip out [@Commodore]-style tags and replace with their text content only
                 for k in ["@", "#", "!", "=", "picture: "]:
                     groups = re.findall(r"\[" + k + r"(.*?)]", text)
@@ -55,7 +56,7 @@ for f in files:
                 text = re.sub(r"\[.*?\]", " ", text)
                 text = re.sub(r"^-([a-z]*?) ", " . ", text)
 
-                uniques = []
+
                 for special in SPECIALS:
                      if special in text:
                           uniques.append(special)
@@ -68,6 +69,7 @@ for f in files:
                         .replace(",", " . ") \
                         .replace(":", " . ") \
                         .replace("CP/M", "CP|M") \
+                        .replace("I/O", "I|O") \
                         .replace("/", " / ") \
                         .replace("?", " . ") \
                         .replace("!", " . ") \
@@ -76,12 +78,20 @@ for f in files:
                         .replace("’", "'") \
                         .replace("'s", " . ") \
                         .replace("n't", "nYYYt") \
+                        .replace("O'", "OYYY") \
                         .replace("'ve", "YYYve") \
                         .replace("'re", "YYYre") \
                         .replace("’s", " . ") \
                         .replace("s'", "s . ") \
                         .replace("'", "") 
 
+                # treat some hyphenated phrases as word breaks
+                for hyph in [
+                    "focused", "style", "days", "generated", "endorsed", 
+                    "approved", "specific", "branded", "specific", "like",
+                    "format", "standard", "derived",
+                    ]:
+                    text = text.replace("-{}".format(hyph), " . ") 
 
                 # remove or replace HTML tags 
                 text = re.sub(r"<h[1-4]>(.*?)</h[1-4]>", r"\1", text)
@@ -124,9 +134,6 @@ for f in files:
                     else:
                         index_map[u] = [filename]
 
-                #print (uniques)
-
-print(index_map)
 
 keys = list(index_map.keys())
 keys = sorted(keys, key=lambda s: s.lower())

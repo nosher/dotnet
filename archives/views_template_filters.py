@@ -21,19 +21,41 @@ ARCHIVES = "/archives/computers"
 ARCHIVEROOT = "/home/httpd/nosher.net/docs" + ARCHIVES
 EMAIL = "microhistory@nosher.net"
 
-def convert_to_text(body):
-    char_limit = 180 
-    body = list(filter(lambda s: s[0] is not "-", body))
-    # convert acronyms and values
-    raw_body = " ".join(convert_values(convert_acronyms(body))).replace("\n", "")
+def convert_to_text(body, ellipsis = False):
+    char_limit = 200 
+    raw_body = " ".join(list(filter(lambda s: s[0] is not "-", body))).replace("\n", "")
+
     # remove wiki-like tags
-    raw_body = re.sub("\[source:.*?\]", "", raw_body)
+    for w in ["source", "image", "extra"]:
+        raw_body = re.sub("\[{}:.*?\]".format(w), "", raw_body)
+
     # remove HTML
     raw_body = re.sub("<.*?>", "", raw_body)
-    # trim to the char limit
-    ellipsis = "..." if len(raw_body) > char_limit else ""
-    raw_body = (raw_body[:char_limit] + ellipsis).strip()
-    return raw_body
+    raw_body = re.sub("<.*?>", "", raw_body)
+    raw_body = re.sub(r"~\"(.*?)\"", r"\1", raw_body)
+    raw_body = re.sub(r"\\\"(.*?)\"", r"\1", raw_body)
+
+    # strip out [@Commodore|foo]-style tags and replace with their text content only
+    for k in ["@", "#", "!", "=", "picture: "]:
+        groups = re.findall(r"\[" + k + r"(.*?)]", raw_body)
+        for match in groups:
+            parts = match.split("|")
+            lookup = parts[1] if len(parts) > 1 else parts[0]
+            raw_body = raw_body.replace("[{}{}]".format(k, match), lookup)
+
+    if ellipsis:
+        # trim to the word nearest the char limit
+        x = char_limit
+        while x < len(raw_body):
+            if raw_body[x] != " ":
+                x += 1
+            else:
+                char_limit = x
+                break
+        ellipsis = "..." if len(raw_body) > char_limit else ""
+        raw_body = (raw_body[:char_limit] + ellipsis).strip()
+
+    return raw_body.strip()
 
 
 @register.filter

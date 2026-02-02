@@ -111,7 +111,7 @@ def computer_index(request):
         with open(os.path.join(ROOT, "{}.txt".format(adid)), encoding="utf-8") as fh:
             lines = fh.readlines()
             i.summaryTitle = lines[0]
-            i.summary = convert_to_text(convert_links(lines[1:], False))
+            i.summary = convert_to_text(convert_links(lines[1:], False), ellipsis=True)
  
     # determine next and previous 
     nextparams = []
@@ -173,24 +173,7 @@ def computer_advert_text(request, adid):
 
     body = convert_values(body)
     body = convert_acronyms(body)
-    body = " ".join(body)
-
-    # remove HTML, etc
-    body = re.sub("<.*?>", "", body)
-    body = re.sub("\[extra.*?\]", "", body)
-    body = re.sub("\[image.*?\]", "", body)
-    body = re.sub("\[source.*?\]", "", body)
-    body = re.sub(r"~\"(.*?)\"", r"\1", body)
-    body = re.sub(r"\\\"(.*?)\"", r"\1", body)
-
-    # strip out [@Commodore|foo]-style tags and replace with their text content only
-    for k in ["@", "#", "!", "=", "picture: "]:
-        groups = re.findall(r"\[" + k + r"(.*?)]", body)
-        for match in groups:
-            parts = match.split("|")
-            lookup = parts[1] if len(parts) > 1 else parts[0]
-            body = body.replace("[{}{}]".format(k, match), lookup)
-
+    body = convert_to_text(body, ellipsis = False)
     body = "{} {}".format(title, body)
     page = 330
  
@@ -207,7 +190,7 @@ def computer_advert_text(request, adid):
         if (end < orig_len): body = body + "..."
         body = re.sub(idx, "<span class=\"hilite\">{}</span>".format(idx), body)
     else:
-        body = body[0:330] 
+        body = body[0:page].replace("  ", " ").replace("\n", "").strip() 
     context = {
         'body': body,
         'staticServer': WEBROOT,
@@ -264,11 +247,11 @@ def computer_advert_html(request, adid):
     body = convert_values(body)
     body = convert_acronyms(body)
     body = convert_extras(body)
-    body = convert_picture(body)
     body = convert_links(body)
     body = convert_images(body)
     body = create_toc(body)
     (body, sources) = convert_sources(body)
+    body = convert_picture(body)
     body = "".join(body)
     body = body.replace("{{staticServer}}", WEBROOT)
 

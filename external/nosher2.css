@@ -155,7 +155,7 @@
         --imgborder: #eee;
         --caption: #eee;
         --subcaption: #aaa;
-        --hilite: #80dd80;
+        --hilite: #207720;
     }
     body {
         background-image: unset !important;
@@ -744,6 +744,7 @@ h4.title_sidebar {
 
 .hilite {
     background-color: var(--hilite);
+    color: var(--text);
 }
 
 .catindex {
@@ -1802,7 +1803,7 @@ audio {
     display: grid;
     width: 98%;
     justify-items: center;
-    grid-template-columns: 1fr 10fr 1fr;
+    grid-template-columns: 1fr 30fr 1fr;
     grid-template-areas: ". ctrimg ." ". desc .";
 }
 
@@ -1878,7 +1879,7 @@ audio {
 
 .ctrimg {
     grid-area: ctrimg;
-    max-width: 90%;
+    max-width: 96%;
     border: 2px solid var(--imgborder);
 }
 
