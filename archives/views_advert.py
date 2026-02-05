@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.db.models import Count
+from django.http import HttpResponseNotFound
 
 from stat import *
 from datetime import datetime
@@ -24,6 +25,31 @@ from .views_template_filters import *
 ARCHIVES = "/archives/computers"
 ARCHIVEROOT = "/home/httpd/nosher.net/docs" + ARCHIVES
 EMAIL = "microhistory@nosher.net"
+
+def list(request):
+    """ Used for tests to generate a list of all advert IDs 
+
+        The test requests filenames in chunks, because Cypress hangs
+        on to HTTP requests and so the server runs out of connections
+    """
+    params = request.GET
+    offset = 0
+    # check for an offset
+    if "offset" in params:
+        offset = int(params.get("offset"))
+    tfiles = []
+
+    for f in os.listdir("/home/httpd/nosher.net/docs/archives/computers"):
+        if f[-4:] == ".txt" \
+            and not f == "map.txt" \
+            and not f == "title.txt" \
+            and not f == "intro.txt":
+            tfiles.append(f.replace(".txt", ""))
+            
+    context = {
+        'tfiles': tfiles[offset:offset + 100],
+    }
+    return render(request, 'computers/tfiles.html', context)
 
 def computer_index(request):
     params = request.GET
@@ -85,7 +111,7 @@ def computer_index(request):
         with open(os.path.join(ROOT, "{}.txt".format(adid)), encoding="utf-8") as fh:
             lines = fh.readlines()
             i.summaryTitle = lines[0]
-            i.summary = convert_to_text(convert_links(lines[1:], False))
+            i.summary = convert_to_text(convert_links(lines[1:], False), ellipsis=True)
  
     # determine next and previous 
     nextparams = []
@@ -147,12 +173,8 @@ def computer_advert_text(request, adid):
 
     body = convert_values(body)
     body = convert_acronyms(body)
-    body = "".join(body)
-    # remove HTML, etc
-    body = re.sub("<.*?>", "", body)
-    body = re.sub("\[extra.*?\]", "", body)
-    body = re.sub("\[image.*?\]", "", body)
-    body = re.sub("\[source.*?\]", "", body)
+    body = convert_to_text(body, ellipsis = False)
+    body = "{} {}".format(title, body)
     page = 330
  
     if not idx == "":
@@ -168,7 +190,7 @@ def computer_advert_text(request, adid):
         if (end < orig_len): body = body + "..."
         body = re.sub(idx, "<span class=\"hilite\">{}</span>".format(idx), body)
     else:
-        body = body[0:330] 
+        body = body[0:page].replace("  ", " ").replace("\n", "").strip() 
     context = {
         'body': body,
         'staticServer': WEBROOT,
@@ -184,7 +206,7 @@ def computer_advert_html(request, adid):
     try:
         item = ArchiveItems.objects.get(Q(adid__startswith = (advert_id + ",")) | Q(adid = advert_id))
     except ObjectDoesNotExist:
-        return _get_null_advert(request, companies)
+        return HttpResponseNotFound(_get_null_advert(request, companies))
     
     company_name = item.company
     related = ArchiveItems.objects.filter(company = company_name).order_by('year')
@@ -225,11 +247,11 @@ def computer_advert_html(request, adid):
     body = convert_values(body)
     body = convert_acronyms(body)
     body = convert_extras(body)
-    body = convert_picture(body)
     body = convert_links(body)
     body = convert_images(body)
     body = create_toc(body)
     (body, sources) = convert_sources(body)
+    body = convert_picture(body)
     body = "".join(body)
     body = body.replace("{{staticServer}}", WEBROOT)
 

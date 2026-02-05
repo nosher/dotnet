@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('nosher.net computer adverts - index', () => {
+describe('nosher.net computer adverts - home page', () => {
   
   beforeEach(() => {
     cy.visit('http://10.1.203.1:8010/archives/computers/')

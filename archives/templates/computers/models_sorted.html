@@ -13,10 +13,10 @@
   <hr />
   {% for first, data in models.items %}
     <a name="{{ first }}"></a><h3>{{ first }}</h3>
-    <div class="sortmods">
+    <div class="sortmods"><p>
       {% for model in data %}
         <a href="/archives/computers/model/{{model|encodeslash}}">{{model}}</a>{% if forloop.last%}{% else %}, {% endif %}
-      {% endfor %}
+      {% endfor %}</p>
     </div>
     <hr />
   {% endfor %}

@@ -10,7 +10,6 @@ from stat import *
 from datetime import datetime
 from .models import ArchiveItems
 from ..constants import *
-from collections import OrderedDict
 
 from .views_filters import *
 from .views_advert import *
@@ -19,35 +18,6 @@ from .views_template_filters import *
 ARCHIVES = "/archives/computers"
 ARCHIVEROOT = "/home/httpd/nosher.net/docs" + ARCHIVES
 EMAIL = "microhistory@nosher.net"
-
-
-def catalogue(request, alpha = ""):
-    companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
-    catalogue = OrderedDict()
-    if alpha is None or alpha == "":
-        alpha = "A"
-    with open(ARCHIVEROOT + "/catalogue.dat", encoding="utf-8") as fh:
-        blob = fh.readlines()
-        for data in blob:
-            data = data.replace("\n", "")
-            (iword, refs) = data.split("\t")
-            first = iword[0:1].upper()
-            reflist = OrderedDict() 
-            if first in catalogue:
-                reflist = catalogue[first]
-            reflist[iword] = refs.split(",")
-            catalogue[first] = reflist
-    context = {
-        'title': "Index of adverts",
-        'current': alpha,
-        'staticServer': WEBROOT,
-        'home': ARCHIVES,
-        'alphas': catalogue.keys(),
-        'companies': companies,
-        'catalogue': catalogue[alpha],
-        'feedback': EMAIL,
-    }
-    return render(request, 'computers/catalogue.html', context)
 
 
 def links(request):

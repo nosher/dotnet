@@ -62,7 +62,7 @@ describe('nosher.net computer adverts - individual', () => {
   it('Check table of contents link text', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/comp_today_1981-09_042')
     cy.get('div.toc').find('a').first().contains('Newbury drops the ball')
-    cy.get('div.toc').find('a').eq(1).contains('The controversy begins')
+    cy.get('div.toc').find('a').eq(2).contains('The controversy begins')
 
   })
 
@@ -290,21 +290,22 @@ describe('nosher.net computer adverts - individual', () => {
   // not exist as a real advert.
 
   it('Check date created, updated should not be present', () => {
-    cy.visit('http://10.1.203.1:8010/archives/computers/foo?sameday')
+    cy.visit('http://10.1.203.1:8010/archives/computers/foo?sameday', {failOnStatusCode: false})
     cy.get('p.updated').contains('Date created: 01 January 2025')
     cy.get('p.updated').contains('Last updated').should('not.exist')
   })
   
 
   it('Check date created, updated should be present', () => {
-    cy.visit('http://10.1.203.1:8010/archives/computers/foo?twoday')
+    cy.visit('http://10.1.203.1:8010/archives/computers/foo?twoday', {failOnStatusCode: false})
     cy.get('p.updated').contains('Date created: 01 January 2025')
     cy.get('p.updated').contains('Last updated: 03 January 2025')
   })
 
 
   it('Check broken modified date, updated should not be present', () => {
-    cy.visit('http://10.1.203.1:8010/archives/computers/foo?yesterday')
+    cy.request({url: 'http://10.1.203.1:8010/archives/computers/foo?yesterday', failOnStatusCode: false}).its('status').should('equal', 404)
+    cy.visit('http://10.1.203.1:8010/archives/computers/foo?yesterday', {failOnStatusCode: false})
     cy.get('p.updated').contains('Date created: 01 January 2025')
     cy.get('p.updated').contains('Last updated').should('not.exist')
   })
