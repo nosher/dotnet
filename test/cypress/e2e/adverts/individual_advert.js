@@ -6,7 +6,30 @@ describe('nosher.net computer adverts - individual', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/acorn_sparkjet_percw_aug83')
   })
 
+
+  it("Test back-to-top is not visible when a long advert is at the top", () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/comp_today_1981-09_042')
+    cy.get('button.btt').should('not.be.visible')
+  })
+
   
+  it("Test back-to-top is visible when a long advert is at the bottom", () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/comp_today_1981-09_042')
+    cy.scrollTo(0, 500)
+    cy.get('button.btt').should('be.visible')
+  })
+
+
+  it("Test back-to-top returns page to top", () => {
+    cy.visit('http://10.1.203.1:8010/archives/computers/comp_today_1981-09_042')
+    cy.scrollTo(0, 500)
+    cy.get('button.btt').should('be.visible')
+    cy.get('button.btt').click()
+    cy.get('button.btt').should('not.be.visible')
+    cy.window().its('scrollY').should('equal', 0)
+  })
+  
+
   it('Test sidebar has title', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/camb_z88_percw_apr87')
     cy.get('h4.title_sidebar').should('have.length', 1).contains('More adverts from Cambridge Computer:')

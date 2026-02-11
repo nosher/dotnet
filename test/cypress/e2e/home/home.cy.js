@@ -7,6 +7,9 @@ describe('nosher.net home page', () => {
       cy.visit('http://10.1.203.1:8010/');
     })
     
+    it("Test back-to-top button is not present", () => {
+      cy.get('button.btt').should('not.exist')
+    })
     
     it('Check thumbnail grid is present', () => {
       cy.get('div#minigrid').find('img').should('have.length', 24);

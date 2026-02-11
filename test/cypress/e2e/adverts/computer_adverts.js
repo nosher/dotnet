@@ -60,7 +60,7 @@ describe('nosher.net computer adverts - home page', () => {
       if ($advert.find('h2').length !== 1) {
         throw new Error('Did not find magazine source')
       }
-      if ($advert.find('h3').length !== 1) {
+      if ($advert.find('h3#title').length !== 1) {
         throw new Error('Did not find advert title')
       }
       if ($advert.find('div.liner').length !== 1) {

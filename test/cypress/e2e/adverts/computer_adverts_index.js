@@ -18,7 +18,8 @@ describe('nosher.net computer adverts - catalogue/index', () => {
   })
 
   // split the tests up because Cypress hangs on to the connection so the
-  // server runs out of sockets if all 500+ ads are done in one go
+  // server runs out of sockets if all 500+ ads are done in one go.
+  // NOTE: these tests are normally excluded in cypress.config.js
 
   it('Test all files are in database 0-100', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/index/list?offset=0')
