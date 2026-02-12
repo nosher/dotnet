@@ -9,6 +9,7 @@
     <p class="nav">
         {% include "computers/navbar.html" %}
     </p>
+
     <h2>From {%if item.source %}{{ item.source }}{% else %}{%if item.type == "channel" %}sales brochure{% else %}Source unknown{% endif %}{% endif %}</h2>
     <div class="zoomer">
       <img src="{{ page_image }}" class="ad" style="aspect-ratio: {{ aspect }};" alt="{{ item.company }} Advert: {{ advert_title|safe }}, from {{ item.source }}, {{ item.year|get_year }}" />
@@ -16,7 +17,7 @@
     <div class="magicon"><button id="zoom" type="button">🔍 click to zoom</button></div>
     
     <br />  
-    <h3>{{ advert_title|safe }}</h3>
+    <h3 id="title">{{ advert_title|safe }}</h3>
 
     <div class="liner">
     {{ body|safe }}

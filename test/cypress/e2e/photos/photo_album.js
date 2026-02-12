@@ -8,6 +8,23 @@ describe('nosher.net photo album', () => {
     cy.visit('http://10.1.203.1:8010/images/2025/2025-01-19WalkAroundDebenham/')
   })
 
+  
+  it("Test back-to-top is hidden when the photo viewer is active", () => {
+    cy.get('article.thumb').first().click()
+    cy.get('#viewer').should('be.visible')
+    cy.scrollTo(0, 500)
+    cy.get('button.btt').should('not.be.visible')
+  })
+
+
+  it("Test back-to-top is visible after the photo viewer closes", () => {
+    cy.get('article.thumb').first().click()
+    cy.scrollTo(0, 500)
+    cy.get('button.btt').should('not.be.visible')
+    cy.get('photoview').trigger('keydown', {keyCode: 88, force: true});
+    cy.get('button.btt').should('be.visible')
+  })
+
 
   it('Click first photo and check img alt and title properties', () => {
     cy.get('article.thumb').first().click()

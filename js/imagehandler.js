@@ -52,6 +52,8 @@ function showViewer(pos) {
     } else {
         $("#viewer").show(300);
     }
+    // hide the back-to-top button
+    document.getElementById("btt").style.visibility = "hidden";
     showImage(image_position, isLandscape);
 }
 
@@ -63,6 +65,9 @@ function hideViewer() {
             MAIN.attr('src', '');
         });
     }
+    // show the back-to-top button
+    document.getElementById("btt").style.visibility = "visible";
+
 }
 
 function orient() {
