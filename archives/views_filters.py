@@ -229,10 +229,17 @@ def computer_filter_cpus(request):
         sub = ""
         bits = ""
         opts = r["cpu"].split(",")
-        if len(opts) > 1:
+        if len(opts) == 2:
             c1 = CPUS[opts[0].strip()]
             c2 = CPUS[opts[1].strip()]
             text = "{} and {}".format(c1["name"], c2["name"])
+            sub = ""
+            bits = c2["bits"] if int(c2["bits"]) > int(c1["bits"]) else c1["bits"]
+        elif len(opts) == 3:
+            c1 = CPUS[opts[0].strip()]
+            c2 = CPUS[opts[1].strip()]
+            c3 = CPUS[opts[2].strip()]
+            text = "{}, {} and {}".format(c1["name"], c2["name"], c3["name"])
             sub = ""
             bits = c2["bits"] if int(c2["bits"]) > int(c1["bits"]) else c1["bits"]
         else:

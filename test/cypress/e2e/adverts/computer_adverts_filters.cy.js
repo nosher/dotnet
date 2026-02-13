@@ -3,16 +3,18 @@
 describe('nosher.net computer adverts - by filters', () => {
 
 
-  it('Company links in advert work as expected', () => {
+  it('Company links in advert work as expected - multiple adverts', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/altair_popelec_aug75')
-    // test when company goes to multiple adverts
     cy.get('div.liner').find('a[data-link="Processor_Technology"').eq(0).should('contain.text', 'Processor Technology').then(($link) => {
       const href = $link.prop('href')
       cy.visit(href)
       cy.url().should('contain', '/archives/computers/?type=source&value=Processor')
     })
+  })
+
+
+  it('Company links in advert work as expected - single advert', () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/altair_popelec_aug75')
-    // test when company goes to single advert
     cy.get('div.liner').find('a[data-link="Polymorphic"').eq(0).should('contain.text', 'Polymorphic').then(($link) => {
       const href = $link.prop('href')
       cy.visit(href)
@@ -277,6 +279,52 @@ describe('nosher.net computer adverts - by filters', () => {
       cy.url().should('contain', '/archives/computers/cpus/Z80')
     })
   })
+
+
+  it('Adverts by CPU - single processor', () => {
+    // currently just a single entry - should go straight to advert 
+    cy.visit('http://10.1.203.1:8010/archives/computers/cpus/')
+    cy.get('p[data-cpus="65SC12"]').eq(0).then(($advert) => {
+      cy.wrap($advert).contains('Western Design Center 65SC12')
+      cy.wrap($advert).find('span.count').should('contain.text', '(1 advert)')
+      cy.wrap($advert).find('span.cpusub').should('have.length', 1)
+      cy.wrap($advert).find('a').then(($link) => {
+        const href = $link.prop('href')
+        cy.visit(href)
+        cy.url().should('contain', 'http://10.1.203.1:8010/archives/computers/ads_036')
+      })
+    })
+  })  
+
+
+  it('Adverts by CPU - double processors', () => {
+    // currently six entries
+    cy.visit('http://10.1.203.1:8010/archives/computers/cpus/')
+    cy.get('p[data-cpus="Z80,6502"]').eq(0).then(($advert) => {
+      cy.wrap($advert).contains('Zilog Z80 and MOS Technology 6502')
+      cy.wrap($advert).find('span.count').should('contain.text', '(6 adverts)')
+      cy.wrap($advert).find('a').then(($link) => {
+      const href = $link.prop('href')
+      cy.visit(href)
+      cy.url().should('contain', 'http://10.1.203.1:8010/archives/computers/cpus/Z80,6502')
+    })
+    })
+  })
+
+
+  it('Adverts by CPU - triple processors', () => {
+    // currently just a single entry - should go straight to advert 
+    cy.visit('http://10.1.203.1:8010/archives/computers/cpus/')
+    cy.get('p[data-cpus="6502,Z80,6800"]').eq(0).then(($advert) => {
+      cy.wrap($advert).contains('MOS Technology 6502, Zilog Z80 and Motorola 6800')
+      cy.wrap($advert).find('span.count').should('contain.text', '(1 advert)')
+      cy.wrap($advert).find('a').then(($link) => {
+        const href = $link.prop('href')
+        cy.visit(href)
+        cy.url().should('contain', '/archives/computers/ohio_brekshire_prac_apr81')
+      })
+    })
+  })  
 
   
 })
