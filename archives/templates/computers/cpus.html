@@ -20,7 +20,7 @@
     {% for cpu in cpus %}
       {% if cpu.bits == bit %}
       <li class="cpu">
-        <p><a href="/archives/computers/cpus/{{cpu.cpu}}">{{cpu.disp}}</a> <span class="count">({{cpu.count}} advert{%if cpu.count > 1%}s{%endif%})</span>
+        <p data-cpus="{{cpu.cpu}}"><a href="/archives/computers/cpus/{{cpu.cpu}}">{{cpu.disp}}</a> <span class="count">({{cpu.count}} advert{%if cpu.count > 1%}s{%endif%})</span>
           {% if cpu.sub%}<br /><span class="cpusub">{{cpu.sub}}</span>{%endif%} 
         </p>
       </li>
