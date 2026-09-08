@@ -2,9 +2,9 @@
         <div id="navwrapper">
             <ul>
                 <!-- home -->
-                <li><a href="/">Home</a></li>
+                <li class="nav"><a href="/">Home</a></li>
                 <!-- photos -->
-                <li><a href="/images/">A life in photos</a>
+                <li class="nav"><a href="/images/">A life in photos</a>
                 {% if years %}
                     <p class="navlink">
                     {% for year in years %}<nobr>{% if year.hasNew %}<span class="inew">•</span>{% endif %}<a href="/images/{{ year.year }}">{{ year.year }}</a>{%if not forloop.last%}, {%endif%}</nobr>
@@ -19,25 +19,88 @@
                 {% endif %}
                 </li>
                 <!-- computer adverts -->
-                <li><a href="/archives/computers/">A history of the microcomputer industry in 300 adverts</a>{% if companies %}
-                <p class="navlink">
-                {% for company in companies %}{% if company.company != "" %}{% if company.total == 1 %}{% if company.company|length < 30 %}
-                <nobr>{% endif %}<a href="/archives/computers/{{ company.company|get_first_advert }}">{{ company.company }}</a>{%if not forloop.last%},&nbsp;{%endif%}{% if company.company|length < 30 %}</nobr>{% endif %}{% else %}{% if company.company != "" %}{% if company.company|length < 30 %}
-                <nobr>{% endif %}<a href="/archives/computers/?type=source&value={{ company.company }}">{{ company.company }}</a>{%if not forloop.last%},&nbsp;{%endif%}{% if company.company|length < 30 %}</nobr>{% endif %}{% endif %}{% endif %}{% endif %}{% endfor %}</p>{% endif %}</li>
+                <li class="nav"><a href="/archives/computers/">A history of the microcomputer industry in 300 adverts</a>
+                {% if companies %}
+                    <!--
+                    <p class="navlink" id="companies">
+                    {% for company in companies %}
+                        {% if company.company != "" %}
+                            {% if company.total == 1 %}
+                                {% if company.company|length < 30 %}<nobr>{% endif %}
+                                <a href="/archives/computers/{{ company.company|get_first_advert }}">{{ company.company }}</a>{%if not forloop.last%},&nbsp;{%endif%}
+                                {% if company.company|length < 30 %}</nobr>{% endif %}
+                            {% else %}
+                                {% if company.company|length < 30 %}<nobr>{% endif %}
+                                <a href="/archives/computers/?type=source&value={{ company.company }}">{{ company.company }}</a>{%if not forloop.last%},&nbsp;{%endif%}
+                                {% if company.company|length < 30 %}</nobr>{% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    </p>
+                    -->
+                    <script>
+                        var key = "{{ az_key }}";
+                        function expandCompany(id) {
+                            var els = document.getElementsByClassName("sublist_shown");
+                            for (const element of els) {
+                                 element.className = "sublist";
+                            }
+                            var els = document.getElementsByClassName("az_selected");
+                            for (const element of els) {
+                                 element.className = "az";
+                            }
+                            var elem = document.getElementById("group_" + id);
+                            elem.className = "sublist_shown";
+                            var elem = document.getElementById("az_" + id);
+                            elem.className = "az_selected";
+                        }
+                        window.addEventListener("load", () => {
+                            if (key == "") {
+                                expandCompany('group_A');
+                            };
+                        });
+                    </script>
+                    <p class=""navlink id="az">
+                        <div class="opener">
+                            {% for k,v in az.items %}
+                                {% if k == az_key %}
+                                    <a href="#" onclick="expandCompany('{{ k }}');" class="az_selected" id="az_{{ k }}">{{ k }}</a>
+                                {% else %}
+                                    <a href="#" onclick="expandCompany('{{ k }}');" class="az" id="az_{{ k }}">{{ k }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </div><br />
+                        {% for k,v in az.items %}
+                            <div class="{% if k == az_key %}sublist_shown{% else %}sublist{% endif %}" id="group_{{ k }}"><ul>
+                            {% for company in v %}
+                                {% if company.company != "" %}
+                            {% if company.total == 1 %}
+                                <li class="citem"><a href="/archives/computers/{{ company.company|get_first_advert }}">{{ company.company }}</a></li>
+                            {% else %}
+                                <li class="citem"><a href="/archives/computers/?type=source&value={{ company.company }}">{{ company.company }}</a></li>
+                            {% endif %}
+                        {% endif %}
+                            {% endfor %}
+                            </ul></div>
+                        {% endfor %}
+                    </p>
+                {% endif %}
+                
+                </li>
                 <!-- the AJO Archive -->
-                <li><a href="/content/ajo/">The Arnewood Jazz Orchestra Archive</a></li>
+                <li class="nav"><a href="/content/ajo/">The Arnewood Jazz Orchestra Archive</a></li>
                 <!-- RAF Halton 69th Entry Archive -->
-                <li><a href="/content/raf69th">The RAF Halton 69th Entry Archive</a>{%if section == "raf69th" %}
+                <li class="nav"><a href="/content/raf69th">The RAF Halton 69th Entry Archive</a>{%if section == "raf69th" %}
                     <ul class="sublist">{% include "content/rafnav.html" %}</ul>{% endif %}
                 <!-- The Saxon Horse -->
-                <li><a href="/content/saxonhorse/">The Saxon Horse burial at Eriswell</a>{%if section == "saxonhorse" %}
+                <li class="nav"><a href="/content/saxonhorse/">The Saxon Horse burial at Eriswell</a>{%if section == "saxonhorse" %}
                     <ul class="sublist">{% include "content/saxonnav.html" %}</ul>{% endif %}
                 <!-- Flint knapping Brandon -->
-                <li><a href="/content/brandonflint/">An 1887 history of flint knapping in Brandon</a></li>
+                <!-- <li><a href="/content/brandonflint/">An 1887 history of flint knapping in Brandon</a></li> -->
                 <!-- Family recipes -->
-                <li><a href="/content/recipes/">Family recipes</a></li>
+                <li class="nav"><a href="/content/recipes/">Family recipes</a></li>
                 <!-- search -->
-                <li>
+                <li class="nav">
                     <form action="/search" method="get" class="navlink" title="Search nosher.net">
                         <label for="query" class="visuallyhidden">Search:</label>
                         <input id="query" type="text" value="{{ query }}" name="q" maxlength="100" class="stextnav" required />

@@ -9,7 +9,6 @@
     <p class="nav">
         {% include "computers/navbar.html" %}
     </p>
-
     <h2>From {%if item.source %}{{ item.source }}{% else %}{%if item.type == "channel" %}sales brochure{% else %}Source unknown{% endif %}{% endif %}</h2>
     <div class="zoomer">
       <img src="{{ page_image }}" class="ad" style="aspect-ratio: {{ aspect }};" alt="{{ item.company }} Advert: {{ advert_title|safe }}, from {{ item.source }}, {{ item.year|get_year }}" />

@@ -432,7 +432,6 @@ body {
 }
 
 #home .splash {
-    float: left;
     display: inline-block;
     width: 200px;
     margin: 0 40px 0 0;
@@ -603,7 +602,7 @@ nav ul {
     padding: 0;
     margin: 0;
 }
-nav ul li {
+nav ul li.nav {
     font-family: 'Roboto-Light', sans-serif;
     font-size: 110%;
     padding: 8px;
@@ -615,17 +614,17 @@ nav ul li {
 }
 
 @media screen and (max-width: 1000px) {
-    nav ul li {
+    nav ul li.nav {
         padding: 6px;
         border-bottom: 0.5px solid #000;
     }
 }
 
-nav ul li a:link, nav ul li a:visited {
+nav ul li.nav a:link, nav ul li.nav a:visited {
     color: var(--navlink);
 }
 
-nav ul li a:hover {
+nav ul li.nav a:hover {
     text-decoration: none;
     background-color: var(--link-hover);
 }
@@ -1564,8 +1563,6 @@ sup.src {
         padding-left: 4px;
     }
     sup.src {
-        position: none;
-        vertical-align: none;
         font-size: 100%;
         top: 0;
         margin-left: 8px;
@@ -2407,7 +2404,7 @@ diet- {
 /* WCAG accessibility "hidden" for form labels, etc */
 .visuallyhidden {
     border: 0;
-    clip: rect(0 0 0 0);
+    clip: rect(0, 0, 0, 0);
     height: 1px;
     margin: -1px;
     overflow: hidden;
@@ -2556,4 +2553,33 @@ div.toc a, div.toc a:visited, div.toc a:link {
   right: 50px;
   margin-top: 100vh;
   float: right;
+}
+
+.sublist, .sublist_shown {
+    margin-top: 12px;
+    display: none;
+    color: #808080;
+    text-align: left;
+}
+.sublist_shown {
+    display: inline-block;
+}
+.opener {
+    display: inline-block;
+}
+.az {
+    font-weight: normal !important;
+    text-decoration: none;
+}
+.az_selected {
+    font-weight: bold !important;
+    text-decoration: underline !important;
+}
+
+.citem {
+    list-style-type: disc;
+    list-style-position: inside;
+    text-indent: 1em hanging;
+    font-size: 95%;
+    line-height: 1.2em;
 }

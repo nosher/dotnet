@@ -62,6 +62,7 @@ def computer_index(request):
     intro = ""
     companies = ArchiveItems.objects.all().values('company').annotate(total=Count('company')).order_by('company')
     company_name = None
+    az_key = "A"
 
     # check for an offset
     if "offset" in params:
@@ -78,6 +79,7 @@ def computer_index(request):
                 items = ArchiveItems.objects.filter(company = company_name).order_by('year')
                 title = "{} adverts".format(value)
                 item["company"] = value
+                az_key = company_name[0:1]
             # check for a year
             elif ptype == "year":
                 items = ArchiveItems.objects.filter(year__startswith=value).order_by('year')
@@ -142,6 +144,8 @@ def computer_index(request):
         'prev': "?" + "&".join(prevparams) if len(prevparams) > 0 else None,
         'prev_count': (pagination if offset > 0 else 0),
         'companies': companies,
+        'az': _get_az(companies),
+        'az_key': az_key,
         'feedback': EMAIL,
     }
     return render(request, 'computers/list.html', context)
@@ -199,10 +203,27 @@ def computer_advert_text(request, adid):
     return HttpResponse(response, content_type="text/plain; charset=UTF-8")
 
 
+def _get_az(companies):
+    az = {}
+    az_list = []
+    for comp in companies:
+        c = comp["company"]
+        if (c != ""):
+            first = c[0].upper()
+            if not first in az_list:
+                az_list.append(first)
+                az[first] = [comp]
+            else:
+                current = az[first]
+                current.append(comp)
+                az[first] = current
+    return az
+    
 def computer_advert_html(request, adid):
     advert_id = adid.split(",")[0]
     items = ArchiveItems.objects.all().order_by('year')
     companies = ArchiveItems.objects.all().values('company').annotate(total = Count('company')).order_by('company')
+    az = _get_az(companies)
     try:
         item = ArchiveItems.objects.get(Q(adid__startswith = (advert_id + ",")) | Q(adid = advert_id))
     except ObjectDoesNotExist:
@@ -308,6 +329,8 @@ def computer_advert_html(request, adid):
         'sources': sources,
         'mtime': updated,
         'companies': companies,
+        'az': az,
+        'az_key': item.company[0:1],
         'related': related,
         'feedback': EMAIL,
     }
