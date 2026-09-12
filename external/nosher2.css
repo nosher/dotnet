@@ -2556,7 +2556,7 @@ div.toc a, div.toc a:visited, div.toc a:link {
 }
 
 .sublist, .sublist_shown {
-    margin-top: 12px;
+    margin-top: 2px;
     display: none;
     color: #808080;
     text-align: left;
@@ -2565,7 +2565,11 @@ div.toc a, div.toc a:visited, div.toc a:link {
     display: inline-block;
 }
 .opener {
-    display: inline-block;
+    display: block;
+    margin-top: 8px;
+}
+#az {
+    display: none;
 }
 .az {
     font-weight: normal !important;
