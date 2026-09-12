@@ -20,6 +20,7 @@ from .views_utils import _get_null_advert
 from .views_utils import _get_updated
 from .views_utils import _get_page_image
 from .views_utils import _get_logo
+from .views_utils import _get_az
 from .views_template_filters import *
 
 ARCHIVES = "/archives/computers"
@@ -202,22 +203,6 @@ def computer_advert_text(request, adid):
     response = render(request, 'computers/text_advert.html', context, content_type="text/plain; charset=UTF-8")
     return HttpResponse(response, content_type="text/plain; charset=UTF-8")
 
-
-def _get_az(companies):
-    az = {}
-    az_list = []
-    for comp in companies:
-        c = comp["company"]
-        if (c != ""):
-            first = c[0].upper()
-            if not first in az_list:
-                az_list.append(first)
-                az[first] = [comp]
-            else:
-                current = az[first]
-                current.append(comp)
-                az[first] = current
-    return az
     
 def computer_advert_html(request, adid):
     advert_id = adid.split(",")[0]

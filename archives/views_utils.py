@@ -37,6 +37,23 @@ def _get_page_image(img):
     return "{}/{}/images/{}".format(WEBROOT, DOCROOT, img)
 
 
+def _get_az(companies):
+    az = {}
+    az_list = []
+    for comp in companies:
+        c = comp["company"]
+        if (c != ""):
+            first = c[0].upper()
+            if not first in az_list:
+                az_list.append(first)
+                az[first] = [comp]
+            else:
+                current = az[first]
+                current.append(comp)
+                az[first] = current
+    return az
+
+
 def _get_null_advert(request, companies):
     """
     Used for testing and as a 404. Invoke the advert /archives/computers/foo(?yesterday|sameday|twoday|None)

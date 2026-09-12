@@ -21,7 +21,6 @@
                 <!-- computer adverts -->
                 <li class="nav"><a href="/archives/computers/">A history of the microcomputer industry in 300 adverts</a>
                 {% if companies %}
-                    <!--
                     <p class="navlink" id="companies">
                     {% for company in companies %}
                         {% if company.company != "" %}
@@ -37,9 +36,11 @@
                         {% endif %}
                     {% endfor %}
                     </p>
-                    -->
                     <script>
+                        document.getElementById("companies").style.display = "none";
+                        document.getElementById("az").style.display = "block";
                         var key = "{{ az_key }}";
+
                         function expandCompany(id) {
                             var els = document.getElementsByClassName("sublist_shown");
                             for (const element of els) {
@@ -53,6 +54,11 @@
                             elem.className = "sublist_shown";
                             var elem = document.getElementById("az_" + id);
                             elem.className = "az_selected";
+                        }
+
+                        function showAll() {
+                            document.getElementById("az").style.display = "none";
+                            document.getElementById("companies").style.display = "block";
                         }
                         window.addEventListener("load", () => {
                             if (key == "") {
@@ -69,7 +75,7 @@
                                     <a href="#" onclick="expandCompany('{{ k }}');" class="az" id="az_{{ k }}">{{ k }}</a>
                                 {% endif %}
                             {% endfor %}
-                        </div><br />
+                        </div>
                         {% for k,v in az.items %}
                             <div class="{% if k == az_key %}sublist_shown{% else %}sublist{% endif %}" id="group_{{ k }}"><ul>
                             {% for company in v %}
@@ -81,8 +87,12 @@
                             {% endif %}
                         {% endif %}
                             {% endfor %}
+                            <br/>
+                            <li class="citem"><a href="/archives/computers/models/">by model</a></li>
+                            <li class="citem"><a href="/archives/computers/cpus/">by cpu</a></li>
+                            <li class="citem"><a href="/archives/computers/years/">by year</a></li>
                             </ul></div>
-                        {% endfor %}
+                        {% endfor %}<br />
                     </p>
                 {% endif %}
                 
