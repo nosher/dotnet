@@ -12,6 +12,7 @@ from ..constants import *
 from collections import OrderedDict
 from collections import defaultdict
 from .views_utils import _get_null_advert
+from .views_utils import _get_az
 
 ARCHIVES = "/archives/computers"
 ARCHIVEROOT = "/home/httpd/nosher.net/docs" + ARCHIVES
@@ -99,6 +100,8 @@ def computer_filter_models(request):
         'home': ARCHIVES,
         'url': "{}/{}".format(WEBROOT, DOCROOT),
         'companies': companies,
+        'az': _get_az(companies),
+        'az_key': "A",
         'feedback': EMAIL,
     }
     return render(request, 'computers/models.html', context)
@@ -129,6 +132,8 @@ def computer_filter_models_sorted(request):
         'home': ARCHIVES,
         'url': "{}/{}".format(WEBROOT, DOCROOT),
         'companies': companies,
+        'az': _get_az(companies),
+        'az_key': "A",
         'feedback': EMAIL,
     }
     return render(request, 'computers/models_sorted.html', context)
@@ -154,6 +159,8 @@ def computer_filter_model(request, model):
             'home': ARCHIVES,
             'url': "{}/{}".format(WEBROOT, DOCROOT),
             'companies': companies,
+            'az': _get_az(companies),
+            'az_key': "A",
             'feedback': EMAIL,
         }
         return render(request, 'computers/model.html', context)
@@ -185,6 +192,8 @@ def computer_filter_model(request, model):
             'home': ARCHIVES,
             'url': "{}/{}".format(WEBROOT, DOCROOT),
             'companies': companies,
+            'az': _get_az(companies),
+            'az_key': "A",
             'feedback': EMAIL,
         }
         return render(request, 'computers/model.html', context)
@@ -211,6 +220,8 @@ def computer_filter_years(request):
         'home': ARCHIVES,
         'url': "{}/{}".format(WEBROOT, DOCROOT),
         'companies': companies,
+        'az': _get_az(companies),
+        'az_key': "A",
         'feedback': EMAIL,
     }
     return render(request, 'computers/years.html', context)
@@ -266,6 +277,8 @@ def computer_filter_cpus(request):
         'home': ARCHIVES,
         'url': "{}/{}".format(WEBROOT, DOCROOT),
         'companies': companies,
+        'az': _get_az(companies),
+        'az_key': "A",
         'feedback': EMAIL,
     }
     return render(request, 'computers/cpus.html', context)
@@ -300,6 +313,8 @@ def computer_filter_cpu(request, cpu):
             'home': ARCHIVES,
             'url': "{}/{}".format(WEBROOT, DOCROOT),
             'companies': companies,
+            'az': _get_az(companies),
+            'az_key': "A",
             'feedback': EMAIL,
         }
         return render(request, 'computers/cpu.html', context)
@@ -328,6 +343,8 @@ def catalogue(request, alpha = ""):
         'home': ARCHIVES,
         'alphas': list("1468ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
         'companies': companies,
+        'az': _get_az(companies),
+        'az_key': "A",
         'catalogue': catalogue[alpha],
         'feedback': EMAIL,
     }
