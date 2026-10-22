@@ -2566,10 +2566,18 @@ div.toc a, div.toc a:visited, div.toc a:link {
 }
 .opener {
     display: block;
-    margin-top: 8px;
+    margin-top: 12px;
 }
 #az {
     display: none;
+    visibility: visible;
+}
+/* hide AZ on mobile so we don't get the JS a-z companies index, which is bit fiddly to use */
+@media screen and (max-width: 1000px) { 
+    #az {
+        display: none;
+        visibility: hidden;
+    }
 }
 .az {
     font-weight: normal !important;
