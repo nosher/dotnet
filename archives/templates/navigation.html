@@ -36,37 +36,7 @@
                         {% endif %}
                     {% endfor %}
                     </p>
-                    <script>
-                        document.getElementById("companies").style.display = "none";
-                        document.getElementById("az").style.display = "block";
-                        var key = "{{ az_key }}";
-
-                        function expandCompany(id) {
-                            var els = document.getElementsByClassName("sublist_shown");
-                            for (const element of els) {
-                                 element.className = "sublist";
-                            }
-                            var els = document.getElementsByClassName("az_selected");
-                            for (const element of els) {
-                                 element.className = "az";
-                            }
-                            var elem = document.getElementById("group_" + id);
-                            elem.className = "sublist_shown";
-                            var elem = document.getElementById("az_" + id);
-                            elem.className = "az_selected";
-                        }
-
-                        function showAll() {
-                            document.getElementById("az").style.display = "none";
-                            document.getElementById("companies").style.display = "block";
-                        }
-                        window.addEventListener("load", () => {
-                            if (key == "") {
-                                expandCompany('group_A');
-                            };
-                        });
-                    </script>
-                    <p class=""navlink id="az">
+                    <div class="navlink" id="az">
                         <div class="opener">
                             {% for k,v in az.items %}
                                 {% if k == az_key %}
@@ -87,13 +57,12 @@
                             {% endif %}
                         {% endif %}
                             {% endfor %}
-                            <br/>
                             <li class="citem"><a href="/archives/computers/models/">by model</a></li>
                             <li class="citem"><a href="/archives/computers/cpus/">by cpu</a></li>
                             <li class="citem"><a href="/archives/computers/years/">by year</a></li>
                             </ul></div>
                         {% endfor %}<br />
-                    </p>
+                        </div>
                 {% endif %}
                 
                 </li>
@@ -121,6 +90,52 @@
                 </li>
             </ul>
         </div>
+        <script id="azExpander">
+
+            var az = document.getElementById("az");
+            var companies = document.getElementById("companies");
+            var showAZ = false;
+            if (az) {
+                var compStyle = window.getComputedStyle(az);
+                showAZ = az && compStyle && compStyle.visibility != "hidden";    
+            }
+            if (showAZ) {
+                az.style.display = "block";
+                companies.style.display = "none";
+            }
+            var key = "{{ az_key }}";
+
+            function expandCompany(id) {
+                if (showAZ) {
+                    var els = document.getElementsByClassName("sublist_shown");
+                    for (const element of els) {
+                            element.className = "sublist";
+                    }
+                    var els = document.getElementsByClassName("az_selected");
+                    for (const element of els) {
+                            element.className = "az";
+                    }
+                    var elem = document.getElementById("group_" + id);
+                    elem.className = "sublist_shown";
+                    var elem = document.getElementById("az_" + id);
+                    elem.className = "az_selected";
+                }
+            }
+
+            function showAll() {
+                if (showAZ) {
+                    document.getElementById("az").style.display = "none";
+                    document.getElementById("companies").style.display = "block";
+                }
+            }
+            
+            window.addEventListener("load", () => {
+                if (key == "" && showAZ) {
+                    expandCompany('group_A');
+                };
+            });
+        </script>
+
         <script>
         // prevent space keypress in search box from bubbling up and triggering "next page"
         $("#query").keydown(function(event) {

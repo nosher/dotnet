@@ -2,6 +2,32 @@
 
 describe('nosher.net computer adverts - individual', () => {
   
+  var acornFirstAdvert = "http://10.1.203.1:8010/archives/computers/acorn_introducing_percw_mar79"
+
+  Cypress.Commands.add('isNotInViewport', element => {
+    cy.get(element).then($el => {
+      const bottom = Cypress.$(cy.state('window')).height()
+      const rect = $el[0].getBoundingClientRect()
+
+      expect(rect.top).to.be.greaterThan(bottom)
+      expect(rect.bottom).to.be.greaterThan(bottom)
+      expect(rect.top).to.be.greaterThan(bottom)
+      expect(rect.bottom).to.be.greaterThan(bottom)
+    })
+  })
+
+  Cypress.Commands.add('isInViewport', element => {
+    cy.get(element).then($el => {
+      const bottom = Cypress.$(cy.state('window')).height()
+      const rect = $el[0].getBoundingClientRect()
+
+      expect(rect.top).not.to.be.greaterThan(bottom)
+      expect(rect.bottom).not.to.be.greaterThan(bottom)
+      expect(rect.top).not.to.be.greaterThan(bottom)
+      expect(rect.bottom).not.to.be.greaterThan(bottom)
+    })
+  })
+
   beforeEach(() => {
     cy.visit('http://10.1.203.1:8010/archives/computers/acorn_sparkjet_percw_aug83')
   })
@@ -9,23 +35,23 @@ describe('nosher.net computer adverts - individual', () => {
 
   it("Test back-to-top is not visible when a long advert is at the top", () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/comp_today_1981-09_042')
-    cy.get('button.btt').should('not.be.visible')
+    cy.isNotInViewport('button.btt')
   })
 
   
   it("Test back-to-top is visible when a long advert is at the bottom", () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/comp_today_1981-09_042')
     cy.scrollTo(0, 500)
-    cy.get('button.btt').should('be.visible')
+    cy.isInViewport('button.btt')
   })
 
 
   it("Test back-to-top returns page to top", () => {
     cy.visit('http://10.1.203.1:8010/archives/computers/comp_today_1981-09_042')
     cy.scrollTo(0, 500)
-    cy.get('button.btt').should('be.visible')
+    cy.isInViewport('button.btt')
     cy.get('button.btt').click()
-    cy.get('button.btt').should('not.be.visible')
+    cy.isNotInViewport('button.btt')
     cy.window().its('scrollY').should('equal', 0)
   })
   
@@ -136,7 +162,7 @@ describe('nosher.net computer adverts - individual', () => {
     cy.get('div.adthumb').first().find('a').then(function ($a) {
       const href = $a.prop('href')
       cy.visit(href)
-      cy.url().should('include', 'acorn_firstadvert')
+      cy.url().should('include', 'acorn_introducing')
     })
   });
 
@@ -260,12 +286,12 @@ describe('nosher.net computer adverts - individual', () => {
   /*
    * The following relative links might change if the order of adverts changes
   */  
-  it('Check next advert link for first advert', () => {
-    cy.visit('http://10.1.203.1:8010/archives/computers/acorn_firstadvert_praccomp_may79')
+  it('Check next advert link in Acorn\'s first advert', () => {
+    cy.visit(acornFirstAdvert)
     cy.get('p.nav').find('a').contains('next advert').then(($link) => {
       const href = $link.prop('href')
       cy.visit(href)
-      cy.url().should('contain', 'pertec_attache_prac_may1979')
+      cy.url().should('contain', 'transam_triton_prac_apr79')
     })
   })
 
@@ -277,17 +303,17 @@ describe('nosher.net computer adverts - individual', () => {
 
 
   it('Check previous advert link', () => {
-    cy.visit('http://10.1.203.1:8010/archives/computers/pertec_attache_prac_may1979')
+    cy.visit('http://10.1.203.1:8010/archives/computers/transam_triton_prac_apr79')
     cy.get('p.nav').find('a').contains('previous advert').then(($link) => {
       const href = $link.prop('href')
       cy.visit(href)
-      cy.url().should('contain', 'acorn_firstadvert_praccomp_may79')
+      cy.url().should('contain', acornFirstAdvert)
     })
   })
 
 
   it('Check next Acorn advert link', () => {
-    cy.visit('http://10.1.203.1:8010/archives/computers/acorn_firstadvert_praccomp_may79')
+    cy.visit(acornFirstAdvert)
     cy.get('p.nav').find('a').contains('previous Acorn advert').should('not.exist')
     cy.get('p.nav').find('a').contains('next Acorn advert').then(($link) => {
       const href = $link.prop('href')
@@ -302,7 +328,7 @@ describe('nosher.net computer adverts - individual', () => {
     cy.get('p.nav').find('a').contains('previous Acorn advert').then(($link) => {
       const href = $link.prop('href')
       cy.visit(href)
-      cy.url().should('contain', 'acorn_firstadvert_praccomp_may79')
+      cy.url().should('contain', acornFirstAdvert)
     })
   })
 

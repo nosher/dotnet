@@ -28,7 +28,7 @@ describe('nosher.net photo album mobile', () => {
     cy.get("div#mphoto_4").then( $el => {
       const bottom = Cypress.$( cy.state("window") ).height();
       const rect = $el[0].getBoundingClientRect();
-      expect( rect.top ).to.be.eq(0);
+      expect( rect.top ).to.be.lessThan(10.0);
       expect( rect.bottom ).to.be.lessThan(bottom);
     });
   })

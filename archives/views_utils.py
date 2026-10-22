@@ -91,6 +91,8 @@ def _get_null_advert(request, companies):
         'sources': ["foo"],
         'mtime': updated,
         'companies': companies,
+        'az': _get_az(companies),
+        'az_key': "A",
         'related': [],
         'feedback': EMAIL,
     }
